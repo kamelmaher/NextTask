@@ -12,6 +12,7 @@ module.exports = (req, res, next) => {
         }
         return error(res, 403, "Inavlid Token")
     } catch (err) {
+        console.log(err)
         serverError(res)
     }
 }

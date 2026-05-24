@@ -34,9 +34,14 @@ const userSchema = new mongoose.Schema({
         type: String
     },
     roles: {
-        type: String,
-        enum: [roles.ADMIN, roles.MODERATOR, roles.EMPLOYER, roles.FREELANCER],
-        defaut: [roles.FREELANCER]
+        type: [String],
+        enum: [
+            roles.ADMIN,
+            roles.MODERATOR,
+            roles.EMPLOYER,
+            roles.FREELANCER
+        ],
+        default: [roles.FREELANCER]
     }
 }, { timestamps: true })
 
@@ -46,7 +51,7 @@ userSchema.methods.toJSON = function () {
     const roles = Array.isArray(userObject.roles)
         ? userObject.roles
         : [];
-        
+
     if (!roles.includes(roles.ADMIN)) {
         delete userObject.updatedAt;
         delete userObject.__v;
