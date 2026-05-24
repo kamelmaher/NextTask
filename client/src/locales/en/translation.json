@@ -1,0 +1,91 @@
+{
+    "nav": {
+        "findWork": "Find Work",
+        "findFreelancers": "Find Freelancers",
+        "proposals": "My Proposals",
+        "login": "Log In",
+        "signup": "Sign Up"
+    },
+    "home": {
+        "title": "NextTask",
+        "subTitle": "Millions of projects, thousands of experts, one secure platform.",
+        "search": "Search",
+        "searchPlaceHolder": "Search for jobs, skills, or tools...",
+        "projects": "Projects",
+        "freelancers": "Freelancers",
+        "latestTitle": "Latest Open Projects"
+    },
+    "profile": {
+        "stats": "Statistics",
+        "jobs": "Jobs Done",
+        "earned": "Earned",
+        "rating": "Rating",
+        "portfolio": "Portfolio Items",
+        "reviews": "Client Reviews",
+        "noDesc": "No description provided."
+    },
+    "projects": {
+        "filters": "Filters",
+        "keywords": "Keywords...",
+        "price": "Price Range",
+        "min": "Min",
+        "max": "Max",
+        "category": "Category",
+        "all": "All Categories",
+        "available": "Available Projects",
+        "found": "jobs found",
+        "prev": "Previous",
+        "next": "Next"
+    },
+    "project": {
+        "submit": "Submit a Proposal",
+        "bid": "Your Bid Price ($)",
+        "duration": "Delivery Duration (Days)",
+        "pitch": "Cover Letter / Pitch",
+        "placeholderPitch": "Describe your experience regarding this job...",
+        "files": "Attach Supporting Documentation",
+        "action": "Submit Proposal",
+        "received": "Received Proposals",
+        "meta": "Project Meta Card",
+        "status": "Status",
+        "date": "Date Posted",
+        "client": "Client Info",
+        "verified": "Verified Client Account"
+    },
+    "proposals": {
+        "title": "My Proposals Tracker",
+        "keywordFilter": "Filter by keyword...",
+        "statusAll": "All Statuses",
+        "statusPending": "Pending",
+        "statusAccepted": "Accepted",
+        "statusRejected": "Rejected",
+        "ref": "Project Reference",
+        "bidTable": "Bid Offered",
+        "durationTable": "Duration Given",
+        "statusTable": "Status"
+    },
+    "portfolio": {
+        "gallery": "Portfolio Gallery",
+        "addBtn": "+ Add Item",
+        "descTitle": "Project Description",
+        "createdBy": "Created By",
+        "liveDemo": "Live Demo",
+        "likes": "Likes",
+        "views": "Views",
+        "editBtn": "Edit Project"
+    },
+    "addPortfolio": {
+        "mainTitle": "Create Portfolio Entry",
+        "labelTitle": "Project Title",
+        "placeholderTitle": "e.g. E-Commerce Dashboard System",
+        "thumb": "Main Thumbnail Image",
+        "url": "Project Demo Link URL",
+        "detailedDesc": "Detailed Description",
+        "placeholderDesc": "Elaborate on development stacks used, problem solved, etc...",
+        "multiImg": "Additional Project Mockups",
+        "skills": "Skills / Tags utilized",
+        "placeholderSkills": "React, Node.js, TypeScript (comma separated)",
+        "cancel": "Cancel",
+        "publish": "Publish Project"
+    }
+}
