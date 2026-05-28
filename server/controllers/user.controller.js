@@ -117,7 +117,7 @@ exports.assignRole = async (req, res) => {
         if (userRoles.includes(role)) return error(res, 400, "the role already exists")
 
         const newRoles = [...userRoles, role]
-        const updatedUser = await User.findByIdAndUpdate(id, { roles: newRoles })
+        const updatedUser = await User.findByIdAndUpdate(id, { roles: newRoles }, { returnDocument: "after" })
         success(res, 200, { user: updatedUser })
     } catch (err) {
         console.log(err)
@@ -153,7 +153,7 @@ exports.removeRole = async (req, res) => {
 
         const newRoles = userRoles.filter(e => e != role)
 
-        const updatedUser = await User.findByIdAndUpdate(id, { roles: newRoles })
+        const updatedUser = await User.findByIdAndUpdate(id, { roles: newRoles }, { returnDocument: "after" })
         success(res, 200, { user: updatedUser })
     } catch (err) {
         console.log(err)

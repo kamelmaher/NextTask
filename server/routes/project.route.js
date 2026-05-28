@@ -17,12 +17,14 @@ router.get("/:id", getSingleProject)
 
 router.use(verifyToken)
 
-// For Employee only
-router.post("/", allowedTo(roles.EMPLOYER), validate(createProjectValidator), createProject)
-router.patch("/:id", allowedTo(roles.EMPLOYER), validate(updateProjectValidator), updateProject)
-router.delete("/:id", allowedTo(roles.EMPLOYER), deleteProject)
-
 // For Moderators 
 router.patch("/:id/approve-status", allowedTo(roles.MODERATOR, roles.ADMIN), changeApproveStatus)
+
+// For Employee only
+router.use(allowedTo(roles.EMPLOYER))
+router.post("/", validate(createProjectValidator), createProject)
+router.patch("/:id", validate(updateProjectValidator), updateProject)
+router.delete("/:id", deleteProject)
+
 
 module.exports = router

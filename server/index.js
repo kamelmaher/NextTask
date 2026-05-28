@@ -14,10 +14,12 @@ app.use(cookieParser());
 const userRoute = require("./routes/user.route")
 const projectRoute = require("./routes/project.route")
 const categoryRoute = require("./routes/category.route")
+const proposalRoute = require("./routes/proposal.route")
 
 app.use("/user", userRoute)
 app.use("/project", projectRoute)
 app.use("/category", categoryRoute)
+app.use("/proposal", proposalRoute)
 
 mongoose
     .connect(process.env.DB_URL)

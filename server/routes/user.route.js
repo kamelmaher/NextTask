@@ -19,7 +19,8 @@ router.post("/login", validate(loginValidator), login)
 router.post("/signup", validate(userDetailsValidator), signUp)
 
 // Signed Users 
-router.patch("/", verifyToken, validate(userDetailsValidator), updateProfile)
+router.use(verifyToken)
+router.patch("/", validate(userDetailsValidator), updateProfile)
 
 // Admins
 router.patch("/:id/roles/assign", allowedTo(roles.ADMIN), assignRole)

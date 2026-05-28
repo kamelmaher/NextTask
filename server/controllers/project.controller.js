@@ -2,19 +2,51 @@ const Project = require("../models/project.model")
 const Category = require("../models/category.model")
 const { success, error, serverError } = require("../utils/responses")
 const { MAIN_LIMIT } = require("../utils")
-const { projectApprovalStatus } = require("../utils/status")
+const { projectApprovalStatus, projectStatus } = require("../utils/status")
 
 // Public Access
 exports.getProjects = async (req, res) => {
     const page = req.query.page || 1
     const skip = (page - 1) * MAIN_LIMIT
+    const {
+        searchTerm,
+        categoryId,
+        type,
+        minPrice,
+        maxPrice,
+    } = req.body || {};
+
+    const filters = {};
+
+    if (searchTerm) {
+        filters.title = {
+            $regex: searchTerm,
+            $options: "i",
+        };
+    }
+
+    if (categoryId) {
+        filters.category = categoryId;
+    }
+
+    if (type) {
+        filters.type = type;
+    }
+
+    if (minPrice || maxPrice) {
+        filters.budget = {};
+
+        if (minPrice) {
+            filters.minPrice.$gte = Number(minPrice);
+        }
+
+        if (maxPrice) {
+            filters.macPrice.$lte = Number(maxPrice);
+        }
+    }
     try {
-        const projects = await Project.find()
-            .limit(MAIN_LIMIT)
-            .skip(skip)
-            .populate("userId", "firstName lastName")
-            .populate("categoryId", "title")
-        const total = await Project.countDocuments()
+        const projects = await Project.find(filters);
+        const total = await Project.countDocuments(filters)
         success(res, 200, { projects, total, totalPages: Math.ceil(total / MAIN_LIMIT) })
     } catch (err) {
         console.log(err)

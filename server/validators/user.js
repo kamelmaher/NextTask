@@ -1,5 +1,5 @@
 const { body } = require("express-validator");
-const { roles } = require("../constants/roles");
+const { roles } = require("../utils");
 
 exports.userDetailsValidator = [
     body("firstName")

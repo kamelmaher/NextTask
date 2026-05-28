@@ -9,7 +9,23 @@ const projectApprovalStatus = {
     DECLINED: "declined",
     PENDING: "pending"
 }
+
+const proposalStatus = {
+    ACCEPTED: "accepted",
+    PENDING: "pending",
+    DECLINED: "declined"
+}
+
+const contractStatus = {
+    INPROGRESS: "inprogress",
+    DECLINED: "declined",
+    SUBMITED: "submited",
+    ACCEPTED: "accepted"
+}
+
 module.exports = {
     projectStatus,
-    projectApprovalStatus
+    projectApprovalStatus,
+    proposalStatus,
+    contractStatus
 }

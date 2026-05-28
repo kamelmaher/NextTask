@@ -15,7 +15,7 @@ const projectSchema = new mongoose.Schema({
         ref: "category",
         required: true
     },
-    userId: {
+    employerId: {
         type: mongoose.Schema.ObjectId,
         ref: "user",
         required: true
