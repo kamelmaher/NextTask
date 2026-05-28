@@ -1,7 +1,8 @@
 const router = require("express").Router()
+const { roles } = require("../utils")
 
 // Controllers
-const { getProposals, createProposal } = require("../controllers/proposal.controller")
+const { getProposals, createProposal, acceptProposal } = require("../controllers/proposal.controller")
 
 // Middlewares
 const verifyToken = require("../middlewares/verifyToken")
@@ -9,6 +10,10 @@ const allowedTo = require("../middlewares/allowedTo")
 
 router.get("/:id", getProposals)
 
-router.post("/:id", verifyToken, createProposal)
+router.use(verifyToken)
+// :id is a project id 
+router.post("/:id", createProposal)
+// :id is a proposal id
+router.patch("/:id", allowedTo(roles.EMPLOYER), acceptProposal)
 
 module.exports = router

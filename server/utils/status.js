@@ -19,7 +19,7 @@ const proposalStatus = {
 const contractStatus = {
     INPROGRESS: "inprogress",
     DECLINED: "declined",
-    SUBMITED: "submited",
+    SUBMITTED: "submitted",
     ACCEPTED: "accepted"
 }
 

@@ -69,13 +69,13 @@ exports.getSingleProject = async (req, res) => {
 // Employee Only
 exports.createProject = async (req, res) => {
     const { title, desc, categoryId, minPrice, maxPrice, deliveryDuration } = req.body
-    // const { _id } = req.user;
-    // if (!_id) return error(res, 400, "user Id is required")
-    const _id = "6a11d094317e8974831c015e"
+    const { _id } = req.user;
+    if (!_id) return error(res, 400, "user Id is required")
+    // const _id = "6a11d094317e8974831c015e"
     try {
         const foundCategory = await Category.findOne({ _id: categoryId })
         if (!foundCategory) return error(res, 404, "invalid category")
-        const newProject = { title, desc, categoryId, minPrice, maxPrice, deliveryDuration, userId: _id }
+        const newProject = { title, desc, categoryId, minPrice, maxPrice, deliveryDuration, employerId: _id }
         const project = await Project.create(newProject);
         success(res, 201, { msg: "project created succefully!", project });
     } catch (err) {

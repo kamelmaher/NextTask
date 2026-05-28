@@ -40,7 +40,7 @@ exports.createProposal = async (req, res) => {
             return error(res, 400, "cant apply for this project")
         }
 
-        const proposal = await Proposal.create({ ...req.body, projectId })
+        const proposal = await Proposal.create({ ...req.body, projectId, freelancerId: freelancer._id })
         return success(res, 201, { proposal })
     } catch (err) {
         console.log(err)
@@ -51,24 +51,24 @@ exports.createProposal = async (req, res) => {
 exports.acceptProposal = async (req, res) => {
     const employer = req.user
     if (!employer) return error(res, 401, "unauthorized")
-    const projectId = req.params.id
-    if (!projectId) return error(res, 400, "project not found")
-    const { proposalId } = req.body
+    const proposalId = req.params.id
     try {
-        const project = await Project.findById(projectId)
+        const proposal = await Proposal.findById(proposalId)
+        if (!proposal) return error(res, 404, "proposal not found")
+
+        const project = await Project.findById(proposal.projectId)
         if (!project) return error(res, 404, "project not found")
 
         // check project is accepted and open
         if (!IsValidProject(project)) {
-            return error(res, 400, "cant apply for this project")
+            return error(res, 400, "project is not open")
         }
 
         // check employer is the owner of the project 
         if (project.employerId.toString() !== employer._id.toString())
             return error(res, 401, "cant accept proposals for this project")
 
-        const proposal = await Proposal.findById(proposalId)
-        if (!proposal) return error(res, 404, "proposal not found")
+
 
         // accept proposal
         await Proposal.findByIdAndUpdate(proposalId, {
@@ -78,7 +78,7 @@ exports.acceptProposal = async (req, res) => {
         // reject all other proposals
         await Proposal.updateMany(
             {
-                projectId,
+                projectId: proposal.projectId,
                 _id: { $ne: proposalId },
                 status: proposalStatus.PENDING
             },
@@ -88,7 +88,7 @@ exports.acceptProposal = async (req, res) => {
         )
 
         // update Project Status
-        await Project.findByIdAndUpdate(projectId, { status: projectStatus.INPROGRESS })
+        await Project.findByIdAndUpdate(proposal.projectId, { status: projectStatus.INPROGRESS })
 
         // create a new contract 
         await Contract.create({

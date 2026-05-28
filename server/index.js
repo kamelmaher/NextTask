@@ -15,12 +15,13 @@ const userRoute = require("./routes/user.route")
 const projectRoute = require("./routes/project.route")
 const categoryRoute = require("./routes/category.route")
 const proposalRoute = require("./routes/proposal.route")
+const contractRoute = require("./routes/contract.route")
 
 app.use("/user", userRoute)
 app.use("/project", projectRoute)
 app.use("/category", categoryRoute)
 app.use("/proposal", proposalRoute)
-
+app.use("/contract", contractRoute)
 mongoose
     .connect(process.env.DB_URL)
     .then(() => {
