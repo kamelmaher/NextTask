@@ -2,7 +2,7 @@ const User = require("../models/user.model")
 const bcrypt = require("bcrypt")
 const { success, error, serverError } = require("../utils/responses")
 const jwt = require("jsonwebtoken")
-const { roles, userAllowedFields } = require("../utils")
+const { roles, userAllowedFields, MAIN_LIMIT } = require("../utils")
 
 // helpers
 const generateToken = async (user) => {
@@ -68,6 +68,49 @@ exports.logout = (req, res) => {
         sameSite: "none"
     })
     success(res, 200, { msg: "Logout Succefully" })
+}
+
+exports.me = async (req, res) => {
+    const { _id } = req.user
+    if (!_id) return error(res, 404, "user not found")
+    try {
+        const user = await User.findById(_id)
+        success(res, 200, { user })
+    } catch (err) {
+        console.log(err)
+        serverError(res)
+    }
+}
+
+exports.getUsers = async (req, res) => {
+    const page = req.query.page || 1
+    const skip = (page - 1) * MAIN_LIMIT
+    const { role } = req.body
+    try {
+        let filterRoles;
+        const allowedRoles = [roles.FREELANCER, roles.EMPLOYER];
+        const notAllowedRoles = [roles.MODERATOR, roles.ADMIN, roles.MANAGER];
+        if (!role) {
+            filterRoles = allowedRoles;
+        } else {
+            // validate role
+            if (!allowedRoles.includes(role)) {
+                return error(res, 400, "invalid role");
+            }
+            filterRoles = [role];
+        }
+
+        const users = await User.find({
+            roles: { $in: filterRoles, $nin: notAllowedRoles }
+        })
+            .limit(MAIN_LIMIT)
+            .skip(skip);
+
+        return success(res, 200, { users });
+    } catch (err) {
+        console.log(err);
+        return serverError(res);
+    }
 }
 
 // Signed Users
@@ -157,6 +200,20 @@ exports.removeRole = async (req, res) => {
         success(res, 200, { user: updatedUser })
     } catch (err) {
         console.log(err)
+        serverError(res)
+    }
+}
+
+exports.getAdminUsers = async (req, res) => {
+    const user = req.user
+    if (!user) return error(res, 403, "unauthorized")
+    const page = req.query.page || 1
+    const skip = (page - 1) * MAIN_LIMIT
+    const { role } = req.body
+    try {
+        const users = await User.find({ roles: { $in: role } }).limit(MAIN_LIMIT).skip(skip)
+        success(res, 200, { users })
+    } catch (err) {
         serverError(res)
     }
 }

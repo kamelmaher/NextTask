@@ -11,8 +11,7 @@ const allowedTo = require("../middlewares/allowedTo")
 router.get("/:id", getProposals)
 
 router.use(verifyToken)
-// :id is a project id 
-router.post("/:id", createProposal)
+router.post("/", createProposal)
 // :id is a proposal id
 router.patch("/:id", allowedTo(roles.EMPLOYER), acceptProposal)
 

@@ -2,7 +2,8 @@ const roles = {
     ADMIN: "admin",
     MODERATOR: "moderator",
     FREELANCER: "freelancer",
-    EMPLOYER: "employer"
+    EMPLOYER: "employer",
+    MANAGER: "manager"
 }
 
 const mainPriceRange = {

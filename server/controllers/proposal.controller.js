@@ -17,10 +17,9 @@ exports.getProposals = async (req, res) => {
 }
 
 exports.createProposal = async (req, res) => {
-    const projectId = req.params.id
     const freelancer = req.user
     if (!freelancer) return error(res, 403, "cant create propsal")
-    const { content, price, deliveryDuration, files } = req.body
+    const { content, price, deliveryDuration, files, projectId } = req.body
     if (!projectId) return error(res, 400, "project not found")
 
     try {
@@ -88,10 +87,12 @@ exports.acceptProposal = async (req, res) => {
         )
 
         // update Project Status
-        await Project.findByIdAndUpdate(proposal.projectId, { status: projectStatus.INPROGRESS })
+        project.status = projectStatus.INPROGRESS
+        await project.save()
+        // await Project.findByIdAndUpdate(proposal.projectId, { status: projectStatus.INPROGRESS })
 
         // create a new contract 
-        await Contract.create({
+        const contract = new Contract({
             projectId: proposal.projectId,
             proposalId: proposal._id,
             employerId: project.employerId,
@@ -99,8 +100,17 @@ exports.acceptProposal = async (req, res) => {
             agreedPrice: proposal.price,
             deadline: proposal.deliveryDuration
         })
+        await contract.save()
+        // await Contract.create({
+        //     projectId: proposal.projectId,
+        //     proposalId: proposal._id,
+        //     employerId: project.employerId,
+        //     freelancerId: proposal.freelancerId,
+        //     agreedPrice: proposal.price,
+        //     deadline: proposal.deliveryDuration
+        // })
 
-        success(res, 200)
+        success(res, 200, { proposal, project, contract })
     } catch (err) {
         console.log(err)
         serverError(res)

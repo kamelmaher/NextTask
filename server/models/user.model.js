@@ -39,7 +39,8 @@ const userSchema = new mongoose.Schema({
             roles.ADMIN,
             roles.MODERATOR,
             roles.EMPLOYER,
-            roles.FREELANCER
+            roles.FREELANCER,
+            roles.MANAGER
         ],
         default: [roles.FREELANCER]
     }

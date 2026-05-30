@@ -111,7 +111,7 @@ exports.updateProject = async (req, res) => {
         }
 
         const project = await Project.findByIdAndUpdate(projectId, updateData, { returnDocument: "after" }).populate("categoryId", "title")
-        success(res, 200, { msg: "project updated succefully", project })
+        success(res, 200, { project })
     } catch (err) {
         console.log(err)
         serverError(res)
@@ -127,7 +127,7 @@ exports.deleteProject = async (req, res) => {
     try {
         const project = await Project.findByIdAndDelete(id)
         if (!project) return error(res, 404, "project not found")
-        success(res, 200, "project deleted succefully")
+        success(res, 200, { project })
     } catch (err) {
         console.log(err)
         serverError(err)

@@ -27,7 +27,7 @@ exports.submitWork = async (req, res) => {
         contract.submission = { message, files, submittedAt: new Date() }
         contract.status = contractStatus.SUBMITTED
         await contract.save()
-        success(res, 200)
+        success(res, 200, { contract })
     } catch (err) {
         console.log(err)
         serverError(res)
@@ -60,7 +60,7 @@ exports.acceptSubmission = async (req, res) => {
         // update contract
         contract.status = contractStatus.ACCEPTED
         await contract.save()
-        success(res, 200)
+        success(res, 200, { contract, project })
     } catch (err) {
         console.log(err)
         serverError(res)

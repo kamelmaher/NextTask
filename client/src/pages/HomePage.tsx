@@ -1,5 +1,3 @@
-import ProjectCard from '../components/ProjectCard';
-import { projects } from "../data/products"
 export const HomePage = () => {
     return (
         <div className="min-h-screen bg-gray-50">
@@ -22,9 +20,7 @@ export const HomePage = () => {
             <section className="mx-auto max-w-7xl px-6 py-16">
                 <h2 className="mb-8 text-2xl font-bold text-gray-900">Latest Projects</h2>
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {projects.map((project) => (
-                        <ProjectCard key={project.id} project={project} />
-                    ))}
+
                 </div>
             </section>
         </div>
