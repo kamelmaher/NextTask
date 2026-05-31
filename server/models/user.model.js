@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
     profileImage: {
         type: String
     },
+    categoryId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "category"
+    },
     roles: {
         type: [String],
         enum: [

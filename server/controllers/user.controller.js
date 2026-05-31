@@ -26,10 +26,10 @@ exports.login = async (req, res) => {
     const { email, password } = req.body
     try {
         const user = await User.findOne({ email })
-        if (!user) return error(res, 400, "Invalid Credintials")
+        if (!user) return error(res, 400, "check email or password")
         const userPassword = user.password
         const isMatched = await bcrypt.compare(password, userPassword)
-        if (!isMatched) return error(res, 400, "Invalid Credintials")
+        if (!isMatched) return error(res, 400, "check email or password")
         const token = await generateToken(user)
         setCookies(res, token)
         success(res, 200, { token })
@@ -117,6 +117,7 @@ exports.getUsers = async (req, res) => {
 exports.updateProfile = async (req, res) => {
     const { _id } = req.user
     if (!_id) return error(res, 401, "Unauthorizd")
+    console.log(req.body)
     try {
         const updateData = {};
         userAllowedFields.forEach((field) => {

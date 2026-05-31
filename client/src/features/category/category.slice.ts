@@ -27,7 +27,8 @@ const CategorySlice = createSlice({
             })
 
         builder.addMatcher(
-            (action) => action.type.endsWith("/pending"),
+            (action) => action.type.startsWith("category/") &&
+                action.type.endsWith("/pending"),
             (state) => {
                 state.loading = true;
                 state.err = null;
@@ -35,7 +36,8 @@ const CategorySlice = createSlice({
         );
 
         builder.addMatcher(
-            (action) => action.type.endsWith("/rejected"),
+            (action) => action.type.startsWith("category/") &&
+                action.type.endsWith("/rejected"),
             (state, action: PayloadAction<string>) => {
                 state.loading = false;
                 state.err = action.payload;
@@ -43,7 +45,9 @@ const CategorySlice = createSlice({
         );
 
         builder.addMatcher(
-            (action) => action.type.endsWith("/fulfilled"),
+            (action) =>
+                action.type.startsWith("category/") &&
+                action.type.endsWith("/fulfilled"),
             (state) => {
                 state.loading = false;
             }

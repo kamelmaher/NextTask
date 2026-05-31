@@ -13,7 +13,7 @@ const mainPriceRange = {
 
 const MAIN_LIMIT = 15
 
-const userAllowedFields = ["firstName", "lastName", "userName", "email", "password", "about", "title", "profileImage"]
+const userAllowedFields = ["firstName", "lastName", "userName", "email", "password", "about", "title", "profileImage", "categoryId"]
 
 module.exports = {
     roles,

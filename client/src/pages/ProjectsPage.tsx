@@ -1,62 +1,123 @@
+import { useEffect, useMemo, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../store/store";
+import { fetchProjects } from "../features/projects/projects.reducers";
+import { ProjectCard } from "../components/ProjectCard";
+
 const ProjectsPage = () => {
+    const dispatch = useAppDispatch();
+
+    const { projects, loading } = useAppSelector(state => state.projects)
+
+    // Filters
+    const [search, setSearch] = useState("");
+    const [type, setType] = useState("");
+    const [category, setCategory] = useState("");
+    const [minPrice, setMinPrice] = useState<number | "">("");
+    const [maxPrice, setMaxPrice] = useState<number | "">("");
+
+    useEffect(() => {
+        dispatch(fetchProjects());
+    }, [dispatch]);
+
+    // Filter logic (frontend filtering)
+    // const filteredProjects = useMemo(() => {
+    //     return projects
+    //         .filter((project) => {
+    //             const matchSearch =
+    //                 project.title.toLowerCase().includes(search.toLowerCase()) ||
+    //                 project.desc.toLowerCase().includes(search.toLowerCase());
+
+    //             // const matchType = type ? project.type === type : true;
+
+    //             // const matchCategory = category
+    //             //     ? project.category?._id === category
+    //             //     : true;
+
+    //             const matchMin =
+    //                 minPrice !== "" ? project.minPrice >= Number(minPrice) : true;
+
+    //             const matchMax =
+    //                 maxPrice !== "" ? project.maxPrice <= Number(maxPrice) : true;
+
+    //             return matchSearch && matchMin && matchMax;
+    //         })
+    //         .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    // }, [projects, search, minPrice, maxPrice]);
+
     return (
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-            <div className="flex flex-col lg:flex-row gap-8">
+        <div className="max-w-6xl mx-auto p-4">
+            {/* Header */}
+            <h1 className="text-2xl font-bold mb-4">Projects</h1>
 
-                {/* Filters Sidebar Module */}
-                <aside className="w-full lg:w-64 shrink-0 rounded-xl border border-gray-200 bg-white p-6 shadow-sm h-fit">
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-gray-900 border-b pb-3 mb-4">Filters</h3>
-                    <div className="space-y-5">
-                        <div>
-                            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider">Key Words</label>
-                            <input type="text" className="mt-1.5 w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none transition-colors" />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider">Price</label>
-                            <div className="mt-1.5 flex gap-2">
-                                <input type="number" placeholder="min price" className="w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none" />
-                                <input type="number" placeholder="max price" className="w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none" />
-                            </div>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider">Category</label>
-                            <select className="mt-1.5 w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none bg-white">
-                                <option>All</option>
-                            </select>
-                        </div>
-                    </div>
-                </aside>
+            {/* Filters */}
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-6">
+                {/* Search */}
+                <input
+                    type="text"
+                    placeholder="Search projects..."
+                    className="border p-2 rounded-md md:col-span-2"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
 
-                {/* Dynamic Project Streams */}
-                <main className="flex-1 space-y-4">
-                    <div className="flex items-center justify-between border-b pb-3">
-                        <h2 className="text-xl font-bold text-gray-900">Available</h2>
-                        <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">10 Found</span>
-                    </div>
-                    Projects
-                    {/* {projects.map(project => (
-                        <div key={project.id} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:border-blue-300 hover:shadow-sm transition-all group">
-                            <div className="flex justify-between items-start gap-4">
-                                <div>
-                                    <h3 className="text-lg font-bold text-blue-600 group-hover:underline cursor-pointer">{project.title}</h3>
-                                    <p className="text-xs text-gray-400 font-medium mt-1">User #{project.userId} • {project.createdAt}</p>
-                                </div>
-                                <span className="text-lg font-black text-gray-900 shrink-0">${project.minPrice} - ${project.maxPrice}</span>
-                            </div>
-                            <p className="mt-3 text-sm text-gray-600 leading-relaxed line-clamp-3">{project.description}</p>
-                        </div>
-                    ))} */}
+                {/* Type */}
+                <select
+                    className="border p-2 rounded-md"
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                >
+                    <option value="">All Types</option>
+                    <option value="fixed">Fixed</option>
+                    <option value="hourly">Hourly</option>
+                </select>
 
-                    {/* Simple Dynamic Interface Control Footer */}
-                    <div className="flex justify-between items-center pt-4 border-t border-gray-100">
-                        <button className="px-4 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold text-gray-600 hover:bg-gray-50 transition-colors">Prev</button>
-                        <button className="px-4 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold text-gray-600 hover:bg-gray-50 transition-colors">Next</button>
-                    </div>
-                </main>
+                {/* Category */}
+                <select
+                    className="border p-2 rounded-md"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                >
+                    <option value="">All Categories</option>
+                    {/* replace with your dynamic categories from redux if available */}
+                </select>
 
+                {/* Price Range */}
+                <div className="flex gap-2">
+                    <input
+                        type="number"
+                        placeholder="Min"
+                        className="border p-2 rounded-md w-full"
+                        value={minPrice}
+                        onChange={(e) =>
+                            setMinPrice(e.target.value ? Number(e.target.value) : "")
+                        }
+                    />
+                    <input
+                        type="number"
+                        placeholder="Max"
+                        className="border p-2 rounded-md w-full"
+                        value={maxPrice}
+                        onChange={(e) =>
+                            setMaxPrice(e.target.value ? Number(e.target.value) : "")
+                        }
+                    />
+                </div>
             </div>
+
+            {/* Content */}
+            {loading ? (
+                <p>Loading...</p>
+            ) : projects.length === 0 ? (
+                <p className="text-gray-500">No projects found</p>
+            ) : (
+                <div className="grid grid-cols-1  gap-4">
+                    {projects.map((project) => (
+                        <ProjectCard key={project._id} project={project} />
+                    ))}
+                </div>
+            )}
         </div>
     );
-}
+};
 
-export default ProjectsPage
+export default ProjectsPage;

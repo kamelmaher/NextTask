@@ -31,7 +31,8 @@ const ProposalSlice = createSlice({
                 )
             })
         builder.addMatcher(
-            (action) => action.type.endsWith("/pending"),
+            (action) => action.type.startsWith("proposal/") &&
+                action.type.endsWith("/pending"),
             (state) => {
                 state.loading = true;
                 state.err = null;
@@ -39,7 +40,8 @@ const ProposalSlice = createSlice({
         );
 
         builder.addMatcher(
-            (action) => action.type.endsWith("/rejected"),
+            (action) => action.type.startsWith("proposal/") &&
+                action.type.endsWith("/rejected"),
             (state, action: PayloadAction<string>) => {
                 state.loading = false;
                 state.err = action.payload;
@@ -47,7 +49,9 @@ const ProposalSlice = createSlice({
         );
 
         builder.addMatcher(
-            (action) => action.type.endsWith("/fulfilled"),
+            (action) =>
+                action.type.startsWith("proposal/") &&
+                action.type.endsWith("/fulfilled"),
             (state) => {
                 state.loading = false;
             }

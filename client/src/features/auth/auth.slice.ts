@@ -40,28 +40,34 @@ const AuthSlice = createSlice({
             })
 
 
-        builder.addMatcher(
-            (action) => action.type.endsWith("/pending"),
-            (state) => {
-                state.loading = true;
-                state.err = null;
-            }
-        );
+        builder
+            .addMatcher(
+                (action) => action.type.startsWith("auth/") &&
+                    action.type.endsWith("/pending"),
+                (state) => {
+                    state.loading = true;
+                    state.err = null;
+                }
+            )
 
-        builder.addMatcher(
-            (action) => action.type.endsWith("/rejected"),
-            (state, action: PayloadAction<string>) => {
-                state.loading = false;
-                state.err = action.payload;
-            }
-        );
+            .addMatcher(
+                (action) => action.type.startsWith("auth/") &&
+                    action.type.endsWith("/rejected"),
+                (state, action: PayloadAction<string>) => {
+                    state.loading = false;
+                    state.err = action.payload;
+                }
+            )
 
-        builder.addMatcher(
-            (action) => action.type.endsWith("/fulfilled"),
-            (state) => {
-                state.loading = false;
-            }
-        )
+            .addMatcher(
+                (action) =>
+                    action.type.startsWith("auth/") &&
+                    action.type.endsWith("/fulfilled"),
+                (state) => {
+                    state.loading = false;
+                }
+            )
+
     },
 });
 

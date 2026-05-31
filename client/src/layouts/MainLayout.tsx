@@ -1,21 +1,18 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import { Navbar } from '../components/Navbar';
+import { useEffect } from 'react';
+import { me } from '../features/auth/auth.reducer';
+import { useAppDispatch } from '../store/store';
 
 export default function MainLayout() {
+    const dispatch = useAppDispatch();
+    useEffect(() => {
+        dispatch(me());
+    }, [dispatch]);
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <nav className="bg-white border-b shadow-sm">
-                <div className="max-w-6xl mx-auto flex items-center justify-between p-4">
-                    <h1 className="text-xl font-bold text-blue-600">NextTask</h1>
-
-                    <div className="flex gap-4 text-sm">
-                        <NavLink to="/" className="hover:text-blue-600">Home</NavLink>
-                        <NavLink to="/projects" className="hover:text-blue-600">Projects</NavLink>
-                        <NavLink to="/profile" className="hover:text-blue-600">Profile</NavLink>
-                    </div >
-                </div >
-            </nav >
-
+            <Navbar />
             <main>
                 <Outlet />
             </main>

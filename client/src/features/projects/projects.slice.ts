@@ -1,7 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { ProjectsState } from "./projects.types";
+import type { Project, ProjectsState } from "./projects.types";
 import { changeProjectApprovalStatus, createProject, deleteProject, fetchProjects, fetchSingleProject, updateProject } from "./projects.reducers";
-import type { Project } from "../../types/project";
 import { acceptWork } from "../contract/contract.reducer";
 import { acceptProposal } from "../proposal/proposal.reducer";
 
@@ -62,7 +61,8 @@ const ProjectsSlice = createSlice({
             })
 
         builder.addMatcher(
-            (action) => action.type.endsWith("/pending"),
+            (action) => action.type.startsWith("projects/") &&
+                action.type.endsWith("/pending"),
             (state) => {
                 state.loading = true;
                 state.err = null;
@@ -70,7 +70,8 @@ const ProjectsSlice = createSlice({
         );
 
         builder.addMatcher(
-            (action) => action.type.endsWith("/rejected"),
+            (action) => action.type.startsWith("projects/") &&
+                action.type.endsWith("/rejected"),
             (state, action: PayloadAction<string>) => {
                 state.loading = false;
                 state.err = action.payload;
@@ -78,7 +79,9 @@ const ProjectsSlice = createSlice({
         );
 
         builder.addMatcher(
-            (action) => action.type.endsWith("/fulfilled"),
+            (action) =>
+                action.type.startsWith("projects/") &&
+                action.type.endsWith("/fulfilled"),
             (state) => {
                 state.loading = false;
             }

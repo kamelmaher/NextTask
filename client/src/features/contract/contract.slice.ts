@@ -32,9 +32,10 @@ const ContractSlice = createSlice({
             .addCase(acceptProposal.fulfilled, (state, action) => {
                 state.contracts.push(action.payload.contract)
             })
-            
+
         builder.addMatcher(
-            (action) => action.type.endsWith("/pending"),
+            (action) => action.type.startsWith("contract/") &&
+                action.type.endsWith("/pending"),
             (state) => {
                 state.loading = true;
                 state.err = null;
@@ -42,7 +43,8 @@ const ContractSlice = createSlice({
         );
 
         builder.addMatcher(
-            (action) => action.type.endsWith("/rejected"),
+            (action) => action.type.startsWith("contract/") &&
+                action.type.endsWith("/rejected"),
             (state, action: PayloadAction<string>) => {
                 state.loading = false;
                 state.err = action.payload;
@@ -50,7 +52,9 @@ const ContractSlice = createSlice({
         );
 
         builder.addMatcher(
-            (action) => action.type.endsWith("/fulfilled"),
+            (action) =>
+                action.type.startsWith("contract/") &&
+                action.type.endsWith("/fulfilled"),
             (state) => {
                 state.loading = false;
             }
