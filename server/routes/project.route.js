@@ -20,8 +20,8 @@ router.use(verifyToken)
 // For Moderators 
 router.patch("/:id/approve-status", allowedTo(roles.MODERATOR, roles.ADMIN), changeApproveStatus)
 
-// For Employee only
-router.use(allowedTo(roles.EMPLOYER))
+// For users only
+router.use(allowedTo(roles.USER))
 router.post("/", validate(createProjectValidator), createProject)
 router.patch("/:id", validate(updateProjectValidator), updateProject)
 router.delete("/:id", deleteProject)

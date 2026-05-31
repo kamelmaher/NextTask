@@ -36,7 +36,7 @@ export const signup = createAsyncThunk(
 )
 
 export const logout = createAsyncThunk(
-    "",
+    "auth/logout",
     async (_, thunkAPI) => {
         try {
             const res = await api.post(`${baseUrl}/logout`)
@@ -53,6 +53,7 @@ export const me = createAsyncThunk(
         try {
             const res = await api.get(`${baseUrl}/me`)
             if (res.status == 200) {
+                console.log(res.data.user)
                 return res.data
             }
         } catch (err: any) {

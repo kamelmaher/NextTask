@@ -3,7 +3,6 @@ const { error } = require("../utils/responses");
 module.exports = (...roles) => {
     return (req, res, next) => {
         const userRoles = req.user.roles || []
-
         const hasAccess = userRoles.some(role =>
             roles.includes(role)
         );

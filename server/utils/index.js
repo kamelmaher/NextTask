@@ -1,8 +1,7 @@
 const roles = {
     ADMIN: "admin",
     MODERATOR: "moderator",
-    FREELANCER: "freelancer",
-    EMPLOYER: "employer",
+    USER: "user",
     MANAGER: "manager"
 }
 

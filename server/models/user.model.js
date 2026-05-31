@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
     profileImage: {
         type: String
     },
-    categoryId: {
+    category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "category"
     },

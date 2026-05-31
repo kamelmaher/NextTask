@@ -1,15 +1,39 @@
 import { NavLink } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../store/store";
+import { useEffect, useState, type FormEvent } from "react";
+import { getCategories } from "../features/category/category.reducer";
+import Spinner from "../components/Spinner";
+import { createProject } from "../features/projects/projects.reducers";
 
-const categories = [
-    "Development",
-    "Design",
-    "Artificial Intelligence",
-    "Marketing",
-    "Writing",
-    "Mobile",
-];
+// const categories = [
+//     "Development",
+//     "Design",
+//     "Artificial Intelligence",
+//     "Marketing",
+//     "Writing",
+//     "Mobile",
+// ];
 
 export default function NewProjectPage() {
+    const { categories, loading, err } = useAppSelector((state) => state.category)
+    const dispatch = useAppDispatch()
+    const [formData, setFormData] = useState({
+        title: "",
+        desc: "",
+        category: "",
+        minPrice: 0,
+        maxPrice: 0,
+        deliveryDuration: 0,
+    })
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault()
+        await dispatch(createProject(formData))
+    }
+
+    useEffect(() => {
+        dispatch(getCategories())
+    }, [dispatch])
+
     return (
         <div className="min-h-screen bg-background">
             <main className="mx-auto max-w-3xl px-6 py-10">
@@ -27,7 +51,7 @@ export default function NewProjectPage() {
                 </header>
 
                 <form
-                    onSubmit={(e) => e.preventDefault()}
+                    onSubmit={handleSubmit}
                     className="space-y-6 rounded-2xl border border-border bg-surface p-8"
                 >
                     <Field label="Project title" required>
@@ -35,6 +59,8 @@ export default function NewProjectPage() {
                             type="text"
                             placeholder="e.g. Build a real-time analytics dashboard"
                             className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm outline-none transition-all placeholder:text-text-dim/60 focus:border-brand focus:ring-2 focus:ring-brand/20"
+                            value={formData.title}
+                            onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
                         />
                     </Field>
 
@@ -43,6 +69,8 @@ export default function NewProjectPage() {
                             rows={6}
                             placeholder="Describe what you need, the deliverables, and any constraints."
                             className="w-full resize-y rounded-xl border border-border bg-surface px-4 py-2.5 text-sm leading-relaxed outline-none transition-all placeholder:text-text-dim/60 focus:border-brand focus:ring-2 focus:ring-brand/20"
+                            value={formData.desc}
+                            onChange={(e) => setFormData((prev) => ({ ...prev, desc: e.target.value }))}
                         />
                         <p className="mt-1.5 text-xs text-text-dim">
                             Minimum 80 characters. Be specific to attract the right talent.
@@ -50,19 +78,26 @@ export default function NewProjectPage() {
                     </Field>
 
                     <Field label="Category" required>
-                        <select
-                            defaultValue=""
-                            className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm outline-none transition-all focus:border-brand focus:ring-2 focus:ring-brand/20"
-                        >
-                            <option value="" disabled>
-                                Select a category
-                            </option>
-                            {categories.map((c) => (
-                                <option key={c} value={c}>
-                                    {c}
-                                </option>
-                            ))}
-                        </select>
+                        {
+
+                            loading ? <Spinner size="sm" /> :
+                                <select
+                                    className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm outline-none transition-all focus:border-brand focus:ring-2 focus:ring-brand/20"
+                                    value={formData.category}
+                                    onChange={(e) => setFormData((prev) => ({ ...prev, category: e.target.value }))}
+                                >
+                                    <option value="" disabled>
+                                        Select a category
+                                    </option>
+                                    {
+                                        categories.map((c) => (
+                                            <option key={c._id} value={c._id}>
+                                                {c.title}
+                                            </option>
+                                        ))
+                                    }
+                                </select>
+                        }
                     </Field>
 
                     <div>
@@ -79,6 +114,8 @@ export default function NewProjectPage() {
                                     min={0}
                                     placeholder="Min"
                                     className="w-full rounded-xl border border-border bg-surface py-2.5 pl-7 pr-4 text-sm outline-none transition-all placeholder:text-text-dim/60 focus:border-brand focus:ring-2 focus:ring-brand/20"
+                                    value={formData.minPrice}
+                                    onChange={(e) => setFormData((prev) => ({ ...prev, minPrice: Number(e.target.value) }))}
                                 />
                             </div>
                             <div className="relative">
@@ -90,6 +127,8 @@ export default function NewProjectPage() {
                                     min={0}
                                     placeholder="Max"
                                     className="w-full rounded-xl border border-border bg-surface py-2.5 pl-7 pr-4 text-sm outline-none transition-all placeholder:text-text-dim/60 focus:border-brand focus:ring-2 focus:ring-brand/20"
+                                    value={formData.maxPrice}
+                                    onChange={(e) => setFormData((prev) => ({ ...prev, maxPrice: Number(e.target.value) }))}
                                 />
                             </div>
                         </div>
@@ -97,7 +136,7 @@ export default function NewProjectPage() {
                             Set a realistic range. You can refine it once proposals come in.
                         </p>
                     </div>
-
+                    {err && <p className="text-sm text-red-500">{err}</p>}
                     <div className="flex flex-col-reverse items-stretch justify-end gap-3 border-t border-border pt-6 sm:flex-row sm:items-center">
                         <NavLink
                             to="/"
@@ -109,7 +148,9 @@ export default function NewProjectPage() {
                             type="submit"
                             className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-brand-foreground shadow-sm transition-transform hover:bg-brand/90 active:scale-[0.99]"
                         >
-                            Publish project
+                            {
+                                loading ? <Spinner size="sm" /> : "Publish project"
+                            }
                         </button>
                     </div>
                 </form>

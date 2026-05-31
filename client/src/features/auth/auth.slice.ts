@@ -26,8 +26,11 @@ const AuthSlice = createSlice({
                 state.isAuthenticated = false
             })
             .addCase(me.fulfilled, (state, action) => {
-                state.user = action.payload.user
-                state.isAuthenticated = true
+                const user = action.payload.user
+                if (user) {
+                    state.user = user
+                    state.isAuthenticated = true
+                }
             })
             .addCase(updateProfile.fulfilled, (state, action) => {
                 state.user = action.payload.user

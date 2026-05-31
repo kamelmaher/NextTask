@@ -7,7 +7,7 @@ export type User = {
     about: string,
     title: string,
     profileImg: string,
-    categoryId: string
+    category: string
 }
 
 export type authState = {

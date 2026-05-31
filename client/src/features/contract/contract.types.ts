@@ -1,3 +1,7 @@
+import type { User } from "../auth/auth.types"
+import type { Project } from "../projects/projects.types"
+import type { Proposal } from "../proposal/proposal.types"
+
 export type ContractState = {
     contracts: Contract[],
     loading: boolean,
@@ -6,9 +10,10 @@ export type ContractState = {
 
 export type Contract = {
     _id: string,
-    projectId: string,
-    freelancerId: string,
-    proposalId: string,
+    project: Project,
+    freelancer: User,
+    employer: User,
+    proposal: Proposal,
     price: number,
     deliveryDuration: number,
     status: string,

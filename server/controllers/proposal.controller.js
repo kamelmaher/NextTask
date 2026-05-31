@@ -8,7 +8,7 @@ exports.getProposals = async (req, res) => {
     const projectId = req.params.id
     if (!projectId) return error(res, 400, "project not found")
     try {
-        const proposals = await Proposal.find({ projectId }).populate("freelancerId", "firstName lastName")
+        const proposals = await Proposal.find({ project: projectId }).populate("freelancer", "firstName lastName")
         success(res, 200, { proposals })
     } catch (err) {
         console.log(err)
@@ -19,19 +19,20 @@ exports.getProposals = async (req, res) => {
 exports.createProposal = async (req, res) => {
     const freelancer = req.user
     if (!freelancer) return error(res, 403, "cant create propsal")
-    const { content, price, deliveryDuration, files, projectId } = req.body
+    const { content, price, deliveryDuration, projectId } = req.body
     if (!projectId) return error(res, 400, "project not found")
 
     try {
-        // check existing propsal
-        const foundProposal = await Proposal.findOne({ projectId, freelancerId: freelancer._id })
-        if (foundProposal) return error(res, 400, "you have already made a proposal")
-
+        // check project exists
         const project = await Project.findById(projectId)
         if (!project) return error(res, 404, "project not found")
 
+        // check existing propsal
+        const foundProposal = await Proposal.findOne({ project: projectId, freelancer: freelancer._id })
+        if (foundProposal) return error(res, 400, "you have already made a proposal")
+
         // prevent the employer who publishing the project from creating proposals
-        if (project.employerId.toString() === freelancer._id.toString())
+        if (project.employer._id.toString() === freelancer._id.toString())
             return error(res, 400, "cant apply for your project")
 
         // accept proposals for the open and accepted projects only 
@@ -39,7 +40,7 @@ exports.createProposal = async (req, res) => {
             return error(res, 400, "cant apply for this project")
         }
 
-        const proposal = await Proposal.create({ ...req.body, projectId, freelancerId: freelancer._id })
+        const proposal = await Proposal.create({ ...req.body, project: projectId, freelancer: freelancer._id })
         return success(res, 201, { proposal })
     } catch (err) {
         console.log(err)
@@ -77,7 +78,7 @@ exports.acceptProposal = async (req, res) => {
         // reject all other proposals
         await Proposal.updateMany(
             {
-                projectId: proposal.projectId,
+                projectId: proposal.project,
                 _id: { $ne: proposalId },
                 status: proposalStatus.PENDING
             },

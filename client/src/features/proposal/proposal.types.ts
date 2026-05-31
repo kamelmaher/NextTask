@@ -1,3 +1,6 @@
+import type { User } from "../auth/auth.types"
+import type { Project } from "../projects/projects.types"
+
 export type ProposalState = {
     proposals: Proposal[],
     loading: boolean,
@@ -6,11 +9,12 @@ export type ProposalState = {
 
 export type Proposal = {
     _id: string,
-    freelancerId: string,
-    projectId: string,
+    freelancer: User,
+    project: Project,
     price: number,
     deliveryDuration: number,
     content: string
+    status: string
 }
 
 export type createProposalType = {
@@ -18,5 +22,4 @@ export type createProposalType = {
     price: number,
     deliveryDuration: number,
     projectId: string,
-    freelancerId: string
 }

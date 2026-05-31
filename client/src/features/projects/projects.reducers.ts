@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type { Project } from "../../types/project";
 import { api } from "../../lib/axios";
+import type { Project, ProjectInput } from "./projects.types";
 const baseUrl = "/project"
 
 // public
@@ -30,15 +30,15 @@ export const fetchSingleProject = createAsyncThunk(
     }
 )
 
-// employers
+// users
 export const createProject = createAsyncThunk(
     "projects/createProject",
-    async (data: Project, thunkAPI) => {
+    async (data: ProjectInput, thunkAPI) => {
         try {
             const res = await api.post(baseUrl, data);
+            console.log("project created:", res.data);
             return res.data;
         } catch (err: any) {
-            console.log(err.response.data.msg || "something went wrong")
             return thunkAPI.rejectWithValue(err.response.data.msg || "something went wrong");
         }
     }
@@ -67,8 +67,6 @@ export const deleteProject = createAsyncThunk(
         }
     }
 )
-
-
 
 // moderators
 export const changeProjectApprovalStatus = createAsyncThunk(

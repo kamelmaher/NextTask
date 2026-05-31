@@ -10,12 +10,12 @@ const projectSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    categoryId: {
+    category: {
         type: mongoose.Schema.ObjectId,
         ref: "category",
         required: true
     },
-    employerId: {
+    employer: {
         type: mongoose.Schema.ObjectId,
         ref: "user",
         required: true

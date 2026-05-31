@@ -10,11 +10,9 @@ const allowedTo = require("../middlewares/allowedTo")
 
 router.use(verifyToken)
 
-// freelancers
-router.post("/:id", allowedTo(roles.FREELANCER), submitWork)
-
-// employers
-router.use(allowedTo(roles.EMPLOYER))
+// users
+router.use(allowedTo(roles.USER))
+router.post("/:id", submitWork)
 router.post("/:id/accept", acceptSubmission)
 router.post("/:id/request-revision", requestRevision)
 

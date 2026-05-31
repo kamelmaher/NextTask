@@ -2,12 +2,12 @@ const mongoose = require("mongoose")
 const { proposalStatus } = require("../utils/status")
 
 const proposalSchema = mongoose.Schema({
-    projectId: {
+    project: {
         type: mongoose.Schema.ObjectId,
         ref: "project",
         required: true
     },
-    freelancerId: {
+    freelancer: {
         type: mongoose.Schema.ObjectId,
         ref: "user",
         required: true

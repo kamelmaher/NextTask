@@ -11,12 +11,12 @@ exports.getProjects = async (req, res) => {
     const {
         searchTerm,
         categoryId,
-        type,
         minPrice,
         maxPrice,
     } = req.body || {};
 
-    const filters = {};
+    // initial filters for open and accepted projects only
+    const filters = { status: projectStatus.OPEN, approveStatus: projectApprovalStatus.ACCEPTED };
 
     if (searchTerm) {
         filters.title = {
@@ -29,23 +29,19 @@ exports.getProjects = async (req, res) => {
         filters.category = categoryId;
     }
 
-    if (type) {
-        filters.type = type;
-    }
-
     if (minPrice || maxPrice) {
-        filters.budget = {};
 
         if (minPrice) {
             filters.minPrice.$gte = Number(minPrice);
         }
 
         if (maxPrice) {
-            filters.macPrice.$lte = Number(maxPrice);
+            filters.maxPrice.$lte = Number(maxPrice);
         }
     }
+
     try {
-        const projects = await Project.find(filters);
+        const projects = await Project.find(filters).populate("employer", "firstName lastName").populate("category", "title").sort({ createdAt: -1 }).skip(skip).limit(MAIN_LIMIT);
         const total = await Project.countDocuments(filters)
         success(res, 200, { projects, total, totalPages: Math.ceil(total / MAIN_LIMIT) })
     } catch (err) {
@@ -58,24 +54,25 @@ exports.getSingleProject = async (req, res) => {
     const { id } = req.params
     if (!id) return error(res, 400, "id is required")
     try {
-        const project = await Project.findById(id).populate("userId", "firstName lastName").populate("categoryId", "title")
+        const project = await Project.findById(id).populate("employer", "firstName lastName").populate("category", "title")
         if (!project) return error(res, 404, "project not found")
         success(res, 200, { project })
     } catch (err) {
+        console.log(err)
         serverError(res)
     }
 }
 
-// Employee Only
+// user Only
 exports.createProject = async (req, res) => {
-    const { title, desc, categoryId, minPrice, maxPrice, deliveryDuration } = req.body
+    const { title, desc, category, minPrice, maxPrice, deliveryDuration } = req.body
     const { _id } = req.user;
     if (!_id) return error(res, 400, "user Id is required")
     // const _id = "6a11d094317e8974831c015e"
     try {
-        const foundCategory = await Category.findOne({ _id: categoryId })
+        const foundCategory = await Category.findOne({ _id: category })
         if (!foundCategory) return error(res, 404, "invalid category")
-        const newProject = { title, desc, categoryId, minPrice, maxPrice, deliveryDuration, employerId: _id }
+        const newProject = { title, desc, category, minPrice, maxPrice, deliveryDuration, employer: _id }
         const project = await Project.create(newProject);
         success(res, 201, { msg: "project created succefully!", project });
     } catch (err) {
@@ -90,7 +87,7 @@ exports.updateProject = async (req, res) => {
     if (!_id) return error(res, 400, "user Id is required")
     if (!projectId) return error(res, 400, "project Id is required")
     // const _id = "6a11d094317e8974831c015e"
-    const allowedFields = ["title", "desc", "minPrice", "maxPrice", "categoryId", "deliveryDuration"]
+    const allowedFields = ["title", "desc", "minPrice", "maxPrice", "category", "deliveryDuration"]
     try {
         // Check Ownership
         const oldProject = await Project.findById(projectId)
@@ -110,7 +107,8 @@ exports.updateProject = async (req, res) => {
             if (!foundCategory) return error(res, 404, "invalid category")
         }
 
-        const project = await Project.findByIdAndUpdate(projectId, updateData, { returnDocument: "after" }).populate("categoryId", "title")
+        const project = await Project.findByIdAndUpdate(projectId, updateData, { returnDocument: "after" })
+
         success(res, 200, { project })
     } catch (err) {
         console.log(err)

@@ -1,3 +1,6 @@
+import type { User } from "../auth/auth.types";
+import type { Category } from "../category/category.types";
+
 export type ProjectsState = {
     projects: Project[],
     project: Project,
@@ -12,7 +15,18 @@ export type Project = {
     minPrice: number;
     maxPrice: number;
     deliveryDuration: number;
-    createdAt: string;
-    userId: string;
-    categoryId: string
+    createdAt: Date;
+    updatedAt: Date;
+    employer: User;
+    category: Category
+    status: string;
+}
+
+export type ProjectInput = {
+    title: string;
+    desc: string;
+    minPrice: number;
+    maxPrice: number;
+    category: string;
+    deliveryDuration: number;
 }

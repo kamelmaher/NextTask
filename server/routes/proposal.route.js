@@ -13,6 +13,6 @@ router.get("/:id", getProposals)
 router.use(verifyToken)
 router.post("/", createProposal)
 // :id is a proposal id
-router.patch("/:id", allowedTo(roles.EMPLOYER), acceptProposal)
+router.patch("/:id", allowedTo(roles.USER), acceptProposal)
 
 module.exports = router

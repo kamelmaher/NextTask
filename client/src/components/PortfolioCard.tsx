@@ -1,8 +1,9 @@
+import { NavLink } from "react-router-dom";
 import type { PortfolioItem } from "../data/mockData";
 
 export function PortfolioCard({ item }: { item: PortfolioItem }) {
     return (
-        <div className="group overflow-hidden rounded-2xl border border-border bg-surface">
+        <NavLink to={`/portfolio/item/${item.id}`} className="group overflow-hidden rounded-2xl border border-border bg-surface">
             <div
                 className="aspect-[4/3] w-full transition-transform duration-500 group-hover:scale-105"
                 style={{ background: item.cover }}
@@ -13,6 +14,6 @@ export function PortfolioCard({ item }: { item: PortfolioItem }) {
                     {item.category} • {item.year}
                 </p>
             </div>
-        </div>
+        </NavLink>
     );
 }
