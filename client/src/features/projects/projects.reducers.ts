@@ -2,15 +2,15 @@
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "../../lib/axios";
-import type { Project, ProjectInput } from "./projects.types";
+import type { Project, projectFilters, ProjectInput } from "./projects.types";
 const baseUrl = "/project"
 
 // public
 export const fetchProjects = createAsyncThunk(
     "projects/fetchProjects",
-    async (_, thunkAPI) => {
+    async (filters: projectFilters, thunkAPI) => {
         try {
-            const res = await api.get(baseUrl)
+            const res = await api.get(baseUrl, { params: filters })
             return res.data
         } catch (err: any) {
             return thunkAPI.rejectWithValue(err.response.data.msg || "something went wrong");
@@ -31,17 +31,17 @@ export const fetchSingleProject = createAsyncThunk(
 )
 
 // users
-export const fetchUserProjects = createAsyncThunk(
-    "projects/fetchUserProjects",
-    async (employerId: string, thunkAPI) => {
-        try {
-            const res = await api.get(`${baseUrl}?employer=${employerId}`)
-            return res.data
-        } catch (err: any) {
-            return thunkAPI.rejectWithValue(err.response.data.msg || "something went wrong");
-        }
-    }
-)
+// export const fetchUserProjects = createAsyncThunk(
+//     "projects/fetchUserProjects",
+//     async (filters: projectFilters, thunkAPI) => {
+//         try {
+//             const res = await api.get(`${baseUrl}?employer=${employerId}`)
+//             return res.data
+//         } catch (err: any) {
+//             return thunkAPI.rejectWithValue(err.response.data.msg || "something went wrong");
+//         }
+//     }
+// )
 
 export const createProject = createAsyncThunk(
     "projects/createProject",

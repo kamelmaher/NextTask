@@ -8,15 +8,15 @@ const { projectApprovalStatus, projectStatus } = require("../utils/status")
 exports.getProjects = async (req, res) => {
     const page = req.query.page || 1
     const skip = (page - 1) * MAIN_LIMIT
-    const employer = req.query.employer || null
     const {
         searchTerm,
         categoryId,
         minPrice,
         maxPrice,
-    } = req.body || {};
+        employer,
+        status,
+    } = req.query || {};
 
-    // initial filters for open and accepted projects only
     let filters = {}
     if (!employer)
         filters = { status: projectStatus.OPEN, approveStatus: projectApprovalStatus.ACCEPTED };
@@ -46,9 +46,9 @@ exports.getProjects = async (req, res) => {
     if (employer) {
         filters.employer = employer
     }
-    
+
     try {
-        const projects = await Project.find(filters).populate("employer", "firstName lastName").populate("category", "title").populate("contract", "freelancer agreedPrice deliveryDuration createdAt").sort({ createdAt: -1 }).skip(skip).limit(MAIN_LIMIT);
+        const projects = await Project.find(filters).populate("employer", "firstName lastName").populate("category", "title").populate("contract").sort({ createdAt: -1 }).skip(skip).limit(MAIN_LIMIT);
         const total = await Project.countDocuments(filters)
         success(res, 200, { projects, total, totalPages: Math.ceil(total / MAIN_LIMIT) })
     } catch (err) {

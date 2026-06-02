@@ -5,7 +5,7 @@ import type { Contract } from "../contract/contract.types";
 export type ProjectsState = {
     projects: Project[],
     project: Project | null,
-    
+
     loading: boolean,
     projectLoading: boolean,
     createLoading: boolean
@@ -41,4 +41,13 @@ export type ProjectInput = {
     maxPrice: number;
     category: string;
     deliveryDuration: number;
+}
+
+export type projectFilters = {
+    searchTerm?: string,
+    categoryId?: string,
+    minPrice?: number,
+    maxPrice?: number,
+    employer?: string,
+    status?: string
 }

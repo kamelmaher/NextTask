@@ -31,5 +31,4 @@ export type contractFilters = {
     freelancer?: string,
     employer?: string,
     status?: string,
-    
 }

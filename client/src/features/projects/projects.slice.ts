@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { ProjectsState } from "./projects.types";
-import { changeProjectApprovalStatus, createProject, deleteProject, fetchProjects, fetchSingleProject, fetchUserProjects, updateProject } from "./projects.reducers";
+import { changeProjectApprovalStatus, createProject, deleteProject, fetchProjects, fetchSingleProject, updateProject } from "./projects.reducers";
 // import { acceptWork } from "../contract/contract.reducer";
 // import { acceptProposal } from "../proposal/proposal.reducer";
 
@@ -112,20 +112,20 @@ const ProjectsSlice = createSlice({
                 state.updateLoading = false;
             })
 
-            // fetch user projects
-            .addCase(fetchUserProjects.fulfilled, (state, action) => {
-                state.projects = action.payload.projects
-                state.updateLoading = false;
-            })
-            .addCase(fetchUserProjects.pending, (state) => {
-                state.loading = true;
-                state.err = null
-            })
-            .addCase(fetchUserProjects.rejected, (state, action) => {
-                state.projects = [];
-                state.err = action.payload as string;
-                state.updateLoading = false;
-            })
+        // fetch user projects
+        // .addCase(fetchUserProjects.fulfilled, (state, action) => {
+        //     state.projects = action.payload.projects
+        //     state.loading = false;
+        // })
+        // .addCase(fetchUserProjects.pending, (state) => {
+        //     state.loading = true;
+        //     state.err = null
+        // })
+        // .addCase(fetchUserProjects.rejected, (state, action) => {
+        //     state.projects = [];
+        //     state.err = action.payload as string;
+        //     state.loading = false;
+        // })
 
         // update project after accept proposal 
         // .addCase(acceptProposal.fulfilled, (state, action) => {

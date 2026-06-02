@@ -3,7 +3,7 @@ import { ProjectCard } from "../components/ProjectCard";
 import StatCard from "../components/StatCard";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { fetchProjects } from "../features/projects/projects.reducers";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import Spinner from "../components/Spinner";
 import { getContracts } from "../features/contract/contract.reducer";
 import { getProposals } from "../features/proposal/proposal.reducer";
@@ -15,28 +15,13 @@ export const HomePage = () => {
     const { contracts } = useAppSelector(state => state.contract)
     const { proposals } = useAppSelector(state => state.proposal)
     const dispatch = useAppDispatch()
+    
     useEffect(() => {
-        dispatch(fetchProjects())
+        dispatch(fetchProjects({}))
         dispatch(getContracts({ status: contractStatus.INPROGRESS, freelancer: user?._id }))
         if (user)
             dispatch(getProposals({ status: proposalStatus.PENDING, userId: user?._id }))
     }, [dispatch, user])
-
-    // // const activeEmployerProjects = useMemo(() => {
-    // //     if (contracts.length == 0) return 0
-    // //     const employerContracts = contracts.filter(contract =>
-    // //         contract.employer._id == user?._id
-    // //     )
-    // //     return employerContracts.length
-    // // }, [contracts, user])
-
-    // const inProgressProjects = useMemo(() => {
-    //     if (contracts.length == 0) return 0
-    //     const inProgress = contracts.filter(contract =>
-    //         contract.freelancer._id == user?._id
-    //     )
-    //     return inProgress.length
-    // }, [contracts, user])
 
     return (
         <div className="min-h-screen bg-background">
@@ -94,14 +79,6 @@ export const HomePage = () => {
                     </div>
                 }
 
-                {/* filters */}
-                {/* <aside>
-                    <div className="mt-6 rounded-2xl border border-border bg-surface p-6">
-                        <h3 className="font-bold text-text-dark">Quick Filters</h3>
-                        <p className="text-sm text-text-dim mt-2">Filter projects by category, budget or duration from the projects page.</p>
-                    </div>
-                </aside> */}
-
                 {/* Projects list */}
                 <div className="mb-6">
                     <h2 className="font-display text-2xl font-bold tracking-tight text-text-dark">Recommended Projects</h2>
@@ -121,28 +98,3 @@ export const HomePage = () => {
         </div>
     );
 };
-
-{/* <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
-                            {isAuthenticated && user ? (
-                                <div className="flex flex-col items-center gap-4 text-center">
-                                    <img src={user.profileImg || '/profile-placeholder.png'} alt="profile" className="h-20 w-20 rounded-full object-cover" />
-                                    <div>
-                                        <p className="font-bold text-text-dark">{user.firstName} {user.lastName}</p>
-                                        <p className="text-sm text-text-dim">{user.title}</p>
-                                        <p className="mt-2 text-sm text-text-dim">{user.about}</p>
-                                    </div>
-                                    <div className="w-full">
-                                        <NavLink to={'/profile'} className="block rounded-md bg-brand px-4 py-2 text-center text-sm font-semibold text-brand-foreground">View Profile</NavLink>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="text-center">
-                                    <p className="font-display text-lg font-bold text-text-dark">Join NextStack</p>
-                                    <p className="mt-2 text-sm text-text-dim">Create a profile, bid on projects, and grow your reputation.</p>
-                                    <div className="mt-4 flex gap-2 justify-center">
-                                        <NavLink to={'/login'} className="rounded-md border border-border px-4 py-2 text-sm font-semibold">Sign in</NavLink>
-                                        <NavLink to={'/register'} className="rounded-md bg-brand px-4 py-2 text-sm font-semibold text-brand-foreground">Get started</NavLink>
-                                    </div>
-                                </div>
-                            )}
-                        </div> */}

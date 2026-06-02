@@ -7,6 +7,7 @@ const items = [
     { to: "/profile/portfolio", label: "Portfolio", exact: false },
     { to: "/profile/proposals", label: "Proposals", exact: false },
     { to: "/profile/projects", label: "Projects", exact: false },
+    { to: "/profile/posted", label: "Posted Projects", exact: false },
 ];
 
 export function ProfileSidebar() {
