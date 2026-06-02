@@ -2,15 +2,21 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../store/store";
 import { useEffect, useState } from "react";
 import UpdateProfileForm from "../components/UpdateProfileForm";
+import Spinner from "../components/Spinner";
 
 export default function ProfilePage() {
-    const { user, isAuthenticated } = useAppSelector(state => state.auth)
+    const { user, isAuthenticated, fetchUserLoading, authChecked } = useAppSelector(state => state.auth)
     const navigate = useNavigate()
-
     const [showUpdateForm, setShowUpdateForm] = useState(false)
+
     useEffect(() => {
-        if (!isAuthenticated || !user) navigate("/")
-    }, [user, isAuthenticated, navigate])
+        if (fetchUserLoading || !authChecked) return;
+        if (!isAuthenticated) navigate("/login")
+    }, [isAuthenticated, fetchUserLoading, authChecked, navigate])
+
+    if (fetchUserLoading || !authChecked) {
+        return <Spinner size="lg" />
+    }
 
     const fields = [
         { label: "First name", value: user?.firstName },

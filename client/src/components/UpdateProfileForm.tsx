@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { getCategories } from "../features/category/category.reducer";
 import { updateProfile } from "../features/auth/auth.reducer";
+import Spinner from "./Spinner";
 
 type UpdateProfileProps = {
     onClose: () => void
 }
 const UpdateProfileForm = ({ onClose }: UpdateProfileProps) => {
-    const { user, loading: updateLoading } = useAppSelector(state => state.auth)
-    const { categories, loading, err } = useAppSelector(state => state.category)
+    const { user, updateProfileLoading, updateProfileErr } = useAppSelector(state => state.auth)
+    // const { categories, loading, err } = useAppSelector(state => state.category)
     const dispatch = useAppDispatch()
 
     useEffect(() => {
@@ -21,7 +22,7 @@ const UpdateProfileForm = ({ onClose }: UpdateProfileProps) => {
         email: user?.email || "",
         title: user?.title || "",
         about: user?.about || "",
-        categoryId: user?.categoryId || ""
+        // categoryId: user?.category.title || ""
     })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,6 +34,7 @@ const UpdateProfileForm = ({ onClose }: UpdateProfileProps) => {
         await dispatch(updateProfile(formData)).unwrap()
         onClose()
     }
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
 
@@ -99,7 +101,7 @@ const UpdateProfileForm = ({ onClose }: UpdateProfileProps) => {
                     </div>
 
                     {/* Main Category */}
-                    <div>
+                    {/* <div>
                         <label className="text-sm font-medium">Main Category</label>
                         {
                             loading ? <span>loading...</span> :
@@ -116,7 +118,7 @@ const UpdateProfileForm = ({ onClose }: UpdateProfileProps) => {
                                         }
                                     </select>
                         }
-                    </div>
+                    </div> */}
 
                     {/* About */}
                     <div>
@@ -129,14 +131,14 @@ const UpdateProfileForm = ({ onClose }: UpdateProfileProps) => {
                         />
                     </div>
 
-                    {err && <p className="text-sm font-semibold text-red-500">{err}</p>}
+                    {updateProfileErr && <p className="text-sm font-semibold text-red-500">{updateProfileErr}</p>}
                     {/* Submit */}
                     <button
                         type="submit"
                         className="w-full bg-brand text-white py-2 rounded-md font-semibold hover:bg-brand/90 transition"
                     >
                         {
-                            updateLoading ? <p>loading...</p> :
+                            updateProfileLoading ? <Spinner size="sm" /> :
                                 "Save Changes"
                         }
                     </button>

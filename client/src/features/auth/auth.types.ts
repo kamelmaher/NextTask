@@ -1,3 +1,5 @@
+import type { Category } from "../category/category.types"
+
 export type User = {
     _id: string,
     firstName: string
@@ -8,7 +10,7 @@ export type User = {
     about: string,
     title: string,
     profileImg: string,
-    category: string
+    category: Category
     balance: number
 }
 
@@ -18,6 +20,7 @@ export type authState = {
     loading: boolean,
     updateProfileLoading: boolean,
     fetchUserLoading: boolean,
+    authChecked: boolean,
     err: string | null
     updateProfileErr: string | null
     fetchUserErr: string | null

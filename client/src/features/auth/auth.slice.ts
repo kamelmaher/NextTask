@@ -9,6 +9,7 @@ const initialState: authState = {
     loading: false,
     updateProfileLoading: false,
     fetchUserLoading: false,
+    authChecked: false,
 
     err: null,
     updateProfileErr: null,
@@ -85,14 +86,18 @@ const AuthSlice = createSlice({
             })
             // success
             .addCase(me.fulfilled, (state, action) => {
-                state.fetchUserLoading = false
-                state.user = action.payload.user
                 state.isAuthenticated = true
+                state.user = action.payload.user
+                state.fetchUserLoading = false
+                state.authChecked = true
             })
             // rejected
             .addCase(me.rejected, (state, action) => {
                 state.fetchUserLoading = false
                 state.fetchUserErr = action.payload as string
+                state.isAuthenticated = false
+                state.user = null
+                state.authChecked = true
             })
 
             // updateProfile reducer
