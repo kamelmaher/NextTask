@@ -37,16 +37,19 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "category"
     },
+    balance: {
+        type: Number,
+        default: 0
+    },
     roles: {
         type: [String],
         enum: [
             roles.ADMIN,
             roles.MODERATOR,
-            roles.EMPLOYER,
-            roles.FREELANCER,
+            roles.USER,
             roles.MANAGER
         ],
-        default: [roles.FREELANCER]
+        default: [roles.USER]
     }
 }, { timestamps: true })
 

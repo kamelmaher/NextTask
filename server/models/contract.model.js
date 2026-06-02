@@ -32,7 +32,7 @@ const contractSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: [contractStatus.ACCEPTED, contractStatus.DECLINED, contractStatus.INPROGRESS, contractStatus.SUBMITTED],
+        enum: [contractStatus.FINISHED, contractStatus.DECLINED, contractStatus.INPROGRESS, contractStatus.SUBMITTED],
         default: contractStatus.INPROGRESS
     },
 }, { timestamps: true })

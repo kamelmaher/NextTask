@@ -8,7 +8,7 @@ exports.getProposals = async (req, res) => {
     const projectId = req.params.id
     if (!projectId) return error(res, 400, "project not found")
     try {
-        const proposals = await Proposal.find({ project: projectId }).populate("freelancer", "firstName lastName")
+        const proposals = await Proposal.find({ project: projectId }).populate("freelancer", "firstName lastName title")
         success(res, 200, { proposals })
     } catch (err) {
         console.log(err)
@@ -56,7 +56,7 @@ exports.acceptProposal = async (req, res) => {
         const proposal = await Proposal.findById(proposalId)
         if (!proposal) return error(res, 404, "proposal not found")
 
-        const project = await Project.findById(proposal.projectId)
+        const project = await Project.findById(proposal.project)
         if (!project) return error(res, 404, "project not found")
 
         // check project is accepted and open
@@ -65,7 +65,7 @@ exports.acceptProposal = async (req, res) => {
         }
 
         // check employer is the owner of the project 
-        if (project.employerId.toString() !== employer._id.toString())
+        if (project.employer.toString() !== employer._id.toString())
             return error(res, 401, "cant accept proposals for this project")
 
 
@@ -78,7 +78,7 @@ exports.acceptProposal = async (req, res) => {
         // reject all other proposals
         await Proposal.updateMany(
             {
-                projectId: proposal.project,
+                project: proposal.project,
                 _id: { $ne: proposalId },
                 status: proposalStatus.PENDING
             },
@@ -87,20 +87,22 @@ exports.acceptProposal = async (req, res) => {
             }
         )
 
-        // update Project Status
-        project.status = projectStatus.INPROGRESS
-        await project.save()
-        // await Project.findByIdAndUpdate(proposal.projectId, { status: projectStatus.INPROGRESS })
 
         // create a new contract 
         const contract = new Contract({
-            projectId: proposal.projectId,
-            proposalId: proposal._id,
-            employerId: project.employerId,
-            freelancerId: proposal.freelancerId,
+            project: proposal.project,
+            proposal: proposal._id,
+            employer: project.employer,
+            freelancer: proposal.freelancer,
             agreedPrice: proposal.price,
             deadline: proposal.deliveryDuration
         })
+
+        // update Project Status - add the contract to the project
+        project.status = projectStatus.INPROGRESS
+        project.contract = contract._id
+
+        await project.save()
         await contract.save()
         // await Contract.create({
         //     projectId: proposal.projectId,

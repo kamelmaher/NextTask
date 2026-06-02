@@ -100,6 +100,15 @@ export default function NewProjectPage() {
                         }
                     </Field>
 
+                    <Field label="Duration" required>
+                        <input
+                            type="number"
+                            placeholder="e.g. 30"
+                            className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm outline-none transition-all placeholder:text-text-dim/60 focus:border-brand focus:ring-2 focus:ring-brand/20"
+                            value={formData.deliveryDuration}
+                            onChange={(e) => setFormData((prev) => ({ ...prev, deliveryDuration: Number(e.target.value) }))}
+                        />
+                    </Field>
                     <div>
                         <p className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-text-dim">
                             Budget range <span className="text-destructive">*</span>

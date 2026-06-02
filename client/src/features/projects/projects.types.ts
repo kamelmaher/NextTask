@@ -1,9 +1,10 @@
 import type { User } from "../auth/auth.types";
 import type { Category } from "../category/category.types";
+import type { Contract } from "../contract/contract.types";
 
 export type ProjectsState = {
     projects: Project[],
-    project: Project,
+    project: Project | null,
     loading: boolean,
     err: string | null
 }
@@ -20,6 +21,7 @@ export type Project = {
     employer: User;
     category: Category
     status: string;
+    contract: Contract
 }
 
 export type ProjectInput = {

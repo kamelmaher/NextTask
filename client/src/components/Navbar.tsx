@@ -18,7 +18,7 @@ export function Navbar() {
                         to="/"
                         className="font-display text-xl font-bold tracking-tight text-brand"
                     >
-                        NextStack
+                        NextTask
                     </NavLink>
 
                     <div className="hidden gap-6 text-sm font-medium md:flex">

@@ -3,6 +3,19 @@ const Project = require("../models/project.model")
 const { serverError, error, success } = require("../utils/responses")
 const { contractStatus, projectStatus } = require("../utils/status")
 
+exports.getContract = async (req, res) => {
+    const contractId = req.params.id
+    if (!contractId) return error(res, 400, "contract not found")
+    try {
+        const contract = await Contract.findById(contractId).populate("project").populate("employer", "firstName lastName").populate("freelancer", "firstName lastName title")
+        if (!contract) return error(res, 404, "contract not found")
+        success(res, 200, { contract })
+    } catch (err) {
+        console.log(err)
+        serverError(res)
+    }
+}
+
 exports.submitWork = async (req, res) => {
     const freelancer = req.user
     if (!freelancer) return error(res, 400, "freelancer not found")
@@ -48,17 +61,17 @@ exports.acceptSubmission = async (req, res) => {
             return error(res, 400, "contract has no submissions")
 
         // check if employer is in the contract
-        if (contract.employerId.toString() !== employer._id.toString())
+        if (contract.employer.toString() !== employer._id.toString())
             return error(res, 403, "cant accept submissions for this project")
 
         // update project
-        const project = await Project.findById(contract.projectId)
+        const project = await Project.findById(contract.project)
         if (!project) return error(res, 400, "cant update project status")
         project.status = projectStatus.FINISHED
         await project.save()
 
         // update contract
-        contract.status = contractStatus.ACCEPTED
+        contract.status = contractStatus.FINISHED
         await contract.save()
         success(res, 200, { contract, project })
     } catch (err) {

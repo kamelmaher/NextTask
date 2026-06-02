@@ -4,6 +4,7 @@ import type { Proposal } from "../proposal/proposal.types"
 
 export type ContractState = {
     contracts: Contract[],
+    contract: Contract | null,
     loading: boolean,
     err: string | null
 }
@@ -17,4 +18,5 @@ export type Contract = {
     price: number,
     deliveryDuration: number,
     status: string,
+    createdAt: string
 }

@@ -25,7 +25,7 @@ export const signup = createAsyncThunk(
     async (data: Partial<User>, thunkAPI) => {
         try {
             const res = await api.post(`${baseUrl}/signup`, data)
-            if (res.status === 200) {
+            if (res.status === 201) {
                 thunkAPI.dispatch(me())
             }
             return res.data
@@ -53,7 +53,6 @@ export const me = createAsyncThunk(
         try {
             const res = await api.get(`${baseUrl}/me`)
             if (res.status == 200) {
-                console.log(res.data.user)
                 return res.data
             }
         } catch (err: any) {

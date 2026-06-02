@@ -31,6 +31,18 @@ export const fetchSingleProject = createAsyncThunk(
 )
 
 // users
+export const fetchUserProjects = createAsyncThunk(
+    "projects/fetchUserProjects",
+    async (employerId: string, thunkAPI) => {
+        try {
+            const res = await api.get(`${baseUrl}?employer=${employerId}`)
+            return res.data
+        } catch (err: any) {
+            return thunkAPI.rejectWithValue(err.response.data.msg || "something went wrong");
+        }
+    }
+)
+
 export const createProject = createAsyncThunk(
     "projects/createProject",
     async (data: ProjectInput, thunkAPI) => {

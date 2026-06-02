@@ -12,6 +12,8 @@ import LoginPage from "./pages/Login";
 import Register from "./pages/Register";
 import NewProjectPage from "./pages/Project.new";
 import PortfolioItem from "./pages/PortfolioItem";
+import UserProjects from "./pages/Profile.projects";
+import ContractPage from "./pages/ContractPage";
 
 export default function AppRoutes() {
     return (
@@ -22,12 +24,14 @@ export default function AppRoutes() {
                     <Route index element={<ProfilePage />} />
                     <Route path="portfolio" element={<PortfolioPage />} />
                     <Route path="proposals" element={<ProposalsPage />} />
+                    <Route path="projects" element={<UserProjects />} />
                 </Route>
                 <Route path="/portfolio/item/:id" element={<PortfolioItem />} />
                 <Route path="/projects" element={<ProjectsPage />} />
                 <Route path="/project/:id" element={<ProjectPage />} />
                 <Route path="/project/new" element={<NewProjectPage />} />
                 <Route path="/proposals/:id" element={<MyProposalsPage />} />
+                <Route path="/contract/:id" element={<ContractPage />} />
                 <Route path="/login" element={<LoginPage />}></Route>
                 <Route path="/register" element={<Register />}></Route>
             </Route>

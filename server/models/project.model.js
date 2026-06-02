@@ -41,6 +41,10 @@ const projectSchema = new mongoose.Schema({
         type: String,
         enum: [projectApprovalStatus.ACCEPTED, projectApprovalStatus.DECLINED, projectApprovalStatus.PENDING],
         default: projectApprovalStatus.PENDING
+    },
+    contract: {
+        type: mongoose.Schema.ObjectId,
+        ref: "contract"
     }
 }, { timestamps: true })
 

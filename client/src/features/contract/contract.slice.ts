@@ -1,10 +1,11 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { ContractState } from "./contract.types";
 import { acceptProposal } from "../proposal/proposal.reducer";
-import { acceptWork, requestRevision, submitWork } from "./contract.reducer";
+import { acceptWork, getContract, requestRevision, submitWork } from "./contract.reducer";
 
 const initialState: ContractState = {
     contracts: [],
+    contract: null,
     loading: false,
     err: null
 }
@@ -15,22 +16,29 @@ const ContractSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+            .addCase(getContract.fulfilled, (state, action) => {
+                state.contract = action.payload.contract
+            })
             .addCase(submitWork.fulfilled, (state, action) => {
                 const updatedContract = action.payload.contract
                 state.contracts = state.contracts.map(contract => contract._id === updatedContract._id ? updatedContract : contract)
+                state.contract = updatedContract
             })
             .addCase(acceptWork.fulfilled, (state, action) => {
                 const updatedContract = action.payload.contract
                 state.contracts = state.contracts.map(contract => contract._id === updatedContract._id ? updatedContract : contract)
+                state.contract = updatedContract
             })
             .addCase(requestRevision.fulfilled, (state, action) => {
                 const updatedContract = action.payload.contract
                 state.contracts = state.contracts.map(contract => contract._id === updatedContract._id ? updatedContract : contract)
             })
 
+
             // create contract after accept proposal
             .addCase(acceptProposal.fulfilled, (state, action) => {
                 state.contracts.push(action.payload.contract)
+                state.contract = action.payload.contract
             })
 
         builder.addMatcher(

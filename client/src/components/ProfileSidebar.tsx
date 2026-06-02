@@ -6,6 +6,7 @@ const items = [
     { to: "/profile", label: "Profile", exact: true },
     { to: "/profile/portfolio", label: "Portfolio", exact: false },
     { to: "/profile/proposals", label: "Proposals", exact: false },
+    { to: "/profile/projects", label: "Projects", exact: false },
 ];
 
 export function ProfileSidebar() {

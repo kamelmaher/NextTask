@@ -1,12 +1,12 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { Project, ProjectsState } from "./projects.types";
-import { changeProjectApprovalStatus, createProject, deleteProject, fetchProjects, fetchSingleProject, updateProject } from "./projects.reducers";
+import type { ProjectsState } from "./projects.types";
+import { changeProjectApprovalStatus, createProject, deleteProject, fetchProjects, fetchSingleProject, fetchUserProjects, updateProject } from "./projects.reducers";
 import { acceptWork } from "../contract/contract.reducer";
 import { acceptProposal } from "../proposal/proposal.reducer";
 
 const initialState: ProjectsState = {
     projects: [],
-    project: {} as Project,
+    project: null,
     loading: false,
     err: null
 }
@@ -35,6 +35,9 @@ const ProjectsSlice = createSlice({
             })
             .addCase(changeProjectApprovalStatus.fulfilled, (state, action) => {
                 state.projects = state.projects.map(project => project._id === action.payload.project._id ? action.payload.project : project)
+            })
+            .addCase(fetchUserProjects.fulfilled, (state, action) => {
+                state.projects = action.payload.projects
             })
 
 

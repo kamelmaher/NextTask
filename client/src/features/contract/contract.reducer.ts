@@ -39,3 +39,14 @@ export const requestRevision = createAsyncThunk(
         }
     }
 )
+
+export const getContract = createAsyncThunk(
+    "contract/getContract",
+    async (id: string, thunkApi) => {
+        try {
+            const res = await api.get(`${baseUrl}/${id}`)
+            return res.data
+        } catch (err: any) {
+            return thunkApi.rejectWithValue(err.response.data.msg || "something went wrong")
+        }
+})

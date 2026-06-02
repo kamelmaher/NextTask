@@ -1,31 +1,24 @@
-const projectStatus = {
+export const projectStatus = {
     OPEN: "open",
     INPROGRESS: "inProgress",
     FINISHED: "finished",
     DECLINED: "declined"
 }
-const projectApprovalStatus = {
+export const projectApprovalStatus = {
     ACCEPTED: "accepted",
     DECLINED: "declined",
     PENDING: "pending"
 }
 
-const proposalStatus = {
+export const proposalStatus = {
     ACCEPTED: "accepted",
     PENDING: "pending",
     DECLINED: "declined"
 }
 
-const contractStatus = {
+export const contractStatus = {
     INPROGRESS: "inprogress",
     DECLINED: "declined",
     SUBMITTED: "submitted",
     FINISHED: "accepted"
-}
-
-module.exports = {
-    projectStatus,
-    projectApprovalStatus,
-    proposalStatus,
-    contractStatus
 }
