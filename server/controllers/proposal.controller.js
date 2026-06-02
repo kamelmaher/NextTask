@@ -5,10 +5,17 @@ const { error, serverError, success } = require("../utils/responses")
 const { projectApprovalStatus, projectStatus, proposalStatus } = require("../utils/status")
 
 exports.getProposals = async (req, res) => {
-    const projectId = req.params.id
-    if (!projectId) return error(res, 400, "project not found")
+    // if (!projectId) return error(res, 400, "project not found")
+    const { projectId, status, userId } = req.query
+    const filters = {}
+    if (projectId)
+        filters.project = projectId
+    if (userId)
+        filters.freelancer = userId
+    if (status)
+        filters.status = status
     try {
-        const proposals = await Proposal.find({ project: projectId }).populate("freelancer", "firstName lastName title")
+        const proposals = await Proposal.find(filters).populate("freelancer", "firstName lastName title")
         success(res, 200, { proposals })
     } catch (err) {
         console.log(err)

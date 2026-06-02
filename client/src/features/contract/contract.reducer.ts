@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "../../lib/axios";
-import type { Contract } from "./contract.types";
+import type { Contract, contractFilters } from "./contract.types";
 
 const baseUrl = "/contract"
 export const submitWork = createAsyncThunk(
@@ -49,4 +49,15 @@ export const getContract = createAsyncThunk(
         } catch (err: any) {
             return thunkApi.rejectWithValue(err.response.data.msg || "something went wrong")
         }
-})
+    })
+
+export const getContracts = createAsyncThunk(
+    "contract/getContracts",
+    async (filters: contractFilters, thunkApi) => {
+        try {
+            const res = await api.get(baseUrl, { params: filters })
+            return res.data
+        } catch (err: any) {
+            return thunkApi.rejectWithValue(err.response.data.msg || "something went wrong")
+        }
+    })

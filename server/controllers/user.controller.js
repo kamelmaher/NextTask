@@ -32,7 +32,7 @@ exports.login = async (req, res) => {
         if (!isMatched) return error(res, 400, "check email or password")
         const token = await generateToken(user)
         setCookies(res, token)
-        success(res, 200, { token })
+        success(res, 200, { user })
     } catch (err) {
         console.log(err)
         serverError(res)
@@ -54,7 +54,7 @@ exports.signUp = async (req, res) => {
         const newUser = await User.create({ ...registerData, password: hashedPass })
         const token = await generateToken(newUser)
         setCookies(res, token)
-        success(res, 201, { token })
+        success(res, 201, { user: newUser })
     } catch (err) {
         console.log(err)
         return serverError(res)

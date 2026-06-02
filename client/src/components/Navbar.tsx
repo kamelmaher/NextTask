@@ -1,9 +1,10 @@
 import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { logout } from "../features/auth/auth.reducer";
+import Spinner from "./Spinner";
 
 export function Navbar() {
-    const { user, isAuthenticated, loading } = useAppSelector(state => state.auth)
+    const { user, isAuthenticated, fetchUserLoading } = useAppSelector(state => state.auth)
     const dispatch = useAppDispatch()
     const handleLogout = () => {
         dispatch(logout())
@@ -49,7 +50,7 @@ export function Navbar() {
                 <div className="flex items-center gap-4">
 
                     {/* AUTHENTICATED UI */}
-                    {loading ? <p>loading...</p> : isAuthenticated ? (
+                    {fetchUserLoading ? <Spinner size="sm" /> : isAuthenticated ? (
                         <>
                             <div className="hidden items-center gap-3 border-r border-border pr-4 sm:flex">
                                 <div className="text-right">
@@ -58,9 +59,9 @@ export function Navbar() {
                                     </p>
                                     <p className="text-sm font-semibold text-text-dark">
                                         $
-                                        {/* {user.balance.toLocaleString("en-US", {
+                                        {user?.balance?.toLocaleString("en-US", {
                                             minimumFractionDigits: 2,
-                                        })} */}
+                                        })}
                                     </p>
                                 </div>
 

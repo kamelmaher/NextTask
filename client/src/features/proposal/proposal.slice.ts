@@ -1,11 +1,15 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { acceptProposal, createProposal, getProposals } from "./proposal.reducer";
 import type { ProposalState } from "./proposal.types";
 
 const initialState: ProposalState = {
     proposals: [],
     loading: false,
-    err: null
+    addProposalLoading: false,
+    acceptProposalLoading: false,
+    err: null,
+    addProposalErr: null,
+    acceptProposalErr: null,
 }
 const ProposalSlice = createSlice({
     name: "proposal",
@@ -13,8 +17,24 @@ const ProposalSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+            // fetch proposals
+            .addCase(getProposals.pending, (state) => {
+                state.loading = true;
+                state.err = null;
+            })
             .addCase(getProposals.fulfilled, (state, action) => {
-                state.proposals = action.payload.proposals
+                state.proposals = action.payload.proposals;
+                state.loading = false;
+            })
+            .addCase(getProposals.rejected, (state, action) => {
+                state.loading = false;
+                state.err = action.payload as string;
+            })
+
+            // create proposal
+            .addCase(createProposal.pending, (state) => {
+                state.addProposalLoading = true;
+                state.addProposalErr = null;
             })
             .addCase(createProposal.fulfilled, (state, action) => {
                 const newProposal = action.payload.proposal
@@ -23,6 +43,16 @@ const ProposalSlice = createSlice({
                         newProposal : proposal
                 )
             })
+            .addCase(createProposal.rejected, (state, action) => {
+                state.addProposalLoading = false;
+                state.addProposalErr = action.payload as string;
+            })
+
+            // accept proposal
+            .addCase(acceptProposal.pending, (state) => {
+                state.acceptProposalLoading = true;
+                state.acceptProposalErr = null;
+            })
             .addCase(acceptProposal.fulfilled, (state, action) => {
                 const newProposal = action.payload.proposal
                 state.proposals = state.proposals.map(proposal =>
@@ -30,32 +60,10 @@ const ProposalSlice = createSlice({
                         newProposal : proposal
                 )
             })
-        builder.addMatcher(
-            (action) => action.type.startsWith("proposal/") &&
-                action.type.endsWith("/pending"),
-            (state) => {
-                state.loading = true;
-                state.err = null;
-            }
-        );
-
-        builder.addMatcher(
-            (action) => action.type.startsWith("proposal/") &&
-                action.type.endsWith("/rejected"),
-            (state, action: PayloadAction<string>) => {
-                state.loading = false;
-                state.err = action.payload;
-            }
-        );
-
-        builder.addMatcher(
-            (action) =>
-                action.type.startsWith("proposal/") &&
-                action.type.endsWith("/fulfilled"),
-            (state) => {
-                state.loading = false;
-            }
-        )
+            .addCase(acceptProposal.rejected, (state, action) => {
+                state.acceptProposalLoading = false;
+                state.acceptProposalErr = action.payload as string;
+            })
     }
 })
 

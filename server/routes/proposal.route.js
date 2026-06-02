@@ -8,7 +8,7 @@ const { getProposals, createProposal, acceptProposal } = require("../controllers
 const verifyToken = require("../middlewares/verifyToken")
 const allowedTo = require("../middlewares/allowedTo")
 
-router.get("/:id", getProposals)
+router.get("/", getProposals)
 
 router.use(verifyToken)
 router.post("/", createProposal)

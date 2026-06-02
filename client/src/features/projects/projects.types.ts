@@ -5,8 +5,18 @@ import type { Contract } from "../contract/contract.types";
 export type ProjectsState = {
     projects: Project[],
     project: Project | null,
+    
     loading: boolean,
+    projectLoading: boolean,
+    createLoading: boolean
+    deleteLoading: boolean
+    updateLoading: boolean
+
     err: string | null
+    projectErr: string | null
+    createErr: string | null,
+    deleteErr: string | null
+    updateErr: string | null
 }
 
 export type Project = {

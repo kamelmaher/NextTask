@@ -5,8 +5,14 @@ import type { Proposal } from "../proposal/proposal.types"
 export type ContractState = {
     contracts: Contract[],
     contract: Contract | null,
+
     loading: boolean,
+    submitLoading: boolean,
+    acceptWorkLoading: boolean,
+
     err: string | null
+    acceptWorkErr: string | null,
+    submitErr: string | null
 }
 
 export type Contract = {
@@ -19,4 +25,11 @@ export type Contract = {
     deliveryDuration: number,
     status: string,
     createdAt: string
+}
+
+export type contractFilters = {
+    freelancer?: string,
+    employer?: string,
+    status?: string,
+    
 }

@@ -25,7 +25,7 @@ export default function ProjectPage() {
 
     useEffect(() => {
         if (project)
-            dispatch(getProposals(id || ""))
+            dispatch(getProposals({ projectId: id }))
     }, [id, dispatch, project])
 
     const isEmployer = useMemo(() => {

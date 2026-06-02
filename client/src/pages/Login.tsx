@@ -3,6 +3,7 @@ import { AuthLayout, Field } from "../components/AuthLayout";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { login } from "../features/auth/auth.reducer";
 import { useState, type FormEvent } from "react";
+import Spinner from "../components/Spinner";
 
 export default function LoginPage() {
     const dispatch = useAppDispatch()
@@ -48,7 +49,7 @@ export default function LoginPage() {
                     className="w-full rounded-xl bg-brand py-3 text-sm font-semibold text-brand-foreground shadow-sm transition-transform hover:bg-brand/90 active:scale-[0.99]"
                 >
                     {
-                        loading ? <p>loading</p> :
+                        loading ? <Spinner size="sm" /> :
                             <p>Sign in</p>
                     }
                 </button>

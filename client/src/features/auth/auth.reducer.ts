@@ -10,9 +10,6 @@ export const login = createAsyncThunk(
     async (data: { email: string, password: string }, thunkAPI) => {
         try {
             const res = await api.post(`${baseUrl}/login`, data)
-            if (res.status === 200) {
-                thunkAPI.dispatch(me())
-            }
             return res.data
         } catch (err: any) {
             return thunkAPI.rejectWithValue(err.response.data.msg || "something went wrong");
@@ -25,9 +22,6 @@ export const signup = createAsyncThunk(
     async (data: Partial<User>, thunkAPI) => {
         try {
             const res = await api.post(`${baseUrl}/signup`, data)
-            if (res.status === 201) {
-                thunkAPI.dispatch(me())
-            }
             return res.data
         } catch (err: any) {
             return thunkAPI.rejectWithValue(err.response.data.msg || "something went wrong");
@@ -49,14 +43,12 @@ export const logout = createAsyncThunk(
 
 export const me = createAsyncThunk(
     "auth/me",
-    async () => {
+    async (_, thunkApi) => {
         try {
             const res = await api.get(`${baseUrl}/me`)
-            if (res.status == 200) {
-                return res.data
-            }
+            return res.data
         } catch (err: any) {
-            return ""
+            return thunkApi.rejectWithValue(err.response.data.msg || "something went wrong");
         }
     }
 )
@@ -66,9 +58,6 @@ export const updateProfile = createAsyncThunk(
     async (data: Partial<User>, thunkAPI) => {
         try {
             const res = await api.patch(`${baseUrl}`, data)
-            if (res.status === 200) {
-                thunkAPI.dispatch(me())
-            }
             return res.data
         } catch (err: any) {
             return thunkAPI.rejectWithValue(err.response.data.msg || "something went wrong")

@@ -2,7 +2,7 @@ const router = require("express").Router()
 const { roles } = require("../utils")
 
 // controllers
-const { submitWork, acceptSubmission, requestRevision, getContract } = require("../controllers/contract.controller")
+const { submitWork, acceptSubmission, requestRevision, getContract, getContracts } = require("../controllers/contract.controller")
 
 // middlewares
 const verifyToken = require("../middlewares/verifyToken")
@@ -12,6 +12,7 @@ router.use(verifyToken)
 
 // users
 router.use(allowedTo(roles.USER))
+router.get("/", getContracts)
 router.get("/:id", getContract)
 router.post("/:id", submitWork)
 router.post("/:id/accept", acceptSubmission)

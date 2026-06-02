@@ -1,21 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "../../lib/axios";
-import type { createProposalType } from "./proposal.types";
+import type { createProposalType, getProposalFilters } from "./proposal.types";
 
 const baseUrl = "/proposal"
 
 export const getProposals = createAsyncThunk(
     "proposal/getProposals",
-    async (projectId: string, thunkApi) => {
+    async (filters: getProposalFilters, thunkApi) => {
         try {
-            const res = await api.get(`${baseUrl}/${projectId}`)
+            const res = await api.get(baseUrl, { params: filters })
             return res.data
         } catch (err: any) {
             return thunkApi.rejectWithValue(err.response.data.msg || "something went wrong")
         }
     }
 )
+
 
 export const createProposal = createAsyncThunk(
     "proposal/createProposal",
@@ -28,6 +29,7 @@ export const createProposal = createAsyncThunk(
         }
     }
 )
+
 
 export const acceptProposal = createAsyncThunk(
     "proposal/acceptProposal",

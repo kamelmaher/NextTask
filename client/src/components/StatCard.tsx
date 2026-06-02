@@ -1,16 +1,20 @@
+import { NavLink } from "react-router-dom";
+
 export default function StatCard({
     label,
     value,
     accent,
     positive,
+    link
 }: {
     label: string;
     value: string;
     accent?: boolean;
     positive?: boolean;
+    link?: string
 }) {
     return (
-        <div className="rounded-2xl border border-border bg-surface p-6">
+        <NavLink to={link || ""} className="rounded-2xl border border-border bg-surface p-6">
             <p className="text-[10px] font-bold uppercase tracking-wider text-text-dim">{label}</p>
             <p
                 className={
@@ -20,6 +24,6 @@ export default function StatCard({
             >
                 {value}
             </p>
-        </div>
+        </NavLink>
     );
 }

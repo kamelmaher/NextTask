@@ -3,6 +3,28 @@ const Project = require("../models/project.model")
 const { serverError, error, success } = require("../utils/responses")
 const { contractStatus, projectStatus } = require("../utils/status")
 
+exports.getContracts = async (req, res) => {
+    const { _id } = req.user
+    if (!_id) return error(res, 400, "user not found")
+    const { status, freelancer, employer } = req.query || {}
+    const filters = {}
+    if (freelancer)
+        filters.freelancer = freelancer
+    if (employer)
+        filters.employer = employer
+    if (status) {
+        filters.status = status
+    }
+    try {
+        const contracts = await Contract.find(filters).populate("project").populate("employer", "firstName lastName").populate("freelancer", "firstName lastName title")
+
+        success(res, 200, { contracts })
+    } catch (err) {
+        console.log(err)
+        serverError(res)
+    }
+}
+
 exports.getContract = async (req, res) => {
     const contractId = req.params.id
     if (!contractId) return error(res, 400, "contract not found")
