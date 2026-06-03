@@ -52,8 +52,8 @@ const ProjectsSlice = createSlice({
                 state.projectLoading = false;
             })
             .addCase(fetchSingleProject.rejected, (state, action) => {
-                state.projectLoading = false;
                 state.projectErr = action.payload as string;
+                state.projectLoading = false;
             })
 
             // creat project 

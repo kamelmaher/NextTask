@@ -17,7 +17,7 @@ const UserProjects = () => {
 
     return (
         <div>
-            <h2 className="font-display text-2xl font-bold text-text-dark">My Projects</h2>
+            <h2 className="font-display text-2xl font-bold text-text-dark">Projects Worked on</h2>
             {loading && <Spinner size="lg" />}
             {err && <p className="text-red-500">{err}</p>}
             {contracts.length > 0 && (

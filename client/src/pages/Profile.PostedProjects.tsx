@@ -17,7 +17,7 @@ const PostedProjects = () => {
         }
     }, [dispatch, user])
 
-    // console.log(projects)
+    console.log(projects)
 
     if (loading) return <Spinner size="lg" />
     if (projects.length == 0) return

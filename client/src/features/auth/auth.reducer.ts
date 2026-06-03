@@ -46,7 +46,6 @@ export const me = createAsyncThunk(
     async (_, thunkApi) => {
         try {
             const res = await api.get(`${baseUrl}/me`)
-            console.log(res.data)
             return res.data
         } catch (err: any) {
             return thunkApi.rejectWithValue(err.response.data.msg || "something went wrong");

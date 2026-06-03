@@ -9,7 +9,7 @@ export default function ContractPage() {
     const { id } = useParams();
     const dispatch = useAppDispatch();
 
-    const { contract, loading, err } = useAppSelector(
+    const { contract, loading, err, acceptWorkLoading, acceptWorkErr } = useAppSelector(
         (state) => state.contract
     );
 
@@ -134,7 +134,7 @@ export default function ContractPage() {
                                 <p>{new Date(contract.createdAt).toLocaleDateString("en-GB")}</p>
                             </div>
                             <div className="flex justify-between">
-                                <span>Status</span>
+                                <span>Contract Status</span>
                                 <span className="font-medium text-green-600">
                                     {contract.status}
                                 </span>
@@ -159,12 +159,12 @@ export default function ContractPage() {
                                 <button className="w-full rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-muted">
                                     Request Update
                                 </button>
-
+                                {acceptWorkErr && <p className="text-sm text-red-500">{acceptWorkErr}</p>}
                                 <button
                                     className="w-full rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700"
                                     onClick={() => handleCompleteProject(contract._id)}
                                 >
-                                    {loading ? <Spinner size="sm" /> :
+                                    {acceptWorkLoading ? <Spinner size="sm" /> :
                                         "Mark as Completed"}
                                 </button>
                             </div>

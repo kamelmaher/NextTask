@@ -19,6 +19,7 @@ export type Proposal = {
     deliveryDuration: number,
     content: string
     status: string
+    createdAt: string
 }
 
 export type createProposalType = {

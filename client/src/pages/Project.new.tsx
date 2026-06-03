@@ -5,17 +5,9 @@ import { getCategories } from "../features/category/category.reducer";
 import Spinner from "../components/Spinner";
 import { createProject } from "../features/projects/projects.reducers";
 
-// const categories = [
-//     "Development",
-//     "Design",
-//     "Artificial Intelligence",
-//     "Marketing",
-//     "Writing",
-//     "Mobile",
-// ];
-
 export default function NewProjectPage() {
     const { categories, loading, err } = useAppSelector((state) => state.category)
+    const { createLoading, createErr } = useAppSelector(state => state.projects)
     const dispatch = useAppDispatch()
     const [formData, setFormData] = useState({
         title: "",
@@ -145,7 +137,7 @@ export default function NewProjectPage() {
                             Set a realistic range. You can refine it once proposals come in.
                         </p>
                     </div>
-                    {err && <p className="text-sm text-red-500">{err}</p>}
+                    {createErr && <p className="text-sm text-red-500">{err}</p>}
                     <div className="flex flex-col-reverse items-stretch justify-end gap-3 border-t border-border pt-6 sm:flex-row sm:items-center">
                         <NavLink
                             to="/"
@@ -158,7 +150,7 @@ export default function NewProjectPage() {
                             className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-brand-foreground shadow-sm transition-transform hover:bg-brand/90 active:scale-[0.99]"
                         >
                             {
-                                loading ? <Spinner size="sm" /> : "Publish project"
+                                createLoading ? <Spinner size="sm" /> : "Publish project"
                             }
                         </button>
                     </div>

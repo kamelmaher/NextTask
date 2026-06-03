@@ -30,8 +30,9 @@ export type Project = {
     updatedAt: Date;
     employer: User;
     category: Category
-    status: string;
     contract: Contract
+    status: string;
+    approveStatus: string
 }
 
 export type ProjectInput = {

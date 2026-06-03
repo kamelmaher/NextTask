@@ -79,23 +79,32 @@ exports.acceptSubmission = async (req, res) => {
         if (!contract) return error(res, 404, "contract not found")
 
         // check if contract submitted
-        if (contract.status !== contractStatus.SUBMITTED)
-            return error(res, 400, "contract has no submissions")
+        // if (contract.status !== contractStatus.SUBMITTED)
+        //     return error(res, 400, "contract has no submissions")
 
         // check if employer is in the contract
         if (contract.employer.toString() !== employer._id.toString())
             return error(res, 403, "cant accept submissions for this project")
 
         // update project
-        const project = await Project.findById(contract.project)
-        if (!project) return error(res, 400, "cant update project status")
-        project.status = projectStatus.FINISHED
-        await project.save()
+        const updatedProject = await Project.findByIdAndUpdate(contract.project, {
+            status: projectStatus.FINISHED
+        }, { returnDocument: "after" })
+        if (!updatedProject) return error(res, 400, "cant update project status")
+
+        // project.status = projectStatus.FINISHED
+        // const updatedProject = await project.save()
 
         // update contract
-        contract.status = contractStatus.FINISHED
-        await contract.save()
-        success(res, 200, { contract, project })
+        const updatedContract = await Contract.findByIdAndUpdate(contract._id, {
+            status: contractStatus.FINISHED
+        }, { returnDocument: "after" }).populate("freelancer").populate("project")
+        if (!updatedContract) return error(res, 400, "cant update the contract")
+
+        // contract.status = contractStatus.FINISHED
+        // const updatedContract = await contract.save()
+
+        success(res, 200, { contract: updatedContract, project: updatedProject })
     } catch (err) {
         console.log(err)
         serverError(res)

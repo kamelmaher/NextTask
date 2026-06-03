@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { acceptProposal, createProposal, getProposals } from "./proposal.reducer";
 import type { ProposalState } from "./proposal.types";
+import { proposalStatus } from "../../utils/status";
 
 const initialState: ProposalState = {
     proposals: [],
@@ -38,10 +39,8 @@ const ProposalSlice = createSlice({
             })
             .addCase(createProposal.fulfilled, (state, action) => {
                 const newProposal = action.payload.proposal
-                state.proposals = state.proposals.map(proposal =>
-                    proposal._id === newProposal._id ?
-                        newProposal : proposal
-                )
+                state.proposals.push(newProposal)
+                state.addProposalLoading = false
             })
             .addCase(createProposal.rejected, (state, action) => {
                 state.addProposalLoading = false;
@@ -57,8 +56,10 @@ const ProposalSlice = createSlice({
                 const newProposal = action.payload.proposal
                 state.proposals = state.proposals.map(proposal =>
                     proposal._id === newProposal._id ?
-                        newProposal : proposal
+                        newProposal : { ...proposal, status: proposalStatus.DECLINED }
                 )
+
+                state.acceptProposalLoading = false
             })
             .addCase(acceptProposal.rejected, (state, action) => {
                 state.acceptProposalLoading = false;

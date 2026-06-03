@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import type { Project } from "../features/projects/projects.types";
+import { projectApprovalStatus } from "../utils/status";
 type ProjectCardProps = {
     project: Project,
     link?: string
@@ -7,6 +8,7 @@ type ProjectCardProps = {
 export function ProjectCard({ project, link }: ProjectCardProps) {
     if (!project) return null;
     const url = link || `/project/${project._id}`
+    const status = project.approveStatus === projectApprovalStatus.ACCEPTED ? project.status : project.approveStatus
     return (
         <NavLink
             to={url}
@@ -29,8 +31,8 @@ export function ProjectCard({ project, link }: ProjectCardProps) {
                     <p className="text-lg font-bold">
                         ${project.minPrice.toLocaleString()} - ${project.maxPrice.toLocaleString()}
                     </p>
-                    <p className={`mt-1 inline-block rounded-full px-3 py-1 text-xs font-semibold ${project.status === 'open' ? 'bg-green-50 text-success' : 'bg-background text-text-dim'}`}>
-                        {project.status}
+                    <p className={`mt-1 inline-block rounded-full px-3 py-1 text-xs font-semibold text-yellow-500`}>
+                        {status}
                     </p>
                     <p className="text-xs text-text-dim mt-2">Delivery: {project.deliveryDuration} days</p>
                 </div>

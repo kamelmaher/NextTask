@@ -10,7 +10,7 @@ import Spinner from "../components/Spinner";
 export default function ProjectPage() {
     const { id } = useParams()
     const dispatch = useAppDispatch()
-    const { project, loading: projectLoading, err: projectErr } = useAppSelector(state => state.projects)
+    const { project, projectLoading, err: projectErr } = useAppSelector(state => state.projects)
     const { proposals, loading: proposalLoading } = useAppSelector(state => state.proposal)
 
     const user = useAppSelector(state => state.auth.user)
@@ -31,27 +31,24 @@ export default function ProjectPage() {
     const isEmployer = useMemo(() => {
         return user?._id === project?.employer?._id
     }, [user, project?.employer?._id]);
+    const haveProposal = useMemo(() => {
+        if (!user) return false
+        const foundProposal = proposals.find(proposal => proposal.freelancer._id === user._id)
+        if (foundProposal) return true
+        return false
+    }, [proposals, user])
 
-    if (projectLoading) {
-        return <Spinner size="lg" />;
-    }
-
-    if (projectErr) {
-        return <p>Error loading project details.</p>;
-    }
-
-    if (!project) {
-        return null;
-    }
+    if (projectLoading) return <Spinner size="lg" />
+    if (!project) return
     const projectDetails = [
         { label: "Budget", value: `$${project.minPrice} - $${project.maxPrice}` },
         { label: "Duration", value: `${project.deliveryDuration} days` },
         { label: "Status", value: project.status },
         { label: "Posted At", value: new Date(project.createdAt).toLocaleDateString("en-GB") },
     ]
+
     return (
         <div className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8">
-
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 ">
                 {/* Main Content */}
                 <div className="space-y-8 lg:col-span-2">
@@ -113,7 +110,8 @@ export default function ProjectPage() {
                         {
                             user &&
                             !isEmployer &&
-                            <ProposalForm projectId={project._id} />
+                            !haveProposal &&
+                            < ProposalForm projectId={project._id} />
                         }
                     </div>
 
@@ -131,7 +129,7 @@ export default function ProjectPage() {
 
                         <div className="space-y-4">
                             {proposalLoading ? (
-                                <p>Loading proposals...</p>
+                                <Spinner size="md" />
                             ) : proposals.length === 0 ? (
                                 <p className="rounded-2xl border border-dashed border-border bg-surface p-8 text-center text-sm text-text-dim">
                                     No proposals yet. Be the first to apply.

@@ -12,10 +12,10 @@ import { contractStatus, proposalStatus } from "../utils/status";
 export const HomePage = () => {
     const { user, isAuthenticated, fetchUserLoading } = useAppSelector(state => state.auth)
     const { projects, loading } = useAppSelector(state => state.projects)
-    const { contracts } = useAppSelector(state => state.contract)
-    const { proposals } = useAppSelector(state => state.proposal)
+    const { contracts, loading: contractLoading } = useAppSelector(state => state.contract)
+    const { proposals, loading: proposalsLoading } = useAppSelector(state => state.proposal)
     const dispatch = useAppDispatch()
-    
+
     useEffect(() => {
         dispatch(fetchProjects({}))
         dispatch(getContracts({ status: contractStatus.INPROGRESS, freelancer: user?._id }))
@@ -70,9 +70,21 @@ export const HomePage = () => {
 
                             {user && (
                                 <section className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                                    <StatCard label="Balance" value={`${(user.balance || 0).toFixed(2)}$`} accent />
-                                    <StatCard label="In Progress" value={contracts.length.toString()} link="/profile/projects" />
-                                    <StatCard label="Pending Proposals" value={proposals.length.toString()} link="/profile/proposals" />
+                                    <StatCard
+                                        label="Balance"
+                                        value={`${(user.balance || 0).toFixed(2)}$`}
+                                        accent />
+
+                                    <StatCard
+                                        label="In Progress"
+                                        value={contracts.length.toString()}
+                                        link="/profile/projects"
+                                        loading={contractLoading}
+                                    />
+
+                                    <StatCard label="Pending Proposals" value={proposals.length.toString()} link="/profile/proposals"
+                                        loading={proposalsLoading}
+                                    />
                                 </section>
                             )}
                         </div>

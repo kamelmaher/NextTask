@@ -8,7 +8,7 @@ type ProposalFormProps = {
 }
 const ProposalForm = ({ projectId }: ProposalFormProps) => {
     const dispatch = useAppDispatch();
-    const { loading, err } = useAppSelector(state => state.proposal)
+    const { addProposalLoading, addProposalErr } = useAppSelector(state => state.proposal)
     const [formData, setFormData] = useState({
         content: "",
         price: 0,
@@ -66,26 +66,14 @@ const ProposalForm = ({ projectId }: ProposalFormProps) => {
                     </div>
                 </div>
 
-                {/* Attachments */}
-                {/* <div>
-                    <label className="block text-sm font-medium mb-1">
-                        Attach Files (optional)
-                    </label>
-                    <input
-                        type="file"
-                        multiple
-                        className="w-full border rounded-md p-2"
-                    />
-                </div> */}
-
                 {/* Submit Button */}
-                {err && <p className="text-red-500 text-sm">{err}</p>}
+                {addProposalErr && <p className="text-red-500 text-sm">{addProposalErr}</p>}
                 <button
                     type="submit"
                     className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
                 >
                     {
-                        loading ? <Spinner size="sm" /> : err ? "Try Again" : "Submit Proposal"
+                        addProposalLoading ? <Spinner size="sm" /> : "Submit Proposal"
                     }
                 </button>
             </form>
