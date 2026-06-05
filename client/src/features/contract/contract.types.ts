@@ -21,10 +21,15 @@ export type Contract = {
     freelancer: User,
     employer: User,
     proposal: Proposal,
-    price: number,
+    agreedPrice: number,
     deliveryDuration: number,
     status: string,
-    createdAt: string
+    submissions?: {
+        files: File[],
+        submittedAt: string
+    }[],
+    createdAt: string,
+    updatedAt: string
 }
 
 export type contractFilters = {

@@ -10,7 +10,7 @@ import Spinner from "../components/Spinner";
 export default function ProjectPage() {
     const { id } = useParams()
     const dispatch = useAppDispatch()
-    const { project, projectLoading, err: projectErr } = useAppSelector(state => state.projects)
+    const { project, projectLoading, createErr: projectErr } = useAppSelector(state => state.projects)
     const { proposals, loading: proposalLoading } = useAppSelector(state => state.proposal)
 
     const user = useAppSelector(state => state.auth.user)
@@ -39,6 +39,7 @@ export default function ProjectPage() {
     }, [proposals, user])
 
     if (projectLoading) return <Spinner size="lg" />
+    if (projectErr) return <p className="text-sm text-red-500">{projectErr}</p>
     if (!project) return
     const projectDetails = [
         { label: "Budget", value: `$${project.minPrice} - $${project.maxPrice}` },

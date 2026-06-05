@@ -29,7 +29,7 @@ const PostedProjects = () => {
             {projects.length > 0 && (
                 <div className="mt-5 flex flex-col  gap-2">
                     {projects.map((project) => {
-                        const link = project.status === projectStatus.INPROGRESS ? `/contract/${project.contract._id}` : `/project/${project._id}`
+                        const link = project.status === projectStatus.OPEN ? `/project/${project._id}` : `/contract/${project.contract._id}`
                         return <ProjectCard key={project._id
                         } project={project} link={link} />
                     }

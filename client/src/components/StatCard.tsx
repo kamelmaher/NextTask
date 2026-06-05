@@ -17,20 +17,21 @@ export default function StatCard({
     loading?: boolean
 }) {
     return (
-        <NavLink to={link || ""} className="rounded-2xl border border-border bg-surface p-6">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-text-dim">{label}</p>
-            <p
-                className={
-                    "mt-2 font-display text-2xl font-bold tracking-tight" +
-                    (accent ? "text-brand" : positive ? "text-success" : "text-text-dark")
-                }
-            >
-                {
-                    loading ? <Spinner size="sm" />
-                        :
-                        value
-                }
-            </p>
-        </NavLink>
+        <div className="rounded-2xl border border-border bg-surface p-6">
+            {
+                loading ? <Spinner size="md" /> :
+                    <NavLink to={link || ""} >
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-text-dim">{label}</p>
+                        <p
+                            className={
+                                "mt-2 font-display text-2xl font-bold tracking-tight" +
+                                (accent ? "text-brand" : positive ? "text-success" : "text-text-dark")
+                            }
+                        >
+                            {value}
+                        </p>
+                    </NavLink>
+            }
+        </div>
     );
 }

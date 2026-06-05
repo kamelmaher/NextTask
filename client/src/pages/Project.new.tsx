@@ -137,7 +137,7 @@ export default function NewProjectPage() {
                             Set a realistic range. You can refine it once proposals come in.
                         </p>
                     </div>
-                    {createErr && <p className="text-sm text-red-500">{err}</p>}
+                    {createErr && <p className="text-sm text-red-500">{createErr}</p>}
                     <div className="flex flex-col-reverse items-stretch justify-end gap-3 border-t border-border pt-6 sm:flex-row sm:items-center">
                         <NavLink
                             to="/"

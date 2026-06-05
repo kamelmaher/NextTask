@@ -48,7 +48,6 @@ export const createProject = createAsyncThunk(
     async (data: ProjectInput, thunkAPI) => {
         try {
             const res = await api.post(baseUrl, data);
-            console.log("project created:", res.data);
             return res.data;
         } catch (err: any) {
             return thunkAPI.rejectWithValue(err.response.data.msg || "something went wrong");

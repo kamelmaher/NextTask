@@ -8,7 +8,7 @@ import { contractStatus } from "../utils/status";
 export default function ContractPage() {
     const { id } = useParams();
     const dispatch = useAppDispatch();
-
+    const { user } = useAppSelector(state => state.auth)
     const { contract, loading, err, acceptWorkLoading, acceptWorkErr } = useAppSelector(
         (state) => state.contract
     );
@@ -65,43 +65,52 @@ export default function ContractPage() {
                     </div>
 
                     {/* Submission Files */}
-                    {/* <div className="rounded-2xl border border-border bg-surface p-6">
-                        <h2 className="text-lg font-bold text-text-dark">
-                            Submission Files
-                        </h2>
+                    {
+                        // user &&
+                        // user?._id === contract.freelancer._id
+                        // && contract.status === contractStatus.INPROGRESS &&
+                        // <div className="rounded-2xl border border-border bg-surface p-6">
+                        //     <h2 className="text-lg font-bold text-text-dark">
+                        //         Submission Files
+                        //     </h2>
 
-                        {project.submissions?.length ? (
-                            <div className="mt-4 space-y-3">
-                                {project.submissions.map((file: File) => (
-                                    <div
-                                        key={file._id}
-                                        className="flex items-center justify-between rounded-lg border border-border p-3"
-                                    >
-                                        <div>
-                                            <p className="text-sm font-medium text-text-dark">
-                                                {file.name}
-                                            </p>
-                                            <p className="text-xs text-text-dim">
-                                                Uploaded by {file.uploadedBy?.firstName}
-                                            </p>
-                                        </div>
+                        //     {contract.submissions?.length ? (
+                        //         <div className="mt-4 space-y-3">
+                        //             {contract.submissions.map((submission) => (
+                        //                 <div
+                        //                     key={submission.submittedAt}
+                        //                     className="flex items-center justify-between rounded-lg border border-border p-3"
+                        //                 >
+                        //                     {/* <div>
+                        //                         <p className="text-sm font-medium text-text-dark">
+                        //                             {file.name}
+                        //                         </p>
+                        //                         <p className="text-xs text-text-dim">
+                        //                             Uploaded by {file.uploadedBy?.firstName}
+                        //                         </p>
+                        //                     </div>
 
-                                        <a
-                                            href={file.url}
-                                            target="_blank"
-                                            className="text-sm font-medium text-blue-500 hover:underline"
-                                        >
-                                            View
-                                        </a>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <p className="mt-4 text-sm text-text-dim">
-                                No submissions yet.
-                            </p>
-                        )}
-                    </div> */}
+                        //                     <a
+                        //                         href={file.url}
+                        //                         target="_blank"
+                        //                         className="text-sm font-medium text-blue-500 hover:underline"
+                        //                     >
+                        //                         View
+                        //                     </a> */}
+                        //                     <div>
+                                                
+                        //                         {/* {submission.files[0]} */}
+                        //                     </div>
+                        //                 </div>
+                        //             ))}
+                        //         </div>
+                        //     ) : (
+                        //         <p className="mt-4 text-sm text-text-dim">
+                        //             No submissions yet.
+                        //         </p>
+                        //     )}
+                        // </div>
+                    }
                 </div>
 
                 {/* RIGHT - Freelancer Card */}
@@ -134,9 +143,21 @@ export default function ContractPage() {
                                 <p>{new Date(contract.createdAt).toLocaleDateString("en-GB")}</p>
                             </div>
                             <div className="flex justify-between">
+                                <span>Finished At</span>
+                                <span className="">
+                                    {new Date(contract.updatedAt).toLocaleDateString("en-GB")}
+                                </span>
+                            </div>
+                            <div className="flex justify-between">
                                 <span>Contract Status</span>
                                 <span className="font-medium text-green-600">
                                     {contract.status}
+                                </span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>Agreed Price</span>
+                                <span className="">
+                                    ${contract.agreedPrice}
                                 </span>
                             </div>
                         </div>
@@ -144,6 +165,8 @@ export default function ContractPage() {
 
                     {/* Quick Actions */}
                     {
+                        user &&
+                        contract.employer._id == user?._id &&
                         contract.status !== contractStatus.FINISHED
                         && contract.status !== contractStatus.DECLINED &&
                         <div className="rounded-2xl border border-border bg-surface p-6">

@@ -26,10 +26,10 @@ const contractSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    Submission: {
+    Submissions: [{
         files: [{ type: mongoose.Schema.ObjectId, ref: "file" }],
         submittedAt: Date
-    },
+    }],
     status: {
         type: String,
         enum: [contractStatus.FINISHED, contractStatus.DECLINED, contractStatus.INPROGRESS, contractStatus.SUBMITTED],
