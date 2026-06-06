@@ -25,6 +25,7 @@ export default function NewProjectPage() {
         maxPrice: "",
         deliveryDuration: ""
     })
+
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
         const formErrors = formHandler()
@@ -50,6 +51,7 @@ export default function NewProjectPage() {
             category: ""
         })
     }
+
     const formHandler = () => {
         const formErrors = {
             title: "",
@@ -79,6 +81,7 @@ export default function NewProjectPage() {
             formErrors.deliveryDuration = "delivery durations must one day or more."
         return formErrors
     }
+
     useEffect(() => {
         dispatch(getCategories())
     }, [dispatch])

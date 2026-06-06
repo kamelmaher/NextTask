@@ -52,9 +52,10 @@ export function ProfileSidebar() {
                             <NavLink
                                 key={item.to}
                                 to={item.to}
+                                end={item.exact}
                                 className={
                                     ({ isActive }) =>
-                                        `rounded-xl px-4 py-3 text-sm font-medium transition-colors ${isActive && "bg-brand-soft text-brand"}`
+                                        `rounded-xl px-4 py-3 text-sm font-medium transition-colors ${isActive ? "bg-brand-soft text-brand" : "text-text"}`
                                 }
                             >
                                 {item.label}

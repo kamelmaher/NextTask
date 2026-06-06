@@ -1,5 +1,6 @@
 const Project = require("../models/project.model")
 const Category = require("../models/category.model")
+const Proposal = require("../models/proposal.model")
 const { success, error, serverError } = require("../utils/responses")
 const { MAIN_LIMIT } = require("../utils")
 const { projectApprovalStatus, projectStatus } = require("../utils/status")
@@ -49,7 +50,6 @@ exports.getProjects = async (req, res) => {
 
     try {
         const projects = await Project.find(filters).populate("employer", "firstName lastName").populate("category", "title").populate("contract").sort({ createdAt: -1 }).skip(skip).limit(MAIN_LIMIT);
-        console.log(projects)
         const total = await Project.countDocuments(filters)
         success(res, 200, { projects, total, totalPages: Math.ceil(total / MAIN_LIMIT) })
     } catch (err) {
@@ -94,13 +94,23 @@ exports.updateProject = async (req, res) => {
     const { _id } = req.user;
     if (!_id) return error(res, 400, "user Id is required")
     if (!projectId) return error(res, 400, "project Id is required")
-    // const _id = "6a11d094317e8974831c015e"
     const allowedFields = ["title", "desc", "minPrice", "maxPrice", "category", "deliveryDuration"]
     try {
         // Check Ownership
         const oldProject = await Project.findById(projectId)
         if (!oldProject) return error(res, 404, "project not found")
-        if (oldProject.userId.toString() !== _id.toString()) return error(res, 403, "you can’t update this project")
+        if (oldProject.employer.toString() !== _id.toString()) return error(res, 403, "you can’t update this project")
+
+        // allow updating only if the project is accepted and open
+        const isCancelled = oldProject.approveStatus === projectApprovalStatus.DECLINED
+        if (isCancelled) return error(res, 400, "project is cancelled so you cant update.")
+
+        const isOpen = oldProject.status === projectStatus.OPEN
+        if (!isOpen) return error(res, 400, "project is not open.")
+
+        // if there are a proposals prevent updating
+        const proposalCount = await Proposal.countDocuments({ project: oldProject._id })
+        if (proposalCount > 0) return error(res, 400, "Project cannot be updated after receiving proposals.")
 
         const updateData = {};
         allowedFields.forEach((field) => {
@@ -125,14 +135,22 @@ exports.updateProject = async (req, res) => {
 }
 
 exports.deleteProject = async (req, res) => {
+    const { _id } = req.user;
+    if (!_id) return error(res, 400, "user Id is required")
     const { id } = req.params
-    // const { _id } = req.user;
-    // if (!_id) return error(res, 400, "user Id is required")
-    const _id = "6a11d094317e8974831c015e"
     if (!id) return error(res, 400, "projectId is required")
     try {
-        const project = await Project.findByIdAndDelete(id)
+        const project = await Project.findById(id)
         if (!project) return error(res, 404, "project not found")
+        // check ownership
+        if (project.employer.toString() !== _id.toString())
+            return error(res, 403, "you cant delete this project")
+
+        // prevent deleting if project inprogress or finished
+        if (project.status === projectStatus.INPROGRESS || project.status === projectStatus.FINISHED)
+            return error(res, 400, "cant delete this project")
+
+        await Project.findByIdAndDelete(project._id)
         success(res, 200, { project })
     } catch (err) {
         console.log(err)

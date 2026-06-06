@@ -3,7 +3,6 @@ import MainLayout from "./layouts/MainLayout";
 import { HomePage } from "./pages/HomePage";
 import ProjectsPage from "./pages/ProjectsPage";
 import ProjectPage from "./pages/ProjectPage";
-import MyProposalsPage from "./pages/MyProposalsPage";
 import ProfileLayout from "./layouts/ProfilLayout";
 import ProfilePage from "./pages/ProfilePage";
 import PortfolioPage from "./pages/Profile.portfolio";
@@ -32,7 +31,6 @@ export default function AppRoutes() {
                 <Route path="/projects" element={<ProjectsPage />} />
                 <Route path="/project/:id" element={<ProjectPage />} />
                 <Route path="/project/new" element={<NewProjectPage />} />
-                <Route path="/proposals/:id" element={<MyProposalsPage />} />
                 <Route path="/contract/:id" element={<ContractPage />} />
                 <Route path="/login" element={<LoginPage />}></Route>
                 <Route path="/register" element={<Register />}></Route>
