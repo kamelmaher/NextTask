@@ -15,7 +15,6 @@ const initialState: authState = {
     updateProfileErr: null,
     fetchUserErr: null
 }
-
 const AuthSlice = createSlice({
     name: 'auth',
     initialState,

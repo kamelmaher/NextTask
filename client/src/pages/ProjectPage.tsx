@@ -112,7 +112,7 @@ export default function ProjectPage() {
                             user &&
                             !isEmployer &&
                             !haveProposal &&
-                            < ProposalForm projectId={project._id} />
+                            < ProposalForm project={project} />
                         }
                     </div>
 

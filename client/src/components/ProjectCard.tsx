@@ -24,7 +24,7 @@ export function ProjectCard({ project, link }: ProjectCardProps) {
                         <p className="text-xs text-text-dim">
                             Posted {new Date(project.createdAt).toLocaleDateString('en-GB')} • {project.category?.title}
                         </p>
-                        <p className="text-xs text-text-dim mt-1">Posted by <span className="font-medium text-text-dark">{project.employer?.firstName} {project.employer?.lastName}</span> • @{project.employer?.userName}</p>
+                        <p className="text-xs text-text-dim mt-1">Posted by <span className="font-medium text-text-dark">{project.employer?.firstName} {project.employer?.lastName}</span></p>
                     </div>
                 </div>
                 <div className="text-right">

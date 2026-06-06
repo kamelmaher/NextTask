@@ -14,7 +14,6 @@ const UserProjects = () => {
             dispatch(getContracts({ freelancer: user._id }))
         }
     }, [dispatch, user])
-
     return (
         <div>
             <h2 className="font-display text-2xl font-bold text-text-dark">Projects Worked on</h2>

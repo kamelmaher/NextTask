@@ -16,7 +16,13 @@ exports.getContracts = async (req, res) => {
         filters.status = status
     }
     try {
-        const contracts = await Contract.find(filters).populate("project").populate("employer", "firstName lastName").populate("freelancer", "firstName lastName title")
+        const contracts = await Contract.find(filters).sort({ createdAt: -1 }).populate({
+            path: "project",
+            populate: {
+                path: "employer",
+                select: "firstName lastName"
+            }
+        }).populate("freelancer", "firstName lastName title")
 
         success(res, 200, { contracts })
     } catch (err) {
@@ -29,7 +35,13 @@ exports.getContract = async (req, res) => {
     const contractId = req.params.id
     if (!contractId) return error(res, 400, "contract not found")
     try {
-        const contract = await Contract.findById(contractId).populate("project").populate("employer", "firstName lastName").populate("freelancer", "firstName lastName title")
+        const contract = await Contract.findById(contractId).populate({
+            path: "project",
+            populate: {
+                path: "employer",
+                select: "firstName lastName"
+            }
+        }).populate("freelancer", "firstName lastName title")
         if (!contract) return error(res, 404, "contract not found")
         success(res, 200, { contract })
     } catch (err) {

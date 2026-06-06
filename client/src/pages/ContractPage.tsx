@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../store/store";
 import Spinner from "../components/Spinner";
 import { acceptWork, getContract } from "../features/contract/contract.reducer";
 import { contractStatus } from "../utils/status";
+import { ProjectCard } from "../components/ProjectCard";
 
 export default function ContractPage() {
     const { id } = useParams();
@@ -24,8 +25,8 @@ export default function ContractPage() {
     if (loading || !contract)
         return <Spinner size="lg" />;
 
-    const { project, freelancer, employer } = contract
-    if (!project || !freelancer || !employer) {
+    const { project, freelancer } = contract
+    if (!project || !freelancer) {
         return <p>Invalid contract data.</p>;
     }
     if (err) return <h1>{err}</h1>
@@ -37,7 +38,7 @@ export default function ContractPage() {
                 <div className="space-y-6 lg:col-span-2">
 
                     {/* Project Card */}
-                    <div className="rounded-2xl border border-border bg-surface p-6">
+                    {/* <div className="rounded-2xl border border-border bg-surface p-6">
                         <div className="flex items-start justify-between">
                             <div>
                                 <h1 className="text-2xl font-bold text-text-dark">
@@ -62,8 +63,8 @@ export default function ContractPage() {
                                 Delivery: {project.deliveryDuration} days
                             </span>
                         </div>
-                    </div>
-
+                    </div> */}
+                    <ProjectCard project={project} />
                     {/* Submission Files */}
                     {
                         // user &&
@@ -98,7 +99,7 @@ export default function ContractPage() {
                         //                         View
                         //                     </a> */}
                         //                     <div>
-                                                
+
                         //                         {/* {submission.files[0]} */}
                         //                     </div>
                         //                 </div>
@@ -166,7 +167,7 @@ export default function ContractPage() {
                     {/* Quick Actions */}
                     {
                         user &&
-                        contract.employer._id == user?._id &&
+                        project.employer._id == user?._id &&
                         contract.status !== contractStatus.FINISHED
                         && contract.status !== contractStatus.DECLINED &&
                         <div className="rounded-2xl border border-border bg-surface p-6">

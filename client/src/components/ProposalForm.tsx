@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { createProposal } from "../features/proposal/proposal.reducer";
 import Spinner from "./Spinner";
+import type { Project } from "../features/projects/projects.types";
 
 type ProposalFormProps = {
-    projectId: string
+    project: Project
 }
-const ProposalForm = ({ projectId }: ProposalFormProps) => {
+const ProposalForm = ({ project }: ProposalFormProps) => {
     const dispatch = useAppDispatch();
     const { addProposalLoading, addProposalErr } = useAppSelector(state => state.proposal)
     const [formData, setFormData] = useState({
@@ -14,11 +15,51 @@ const ProposalForm = ({ projectId }: ProposalFormProps) => {
         price: 0,
         deliveryDuration: 0,
     })
+
+    const [errors, setErrors] = useState({
+        content: "",
+        price: "",
+        deliveryDuration: ""
+    })
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const newProposal = { ...formData, projectId: projectId }
+        const formErrors = formHandler()
+        if (Object.values(formErrors).filter(e => e != "").length > 0) {
+            setErrors(formErrors)
+            return
+        }
+        const newProposal = { ...formData, projectId: project._id }
         await dispatch(createProposal(newProposal))
+        setFormData({
+            content: "",
+            deliveryDuration: 0,
+            price: 0
+        })
+        setErrors({
+            content: "",
+            price: "",
+            deliveryDuration: ""
+        })
     }
+
+    const formHandler = () => {
+        const formErrors = {
+            content: "",
+            price: "",
+            deliveryDuration: ""
+        }
+        if (!formData.content.trim())
+            formErrors.content = "content is required"
+        if (!formData.price)
+            formErrors.price = "price is required"
+        if (formData.price < project.minPrice || formData.price > project.maxPrice)
+            formErrors.price = "price should be between the price range"
+        if (!formData.deliveryDuration)
+            formErrors.deliveryDuration = "delivery duration is required"
+        return formErrors
+    }
+
     return (
         <div className="mt-8 border rounded-xl p-6 bg-white shadow-sm">
             <h2 className="text-xl font-semibold mb-4">Submit a Proposal</h2>
@@ -35,6 +76,7 @@ const ProposalForm = ({ projectId }: ProposalFormProps) => {
                         value={formData.content}
                         onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                     />
+                    {errors.content && <p className="text-sm text-red-500">{errors.content}</p>}
                 </div>
 
                 {/* Price + Delivery Time */}
@@ -65,6 +107,8 @@ const ProposalForm = ({ projectId }: ProposalFormProps) => {
                         />
                     </div>
                 </div>
+                {errors.price && <p className="text-sm text-red-500">{errors.price}</p>}
+                {errors.deliveryDuration && <p className="text-sm text-red-500">{errors.deliveryDuration}</p>}
 
                 {/* Submit Button */}
                 {addProposalErr && <p className="text-red-500 text-sm">{addProposalErr}</p>}

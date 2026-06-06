@@ -12,16 +12,11 @@ const PostedProjects = () => {
 
     useEffect(() => {
         if (user) {
-            // console.log(user._id)
             dispatch(fetchProjects({ employer: user._id }))
         }
     }, [dispatch, user])
 
-    console.log(projects)
-
     if (loading) return <Spinner size="lg" />
-    if (projects.length == 0) return
-    console.log("projects   ", projects)
     return (
         <div>
             <h2 className="font-display text-2xl font-bold text-text-dark">My Projects</h2>

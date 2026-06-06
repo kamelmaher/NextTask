@@ -6,7 +6,7 @@ import Spinner from "../components/Spinner";
 import { createProject } from "../features/projects/projects.reducers";
 
 export default function NewProjectPage() {
-    const { categories, loading, err } = useAppSelector((state) => state.category)
+    const { categories, loading } = useAppSelector((state) => state.category)
     const { createLoading, createErr } = useAppSelector(state => state.projects)
     const dispatch = useAppDispatch()
     const [formData, setFormData] = useState({
@@ -17,11 +17,68 @@ export default function NewProjectPage() {
         maxPrice: 0,
         deliveryDuration: 0,
     })
+    const [errors, setErrors] = useState({
+        title: "",
+        desc: "",
+        category: "",
+        minPrice: "",
+        maxPrice: "",
+        deliveryDuration: ""
+    })
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
+        const formErrors = formHandler()
+        if (Object.values(formErrors).filter(e => e != "").length > 0) {
+            setErrors(formErrors)
+            return
+        }
         await dispatch(createProject(formData))
+        setFormData({
+            title: "",
+            desc: "",
+            minPrice: 0,
+            maxPrice: 0,
+            deliveryDuration: 0,
+            category: ""
+        })
+        setErrors({
+            title: "",
+            desc: "",
+            minPrice: "",
+            maxPrice: "",
+            deliveryDuration: "",
+            category: ""
+        })
     }
-
+    const formHandler = () => {
+        const formErrors = {
+            title: "",
+            desc: "",
+            category: "",
+            minPrice: "",
+            maxPrice: "",
+            deliveryDuration: ""
+        }
+        if (!formData.title.trim())
+            formErrors.title = "title is required"
+        if (!formData.desc.trim())
+            formErrors.desc = "Description is required"
+        if (!formData.category)
+            formErrors.category = "category is required"
+        if (!formData.minPrice)
+            formErrors.minPrice = "min price is required"
+        if (formData.minPrice < 50)
+            formErrors.minPrice = "min price should be more than 50$"
+        if (!formData.maxPrice)
+            formErrors.maxPrice = "max price is required"
+        if (formData.minPrice > formData.maxPrice)
+            formErrors.maxPrice = "max price should be greater than min price"
+        if (!formData.deliveryDuration)
+            formErrors.deliveryDuration = "delivery duration is required"
+        if (formData.deliveryDuration < 0)
+            formErrors.deliveryDuration = "delivery durations must one day or more."
+        return formErrors
+    }
     useEffect(() => {
         dispatch(getCategories())
     }, [dispatch])
@@ -55,7 +112,7 @@ export default function NewProjectPage() {
                             onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
                         />
                     </Field>
-
+                    {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
                     <Field label="Description" required>
                         <textarea
                             rows={6}
@@ -68,7 +125,7 @@ export default function NewProjectPage() {
                             Minimum 80 characters. Be specific to attract the right talent.
                         </p>
                     </Field>
-
+                    {errors.desc && <p className="text-sm text-red-500">{errors.desc}</p>}
                     <Field label="Category" required>
                         {
 
@@ -91,7 +148,7 @@ export default function NewProjectPage() {
                                 </select>
                         }
                     </Field>
-
+                    {errors.category && <p className="text-sm text-red-500">{errors.category}</p>}
                     <Field label="Duration" required>
                         <input
                             type="number"
@@ -101,6 +158,7 @@ export default function NewProjectPage() {
                             onChange={(e) => setFormData((prev) => ({ ...prev, deliveryDuration: Number(e.target.value) }))}
                         />
                     </Field>
+                    {errors.deliveryDuration && <p className="text-sm text-red-500">{errors.deliveryDuration}</p>}
                     <div>
                         <p className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-text-dim">
                             Budget range <span className="text-destructive">*</span>
@@ -118,6 +176,8 @@ export default function NewProjectPage() {
                                     value={formData.minPrice}
                                     onChange={(e) => setFormData((prev) => ({ ...prev, minPrice: Number(e.target.value) }))}
                                 />
+                                {errors.minPrice && <p className="text-sm text-red-500">{errors.minPrice}</p>}
+
                             </div>
                             <div className="relative">
                                 <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-text-dim">
@@ -131,13 +191,13 @@ export default function NewProjectPage() {
                                     value={formData.maxPrice}
                                     onChange={(e) => setFormData((prev) => ({ ...prev, maxPrice: Number(e.target.value) }))}
                                 />
+                                {errors.maxPrice && <p className="text-sm text-red-500">{errors.maxPrice}</p>}
                             </div>
                         </div>
                         <p className="mt-1.5 text-xs text-text-dim">
                             Set a realistic range. You can refine it once proposals come in.
                         </p>
                     </div>
-                    {createErr && <p className="text-sm text-red-500">{createErr}</p>}
                     <div className="flex flex-col-reverse items-stretch justify-end gap-3 border-t border-border pt-6 sm:flex-row sm:items-center">
                         <NavLink
                             to="/"
@@ -154,6 +214,7 @@ export default function NewProjectPage() {
                             }
                         </button>
                     </div>
+                    {createErr && <p className="text-sm text-red-500">{createErr}</p>}
                 </form>
             </main>
         </div>

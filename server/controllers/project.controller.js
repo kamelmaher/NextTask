@@ -49,6 +49,7 @@ exports.getProjects = async (req, res) => {
 
     try {
         const projects = await Project.find(filters).populate("employer", "firstName lastName").populate("category", "title").populate("contract").sort({ createdAt: -1 }).skip(skip).limit(MAIN_LIMIT);
+        console.log(projects)
         const total = await Project.countDocuments(filters)
         success(res, 200, { projects, total, totalPages: Math.ceil(total / MAIN_LIMIT) })
     } catch (err) {
