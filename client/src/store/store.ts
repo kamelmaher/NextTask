@@ -4,6 +4,7 @@ import AuthReducer from "../features/auth/auth.slice"
 import CategoryReducer from "../features/category/category.slice"
 import ProposalReducer from "../features/proposal/proposal.slice"
 import ContractReducer from "../features/contract/contract.slice"
+import PortfolioReducer from "../features/portfolio/portfolio.slice"
 import { useDispatch, useSelector, type TypedUseSelectorHook } from "react-redux";
 
 export const store = configureStore({
@@ -12,7 +13,8 @@ export const store = configureStore({
         auth: AuthReducer,
         category: CategoryReducer,
         proposal: ProposalReducer,
-        contract: ContractReducer
+        contract: ContractReducer,
+        portfolio: PortfolioReducer
     },
 });
 

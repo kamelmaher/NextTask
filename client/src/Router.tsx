@@ -11,6 +11,7 @@ import LoginPage from "./pages/Login";
 import Register from "./pages/Register";
 import NewProjectPage from "./pages/Project.new";
 import PortfolioItem from "./pages/PortfolioItem";
+import PortfolioNewPage from "./pages/Portfolio.new";
 import UserProjects from "./pages/Profile.projects";
 import ContractPage from "./pages/ContractPage";
 import PostedProjects from "./pages/Profile.PostedProjects";
@@ -27,6 +28,8 @@ export default function AppRoutes() {
                     <Route path="projects" element={<UserProjects />} />
                     <Route path="posted" element={<PostedProjects />} />
                 </Route>
+                <Route path="/portfolio/new" element={<PortfolioNewPage />} />
+                <Route path="/portfolio/new/:id" element={<PortfolioNewPage />} />
                 <Route path="/portfolio/item/:id" element={<PortfolioItem />} />
                 <Route path="/projects" element={<ProjectsPage />} />
                 <Route path="/project/:id" element={<ProjectPage />} />
