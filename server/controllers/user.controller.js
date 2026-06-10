@@ -89,7 +89,7 @@ exports.getUsers = async (req, res) => {
     try {
         let filterRoles;
         const allowedRoles = [roles.FREELANCER, roles.EMPLOYER];
-        const notAllowedRoles = [roles.MODERATOR, roles.ADMIN, roles.MANAGER];
+        const notAllowedRoles = [roles.ADMIN];
         if (!role) {
             filterRoles = allowedRoles;
         } else {
@@ -141,70 +141,6 @@ exports.updateProfile = async (req, res) => {
 }
 
 // Admins
-// exports.assignRole = async (req, res) => {
-//     const { id } = req.params
-//     const { role } = req.body
-//     try {
-//         // Check user found
-//         const user = await User.findById(id)
-//         if (!user) return error(res, 404, "user not found")
-
-//         // check valid role
-//         const allowedRoles = Object.values(roles);
-//         if (!allowedRoles.includes(role)) {
-//             return error(res, 400, "invalid role value");
-//         }
-
-//         const userRoles = user.roles || []
-
-//         // check existing role
-//         if (userRoles.includes(role)) return error(res, 400, "the role already exists")
-
-//         const newRoles = [...userRoles, role]
-//         const updatedUser = await User.findByIdAndUpdate(id, { roles: newRoles }, { returnDocument: "after" })
-//         success(res, 200, { user: updatedUser })
-//     } catch (err) {
-//         console.log(err)
-//         serverError(res)
-//     }
-// }
-
-// exports.removeRole = async (req, res) => {
-//     const { id } = req.params
-//     const { role } = req.body
-//     try {
-//         // Check user found
-//         const user = await User.findById(id)
-//         if (!user) return error(res, 404, "user not found")
-
-//         // check valid role
-//         const allowedRoles = Object.values(roles);
-//         if (!allowedRoles.includes(role)) {
-//             return error(res, 400, "invalid role value");
-//         }
-
-//         const userRoles = user.roles || []
-
-//         // check if role not found
-//         if (!userRoles.includes(role)) {
-//             return error(res, 400, "user does not have this role");
-//         }
-
-//         // check if only role
-//         if (userRoles.length === 1 && userRoles.includes(role)) {
-//             return error(res, 400, "cannot remove last role. assign another role first");
-//         }
-
-//         const newRoles = userRoles.filter(e => e != role)
-
-//         const updatedUser = await User.findByIdAndUpdate(id, { roles: newRoles }, { returnDocument: "after" })
-//         success(res, 200, { user: updatedUser })
-//     } catch (err) {
-//         console.log(err)
-//         serverError(res)
-//     }
-// }
-
 exports.toggleRole = async (req, res) => {
     const { id } = req.params
     const { role } = req.body

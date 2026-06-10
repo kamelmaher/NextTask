@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { logout } from "../features/auth/auth.reducer";
 import Spinner from "./Spinner";
+import { roles } from "../utils";
 
 export function Navbar() {
     const { user, isAuthenticated, fetchUserLoading } = useAppSelector(state => state.auth)
@@ -75,8 +76,12 @@ export function Navbar() {
                                             : user?.firstName
                                     }
                                 </NavLink>
-                            </div>
 
+                            </div>
+                            {
+                                (user?.roles.includes(roles.ADMIN) || user?.roles.includes(roles.MANAGER)) &&
+                                <NavLink to={"/admin"} className="rounded-full bg-brand px-5 py-2 text-sm font-semibold text-brand-foreground shadow-sm transition-colors hover:bg-brand/90">Dashboard</NavLink>
+                            }
                             <NavLink
                                 to="/project/new"
                                 className="rounded-full bg-brand px-5 py-2 text-sm font-semibold text-brand-foreground shadow-sm transition-colors hover:bg-brand/90"

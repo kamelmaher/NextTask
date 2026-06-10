@@ -50,7 +50,7 @@ export default function DashboardUsersPage() {
     }
 
     const availableRolesForUser = (id: string) => {
-        const initialRoles = [roles.ADMIN, roles.MODERATOR, roles.MANAGER]
+        const initialRoles = [roles.ADMIN, roles.MANAGER]
         if (!users) return initialRoles
         const user = users.find(user => user._id === id)
         if (!user) return initialRoles

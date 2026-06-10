@@ -20,10 +20,11 @@ router.get("/item/:id", getPortfolioItem);
 router.get("/:id", getPortfolioItems);
 
 // employer only
+router.use(verifyToken)
+router.use(allowedTo(roles.USER))
+
 router.post(
     "/",
-    verifyToken,
-    allowedTo(roles.USER),
     upload.fields([
         { name: "cover", maxCount: 1 },
         { name: "images", maxCount: 10 },
@@ -33,8 +34,6 @@ router.post(
 );
 router.put(
     "/:id",
-    verifyToken,
-    allowedTo(roles.USER),
     upload.fields([
         { name: "cover", maxCount: 1 },
         { name: "images", maxCount: 10 },
@@ -43,6 +42,6 @@ router.put(
     updatePortfolioItem
 );
 
-router.delete("/:id", verifyToken, allowedTo(roles.USER), deletePortfolioItem)
+router.delete("/:id", deletePortfolioItem)
 
 module.exports = router;

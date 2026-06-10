@@ -195,7 +195,7 @@ exports.changeApproveStatus = async (req, res) => {
         if (!allowedStatuses.includes(approveStatus)) {
             return error(res, 400, "invalid status value");
         }
-        const project = await Project.findByIdAndUpdate(id, { approveStatus }, { returnDocument: "after" })
+        const project = await Project.findByIdAndUpdate(id, { approveStatus }, { returnDocument: "after" }).populate("employer")
         if (!project) return error(res, 404, "project not found")
         success(res, 200, { project })
     } catch (err) {

@@ -13,13 +13,13 @@ const { createProjectValidator, updateProjectValidator } = require("../validator
 
 // Public
 router.get("/", getProjects)
-router.get("/admin", verifyToken, allowedTo(roles.MODERATOR, roles.ADMIN), getAdminProjects)
+router.get("/admin", verifyToken, allowedTo(roles.ADMIN), getAdminProjects)
 router.get("/:id", getSingleProject)
 
 router.use(verifyToken)
 
 // For Moderators 
-router.patch("/:id/approve-status", allowedTo(roles.MODERATOR, roles.ADMIN), changeApproveStatus)
+router.patch("/:id/approve-status", allowedTo(roles.ADMIN), changeApproveStatus)
 
 // For users only
 router.use(allowedTo(roles.USER))

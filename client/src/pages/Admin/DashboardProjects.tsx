@@ -3,6 +3,7 @@ import Spinner from "../../components/Spinner";
 import { fetchAdminProjects, changeProjectApprovalStatus } from "../../features/projects/projects.reducers";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { projectApprovalStatus } from "../../utils/status";
+import { NavLink } from "react-router-dom";
 
 export default function DashboardProjectsPage() {
     const dispatch = useAppDispatch();
@@ -14,13 +15,12 @@ export default function DashboardProjectsPage() {
         dispatch(fetchAdminProjects({ status, approveStatus }));
     }, [dispatch, status, approveStatus]);
 
-    const handleApproval = async (id: string, nextStatus: string) => {
-        await dispatch(changeProjectApprovalStatus({ id, status: nextStatus })).unwrap();
-        dispatch(fetchAdminProjects({ status, approveStatus }));
+    const handleApproval = (id: string, nextStatus: string) => {
+        dispatch(changeProjectApprovalStatus({ id, status: nextStatus }))
     };
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="bg-background">
             <div className="mx-auto max-w-6xl px-6 py-10">
                 <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
@@ -73,30 +73,41 @@ export default function DashboardProjectsPage() {
                             <tbody>
                                 {projects.map((project) => (
                                     <tr key={project._id} className="border-t border-border hover:bg-slate-50">
-                                        <td className="px-6 py-4 font-semibold text-text-dark">{project.title}</td>
+                                        <td className="px-6 py-4 font-semibold text-text-dark">
+                                            <NavLink to={`/project/${project._id}`}>
+                                                {project.title}
+                                            </NavLink>
+                                        </td>
                                         <td className="px-6 py-4">{project.employer?.firstName} {project.employer?.lastName}</td>
                                         <td className="px-6 py-4">{project.status}</td>
                                         <td className="px-6 py-4">{project.approveStatus}</td>
                                         <td className="px-6 py-4">
                                             <div className="flex flex-wrap gap-2">
-                                                {project.approveStatus !== projectApprovalStatus.ACCEPTED && (
-                                                    <button
-                                                        className="rounded-full bg-green-500 px-3 py-1 text-xs font-semibold text-white hover:bg-green-600"
-                                                        onClick={() => handleApproval(project._id, projectApprovalStatus.ACCEPTED)}
-                                                        disabled={updateLoading}
-                                                    >
-                                                        Accept
-                                                    </button>
-                                                )}
-                                                {project.approveStatus !== projectApprovalStatus.DECLINED && (
-                                                    <button
-                                                        className="rounded-full bg-red-500 px-3 py-1 text-xs font-semibold text-white hover:bg-red-600"
-                                                        onClick={() => handleApproval(project._id, projectApprovalStatus.DECLINED)}
-                                                        disabled={updateLoading}
-                                                    >
-                                                        Decline
-                                                    </button>
-                                                )}
+                                                {
+                                                    updateLoading ? <Spinner size="sm" />
+                                                        :
+                                                        <>
+                                                            {project.approveStatus !== projectApprovalStatus.ACCEPTED &&
+                                                                <button
+                                                                    className="rounded-full bg-green-500 px-3 py-1 text-xs font-semibold text-white hover:bg-green-600"
+                                                                    onClick={() => handleApproval(project._id, projectApprovalStatus.ACCEPTED)}
+                                                                    disabled={updateLoading}
+                                                                >
+
+                                                                    Accept
+                                                                </button>
+                                                            }
+                                                            {project.approveStatus !== projectApprovalStatus.DECLINED && (
+                                                                <button
+                                                                    className="rounded-full bg-red-500 px-3 py-1 text-xs font-semibold text-white hover:bg-red-600"
+                                                                    onClick={() => handleApproval(project._id, projectApprovalStatus.DECLINED)}
+                                                                    disabled={updateLoading}
+                                                                >
+                                                                    Decline
+                                                                </button>
+                                                            )}
+                                                        </>
+                                                }
                                             </div>
                                         </td>
                                     </tr>

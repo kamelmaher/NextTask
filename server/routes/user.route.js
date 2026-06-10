@@ -26,10 +26,8 @@ router.patch("/", validate(userDetailsValidator), updateProfile)
 router.get("/me", me)
 
 // Admins
-// router.patch("/:id/roles/assign", allowedTo(roles.ADMIN), assignRole)
-// router.patch("/:id/roles/remove", allowedTo(roles.ADMIN), removeRole)
-router.get("/admin", allowedTo(roles.MANAGER, roles.ADMIN), getAdminUsers)
-router.patch("/:id/roles/toggle", allowedTo(roles.ADMIN, roles.MANAGER), toggleRole)
-router.delete("/:id", allowedTo(roles.MANAGER, roles.ADMIN), deleteUser)
+router.get("/admin", allowedTo(roles.ADMIN), getAdminUsers)
+router.patch("/:id/roles/toggle", allowedTo(roles.ADMIN), toggleRole)
+router.delete("/:id", allowedTo(roles.ADMIN), deleteUser)
 
 module.exports = router

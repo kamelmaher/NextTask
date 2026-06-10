@@ -29,7 +29,6 @@ export function ProposalCard({ proposal, handleAccept, isEmployer }: ProposalCar
             setLoading(false)
         }
     }
-    console.log(proposal)
     return (
         <div className="rounded-2xl border border-border bg-surface p-5">
             <div className="flex items-start gap-4">
