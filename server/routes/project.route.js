@@ -3,7 +3,7 @@ const router = express.Router()
 const { roles } = require("../utils")
 
 // Controllers
-const { getProjects, getSingleProject, createProject, updateProject, deleteProject, changeApproveStatus } = require("../controllers/project.controller")
+const { getProjects, getSingleProject, createProject, updateProject, deleteProject, changeApproveStatus, getAdminProjects } = require("../controllers/project.controller")
 
 // middlewares
 const verifyToken = require("../middlewares/verifyToken")
@@ -13,6 +13,7 @@ const { createProjectValidator, updateProjectValidator } = require("../validator
 
 // Public
 router.get("/", getProjects)
+router.get("/admin", verifyToken, allowedTo(roles.MODERATOR, roles.ADMIN), getAdminProjects)
 router.get("/:id", getSingleProject)
 
 router.use(verifyToken)

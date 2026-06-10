@@ -65,26 +65,62 @@ export const updateProfile = createAsyncThunk(
     }
 )
 
-export const assignRole = createAsyncThunk(
-    "auth/assignRole",
-    async (data: { id: string, role: string }, thunkAPI) => {
+// export const assignRole = createAsyncThunk(
+//     "auth/assignRole",
+//     async (data: { id: string, role: string }, thunkAPI) => {
+//         try {
+//             const res = await api.patch(`${baseUrl}/${data.id}/roles/assign`, { role: data.role })
+//             return res.data
+//         } catch (err: any) {
+//             return thunkAPI.rejectWithValue(err.response.data.msg || "something went wrong")
+//         }
+//     }
+// )
+
+// export const removeRole = createAsyncThunk(
+//     "auth/removeRole",
+//     async (data: { id: string, role: string }, thunkAPI) => {
+//         try {
+//             const res = await api.patch(`${baseUrl}/${data.id}/roles/remove`, { role: data.role })
+//             return res.data
+//         } catch (err: any) {
+//             return thunkAPI.rejectWithValue(err.response.data.msg || "something went wrong")
+//         }
+//     }
+// )
+
+export const deleteUser = createAsyncThunk(
+    "auth/deleteUser",
+    async (id: string, thunkApi) => {
         try {
-            const res = await api.patch(`${baseUrl}/${data.id}/roles/assign`, { role: data.role })
+            const res = await api.delete(`${baseUrl}/${id}`)
             return res.data
         } catch (err: any) {
-            return thunkAPI.rejectWithValue(err.response.data.msg || "something went wrong")
+            return thunkApi.rejectWithValue(err.response.data.msg || "something went wrong")
         }
     }
 )
 
-export const removeRole = createAsyncThunk(
-    "auth/removeRole",
-    async (data: { id: string, role: string }, thunkAPI) => {
+export const getAllUsers = createAsyncThunk(
+    "auth/getAllUsers",
+    async (role: string, thunkApi) => {
         try {
-            const res = await api.patch(`${baseUrl}/${data.id}/roles/remove`, { role: data.role })
+            const res = await api.get(`${baseUrl}/admin?role=${role}`);
+            return res.data;
+        } catch (err: any) {
+            return thunkApi.rejectWithValue(err.response.data.msg || "something went wrong")
+        }
+    }
+)
+
+export const toggleRole = createAsyncThunk(
+    "auth/toggleRole",
+    async (data: { role: string, userId: string }, thunkApi) => {
+        try {
+            const res = await api.patch(`${baseUrl}/${data.userId}/roles/toggle`, { role: data.role })
             return res.data
         } catch (err: any) {
-            return thunkAPI.rejectWithValue(err.response.data.msg || "something went wrong")
+            return thunkApi.rejectWithValue(err.response.data.msg || "something went wrong")
         }
     }
 )

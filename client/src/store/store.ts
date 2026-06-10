@@ -14,7 +14,7 @@ export const store = configureStore({
         category: CategoryReducer,
         proposal: ProposalReducer,
         contract: ContractReducer,
-        portfolio: PortfolioReducer
+        portfolio: PortfolioReducer,
     },
 });
 

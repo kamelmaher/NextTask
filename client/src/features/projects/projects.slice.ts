@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { ProjectsState } from "./projects.types";
-import { changeProjectApprovalStatus, createProject, deleteProject, fetchProjects, fetchSingleProject, updateProject } from "./projects.reducers";
+import { changeProjectApprovalStatus, createProject, deleteProject, fetchAdminProjects, fetchProjects, fetchSingleProject, updateProject } from "./projects.reducers";
 // import { acceptWork } from "../contract/contract.reducer";
 // import { acceptProposal } from "../proposal/proposal.reducer";
 
@@ -38,6 +38,19 @@ const ProjectsSlice = createSlice({
                 state.loading = false;
             })
             .addCase(fetchProjects.rejected, (state, action) => {
+                state.loading = false;
+                state.err = action.payload as string;
+            })
+
+            .addCase(fetchAdminProjects.pending, (state) => {
+                state.loading = true;
+                state.err = null;
+            })
+            .addCase(fetchAdminProjects.fulfilled, (state, action) => {
+                state.projects = action.payload.projects
+                state.loading = false;
+            })
+            .addCase(fetchAdminProjects.rejected, (state, action) => {
                 state.loading = false;
                 state.err = action.payload as string;
             })

@@ -15,13 +15,16 @@ export type User = {
 }
 
 export type authState = {
+    users: User[]
     user: User | null,
     isAuthenticated: boolean
     loading: boolean,
     updateProfileLoading: boolean,
     fetchUserLoading: boolean,
+    deleteLoading: boolean,
     authChecked: boolean,
     err: string | null
     updateProfileErr: string | null
     fetchUserErr: string | null
+    deleteErr: string | null
 }

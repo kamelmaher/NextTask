@@ -141,64 +141,100 @@ exports.updateProfile = async (req, res) => {
 }
 
 // Admins
-exports.assignRole = async (req, res) => {
+// exports.assignRole = async (req, res) => {
+//     const { id } = req.params
+//     const { role } = req.body
+//     try {
+//         // Check user found
+//         const user = await User.findById(id)
+//         if (!user) return error(res, 404, "user not found")
+
+//         // check valid role
+//         const allowedRoles = Object.values(roles);
+//         if (!allowedRoles.includes(role)) {
+//             return error(res, 400, "invalid role value");
+//         }
+
+//         const userRoles = user.roles || []
+
+//         // check existing role
+//         if (userRoles.includes(role)) return error(res, 400, "the role already exists")
+
+//         const newRoles = [...userRoles, role]
+//         const updatedUser = await User.findByIdAndUpdate(id, { roles: newRoles }, { returnDocument: "after" })
+//         success(res, 200, { user: updatedUser })
+//     } catch (err) {
+//         console.log(err)
+//         serverError(res)
+//     }
+// }
+
+// exports.removeRole = async (req, res) => {
+//     const { id } = req.params
+//     const { role } = req.body
+//     try {
+//         // Check user found
+//         const user = await User.findById(id)
+//         if (!user) return error(res, 404, "user not found")
+
+//         // check valid role
+//         const allowedRoles = Object.values(roles);
+//         if (!allowedRoles.includes(role)) {
+//             return error(res, 400, "invalid role value");
+//         }
+
+//         const userRoles = user.roles || []
+
+//         // check if role not found
+//         if (!userRoles.includes(role)) {
+//             return error(res, 400, "user does not have this role");
+//         }
+
+//         // check if only role
+//         if (userRoles.length === 1 && userRoles.includes(role)) {
+//             return error(res, 400, "cannot remove last role. assign another role first");
+//         }
+
+//         const newRoles = userRoles.filter(e => e != role)
+
+//         const updatedUser = await User.findByIdAndUpdate(id, { roles: newRoles }, { returnDocument: "after" })
+//         success(res, 200, { user: updatedUser })
+//     } catch (err) {
+//         console.log(err)
+//         serverError(res)
+//     }
+// }
+
+exports.toggleRole = async (req, res) => {
     const { id } = req.params
     const { role } = req.body
+    const adminId = req.user._id
+    if (!adminId) return error(res, 401, "unAuthorized")
     try {
-        // Check user found
         const user = await User.findById(id)
-        if (!user) return error(res, 404, "user not found")
+        if (!user) return error(res, 404, "User not found")
 
-        // check valid role
+        // check if allowed role
         const allowedRoles = Object.values(roles);
         if (!allowedRoles.includes(role)) {
             return error(res, 400, "invalid role value");
         }
 
         const userRoles = user.roles || []
+        let newRoles = []
+        // if has the role 
+        if (userRoles.includes(role))
+            // if roles more than one 
+            if (userRoles.length > 1) {
+                newRoles = userRoles.filter(userRole => role !== userRole)
+                const newUser = await User.findByIdAndUpdate(id, { roles: newRoles }, { returnDocument: "after" })
+                return success(res, 200, { msg: "role removed Succefully", user: newUser })
+            }
+            else return error(res, 400, "user should have one role at least")
 
-        // check existing role
-        if (userRoles.includes(role)) return error(res, 400, "the role already exists")
-
-        const newRoles = [...userRoles, role]
-        const updatedUser = await User.findByIdAndUpdate(id, { roles: newRoles }, { returnDocument: "after" })
-        success(res, 200, { user: updatedUser })
-    } catch (err) {
-        console.log(err)
-        serverError(res)
-    }
-}
-
-exports.removeRole = async (req, res) => {
-    const { id } = req.params
-    const { role } = req.body
-    try {
-        // Check user found
-        const user = await User.findById(id)
-        if (!user) return error(res, 404, "user not found")
-
-        // check valid role
-        const allowedRoles = Object.values(roles);
-        if (!allowedRoles.includes(role)) {
-            return error(res, 400, "invalid role value");
-        }
-
-        const userRoles = user.roles || []
-
-        // check if role not found
-        if (!userRoles.includes(role)) {
-            return error(res, 400, "user does not have this role");
-        }
-
-        // check if only role
-        if (userRoles.length === 1 && userRoles.includes(role)) {
-            return error(res, 400, "cannot remove last role. assign another role first");
-        }
-
-        const newRoles = userRoles.filter(e => e != role)
-
-        const updatedUser = await User.findByIdAndUpdate(id, { roles: newRoles }, { returnDocument: "after" })
-        success(res, 200, { user: updatedUser })
+        newRoles = [...userRoles, role]
+        const newUser = await User.findByIdAndUpdate(id, { roles: newRoles }, { returnDocument: "after" })
+        success(res, 200, { msg: "role added Succefully", user: newUser })
     } catch (err) {
         console.log(err)
         serverError(res)
@@ -210,11 +246,29 @@ exports.getAdminUsers = async (req, res) => {
     if (!user) return error(res, 403, "unauthorized")
     const page = req.query.page || 1
     const skip = (page - 1) * MAIN_LIMIT
-    const { role } = req.body
+    const role = req.query.role || null
+    let filters = {}
+    if (role) filters.roles = role
     try {
-        const users = await User.find({ roles: { $in: role } }).limit(MAIN_LIMIT).skip(skip)
+        const users = await User.find().limit(MAIN_LIMIT).skip(skip).sort({ createdAt: -1 })
         success(res, 200, { users })
     } catch (err) {
+        serverError(res)
+    }
+}
+
+exports.deleteUser = async (req, res) => {
+    const { _id } = req.user
+    if (!_id) return error(res, 400, "UnAuthorized")
+    const userId = req.params.id || null
+    if (!userId) return error(res, 400, "user id is required")
+    if (userId.toString() === _id.toString()) return error(res, 400, "cant delete yourself")
+    try {
+        const deleted = await User.findByIdAndDelete(userId)
+        if (!deleted) return error(res, 404, "uesr not found")
+        success(res, 200, { user: deleted })
+    } catch (err) {
+        console.log(err)
         serverError(res)
     }
 }

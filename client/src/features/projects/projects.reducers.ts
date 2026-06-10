@@ -84,7 +84,19 @@ export const changeProjectApprovalStatus = createAsyncThunk(
     "projects/changeProjectApprovalStatus",
     async ({ id, status }: { id: string, status: string }, thunkAPI) => {
         try {
-            const res = await api.patch(`${baseUrl}/${id}`, { status })
+            const res = await api.patch(`${baseUrl}/${id}/approve-status`, { approveStatus: status })
+            return res.data
+        } catch (err: any) {
+            return thunkAPI.rejectWithValue(err.response.data.msg || "something went wrong");
+        }
+    }
+)
+
+export const fetchAdminProjects = createAsyncThunk(
+    "projects/fetchAdminProjects",
+    async (filters: { status?: string; approveStatus?: string; employer?: string; searchTerm?: string } = {}, thunkAPI) => {
+        try {
+            const res = await api.get(`${baseUrl}/admin`, { params: filters })
             return res.data
         } catch (err: any) {
             return thunkAPI.rejectWithValue(err.response.data.msg || "something went wrong");

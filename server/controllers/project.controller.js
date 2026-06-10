@@ -58,6 +58,33 @@ exports.getProjects = async (req, res) => {
     }
 }
 
+exports.getAdminProjects = async (req, res) => {
+    const { status, approveStatus, employer, searchTerm } = req.query || {}
+    const filters = {}
+    if (status) filters.status = status
+    if (approveStatus) filters.approveStatus = approveStatus
+    if (employer) filters.employer = employer
+    if (searchTerm) {
+        filters.title = {
+            $regex: searchTerm,
+            $options: "i",
+        }
+    }
+
+    try {
+        const projects = await Project.find(filters)
+            .populate("employer", "firstName lastName")
+            .populate("category", "title")
+            .populate("contract")
+            .sort({ createdAt: -1 })
+
+        success(res, 200, { projects })
+    } catch (err) {
+        console.log(err)
+        serverError(res)
+    }
+}
+
 exports.getSingleProject = async (req, res) => {
     const { id } = req.params
     if (!id) return error(res, 400, "id is required")

@@ -1,19 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { authState } from "./auth.types";
-import { assignRole, login, logout, me, removeRole, signup, updateProfile } from "./auth.reducer";
+import { login, logout, me, signup, updateProfile, toggleRole, getAllUsers, deleteUser } from "./auth.reducer";
 
 const initialState: authState = {
+    users: [],
     user: null,
     isAuthenticated: false,
 
     loading: false,
     updateProfileLoading: false,
     fetchUserLoading: false,
+    deleteLoading: false,
     authChecked: false,
 
     err: null,
     updateProfileErr: null,
-    fetchUserErr: null
+    fetchUserErr: null,
+    deleteErr: null
 }
 const AuthSlice = createSlice({
     name: 'auth',
@@ -116,33 +119,40 @@ const AuthSlice = createSlice({
                 state.updateProfileErr = action.payload as string
             })
 
-            // assign Role Reducers
-            // pending
-            .addCase(assignRole.pending, (state) => {
+            // Admin
+            .addCase(toggleRole.pending, (state) => {
                 state.updateProfileLoading = true
                 state.updateProfileErr = null
             })
-            .addCase(removeRole.pending, (state) => {
-                state.updateProfileLoading = true
-                state.updateProfileErr = null
-            })
-            // success
-            .addCase(assignRole.fulfilled, (state, action) => {
+            .addCase(toggleRole.fulfilled, (state, action) => {
+                state.users = state.users.map(user => user._id === action.payload.user._id ? action.payload.user : user)
                 state.updateProfileLoading = false
-                state.user = action.payload.user
             })
-            .addCase(removeRole.fulfilled, (state, action) => {
-                state.updateProfileLoading = false
-                state.user = action.payload.user
-            })
-            // rejected
-            .addCase(assignRole.rejected, (state, action) => {
+            .addCase(toggleRole.rejected, (state, action) => {
                 state.updateProfileErr = action.payload as string
                 state.updateProfileLoading = false
             })
-            .addCase(removeRole.rejected, (state, action) => {
-                state.updateProfileErr = action.payload as string
-                state.updateProfileLoading = false
+            .addCase(getAllUsers.pending, (state) => {
+                state.loading = true
+                state.err = null
+            })
+            .addCase(getAllUsers.fulfilled, (state, action) => {
+                state.users = action.payload.users
+                state.loading = false
+            })
+            .addCase(getAllUsers.rejected, (state, action) => {
+                state.err = action.payload as string
+                state.loading = false
+            })
+            .addCase(deleteUser.pending, (state) => {
+                state.deleteErr = null
+                state.deleteLoading = true
+            })
+            .addCase(deleteUser.fulfilled, (state, action) => {
+                state.users = state.users.filter(user => user._id !== action.payload.user._id)
+            })
+            .addCase(deleteUser.rejected, (state, action) => {
+                state.deleteErr = action.payload as string
             })
     },
 });
