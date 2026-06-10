@@ -10,8 +10,8 @@ exports.getProjects = async (req, res) => {
     const page = req.query.page || 1
     const skip = (page - 1) * MAIN_LIMIT
     const {
-        searchTerm,
-        categoryId,
+        search,
+        category,
         minPrice,
         maxPrice,
         employer,
@@ -22,19 +22,19 @@ exports.getProjects = async (req, res) => {
     if (!employer)
         filters = { status: projectStatus.OPEN, approveStatus: projectApprovalStatus.ACCEPTED };
 
-    if (searchTerm) {
+    if (search) {
         filters.title = {
-            $regex: searchTerm,
+            $regex: search,
             $options: "i",
         };
     }
 
-    if (categoryId) {
-        filters.category = categoryId;
+    if (category) {
+        filters.category = category;
     }
 
-    if (minPrice || maxPrice) {
-
+    if (minPrice > 0 || maxPrice > 0) {
+        console.log(minPrice, maxPrice)
         if (minPrice) {
             filters.minPrice.$gte = Number(minPrice);
         }

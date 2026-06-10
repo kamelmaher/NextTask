@@ -79,7 +79,7 @@ export const deleteProject = createAsyncThunk(
     }
 )
 
-// moderators
+// admins
 export const changeProjectApprovalStatus = createAsyncThunk(
     "projects/changeProjectApprovalStatus",
     async ({ id, status }: { id: string, status: string }, thunkAPI) => {

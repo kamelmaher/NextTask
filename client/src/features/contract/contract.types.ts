@@ -24,9 +24,13 @@ export type Contract = {
     agreedPrice: number,
     deliveryDuration: number,
     status: string,
-    submissions?: {
-        files: File[],
+    submissions: {
+        files: {
+            path: string,
+            originalName: string
+        }[],
         submittedAt: string
+        message: string
     }[],
     createdAt: string,
     updatedAt: string
@@ -36,4 +40,14 @@ export type contractFilters = {
     freelancer?: string,
     employer?: string,
     status?: string,
+}
+
+export type submissionType = {
+    _id: string,
+    message: string,
+    files: {
+        name: string,
+        size: number,
+        type: string
+    }[]
 }

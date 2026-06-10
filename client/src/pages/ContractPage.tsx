@@ -5,6 +5,7 @@ import Spinner from "../components/Spinner";
 import { acceptWork, getContract } from "../features/contract/contract.reducer";
 import { contractStatus } from "../utils/status";
 import { ProjectCard } from "../components/ProjectCard";
+import ContractSubmissionForm from "../components/ContractSubmissionForm";
 
 export default function ContractPage() {
     const { id } = useParams();
@@ -38,80 +39,107 @@ export default function ContractPage() {
                 <div className="space-y-6 lg:col-span-2">
 
                     {/* Project Card */}
-                    {/* <div className="rounded-2xl border border-border bg-surface p-6">
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <h1 className="text-2xl font-bold text-text-dark">
-                                    {project.title}
-                                </h1>
-
-                                <p className="mt-2 text-sm text-text-dim line-clamp-3">
-                                    {project.desc}
-                                </p>
-                            </div>
-
-                            <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-600">
-                                {project.status}
-                            </span>
-                        </div>
-
-                        <div className="mt-4 flex items-center justify-between text-sm text-text-dim">
-                            <span>
-                                Budget: ${project.minPrice} - ${project.maxPrice}
-                            </span>
-                            <span>
-                                Delivery: {project.deliveryDuration} days
-                            </span>
-                        </div>
-                    </div> */}
                     <ProjectCard project={project} />
-                    {/* Submission Files */}
-                    {
-                        // user &&
-                        // user?._id === contract.freelancer._id
-                        // && contract.status === contractStatus.INPROGRESS &&
-                        // <div className="rounded-2xl border border-border bg-surface p-6">
-                        //     <h2 className="text-lg font-bold text-text-dark">
-                        //         Submission Files
-                        //     </h2>
 
-                        //     {contract.submissions?.length ? (
-                        //         <div className="mt-4 space-y-3">
-                        //             {contract.submissions.map((submission) => (
-                        //                 <div
-                        //                     key={submission.submittedAt}
-                        //                     className="flex items-center justify-between rounded-lg border border-border p-3"
-                        //                 >
-                        //                     {/* <div>
-                        //                         <p className="text-sm font-medium text-text-dark">
-                        //                             {file.name}
-                        //                         </p>
-                        //                         <p className="text-xs text-text-dim">
-                        //                             Uploaded by {file.uploadedBy?.firstName}
-                        //                         </p>
-                        //                     </div>
+                    {/* Submission Form */}
+                    {user && user._id === freelancer._id && contract.status === contractStatus.INPROGRESS && (
+                        <ContractSubmissionForm contractId={contract._id} />
+                    )}
+                    {/* Submissions */}
+                    <div className="space-y-6">
+                        {
+                            contract.submissions.map((submission) => (
+                                <div
+                                    key={submission.submittedAt}
+                                    className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
+                                >
 
-                        //                     <a
-                        //                         href={file.url}
-                        //                         target="_blank"
-                        //                         className="text-sm font-medium text-blue-500 hover:underline"
-                        //                     >
-                        //                         View
-                        //                     </a> */}
-                        //                     <div>
+                                    <div className="mb-4 flex items-center justify-between">
 
-                        //                         {/* {submission.files[0]} */}
-                        //                     </div>
-                        //                 </div>
-                        //             ))}
-                        //         </div>
-                        //     ) : (
-                        //         <p className="mt-4 text-sm text-text-dim">
-                        //             No submissions yet.
-                        //         </p>
-                        //     )}
-                        // </div>
-                    }
+                                        <div>
+                                            <h3 className="text-lg font-semibold text-gray-800">
+                                                Submission
+                                            </h3>
+
+                                            <p className="text-sm text-gray-500">
+                                                {
+                                                    new Date(submission.submittedAt)
+                                                        .toLocaleDateString("en-GB")
+                                                }
+                                            </p>
+                                        </div>
+
+                                    </div>
+
+                                    {
+                                        submission.message && (
+                                            <p className="mb-5 text-gray-700">
+                                                {submission.message}
+                                            </p>
+                                        )
+                                    }
+
+                                    <div className="space-y-3">
+
+                                        {
+                                            submission.files.map((file, index) => (
+
+                                                <a
+                                                    key={index}
+                                                    href={`http://localhost:3000${file.path}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="
+                                    flex items-center justify-between
+                                    rounded-xl border border-gray-200
+                                    bg-gray-50 px-4 py-3
+                                    transition hover:border-blue-400
+                                    hover:bg-blue-50
+                                "
+                                                >
+
+                                                    <div className="flex items-center gap-3">
+
+                                                        <div
+                                                            className="
+                                            flex h-11 w-11 items-center
+                                            justify-center rounded-lg
+                                            bg-blue-100 text-blue-600
+                                        "
+                                                        >
+                                                            📄
+                                                        </div>
+
+                                                        <div>
+
+                                                            <p className="font-medium text-gray-800">
+                                                                {file.originalName}
+                                                            </p>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                    <span
+                                                        className="
+                                        rounded-lg bg-blue-600
+                                        px-3 py-1.5 text-sm
+                                        font-medium text-white
+                                    "
+                                                    >
+                                                        Open
+                                                    </span>
+
+                                                </a>
+                                            ))
+                                        }
+
+                                    </div>
+
+                                </div>
+                            ))
+                        }
+                    </div>
                 </div>
 
                 {/* RIGHT - Freelancer Card */}
@@ -167,7 +195,7 @@ export default function ContractPage() {
                     {/* Quick Actions */}
                     {
                         user &&
-                        project.employer._id == user?._id &&
+                        project.employer?._id == user?._id &&
                         contract.status !== contractStatus.FINISHED
                         && contract.status !== contractStatus.DECLINED &&
                         <div className="rounded-2xl border border-border bg-surface p-6">

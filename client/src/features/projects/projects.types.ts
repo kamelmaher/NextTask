@@ -45,8 +45,8 @@ export type ProjectInput = {
 }
 
 export type projectFilters = {
-    searchTerm?: string,
-    categoryId?: string,
+    search?: string,
+    category?: string,
     minPrice?: number,
     maxPrice?: number,
     employer?: string,

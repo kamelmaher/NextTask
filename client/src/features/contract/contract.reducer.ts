@@ -1,14 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "../../lib/axios";
-import type { Contract, contractFilters } from "./contract.types";
+import type { contractFilters } from "./contract.types";
 
 const baseUrl = "/contract"
 export const submitWork = createAsyncThunk(
     "contract/submitWork",
-    async (data: Partial<Contract>, thunkApi) => {
+    async (data: FormData, thunkApi) => {
+        const _id = data.get("_id")
+        const files = data.get("files")
+        const message = data.get("message")
         try {
-            const res = await api.post(baseUrl, data)
+            const res = await api.post(`${baseUrl}/${_id}`, { files, message }, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            })
             return res.data
         } catch (err: any) {
             return thunkApi.rejectWithValue(err.response.data.msg || "something went wrong")

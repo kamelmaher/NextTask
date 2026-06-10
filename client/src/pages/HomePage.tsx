@@ -102,7 +102,9 @@ export const HomePage = () => {
                                 <p className="text-sm text-text-dim">No projects found. Check back later!</p>
                             ) :
                                 projects.map((project) => (
-                                    <ProjectCard key={project._id} project={project} />
+                                    <div key={project._id} className="mt-3">
+                                        <ProjectCard project={project} />
+                                    </div>
                                 ))}
                     </div>
                 </div>

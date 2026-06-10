@@ -56,9 +56,19 @@ exports.submitWork = async (req, res) => {
 
     const contractId = req.params.id
     if (!contractId) return error(res, 400, "contract not found")
+    const { message } = req.body || {}
 
-    const { files, message } = req.body || {}
     try {
+        const files = req.files
+        let formattedFiles
+        if (files)
+            formattedFiles = files.map(file => ({
+                originalName: file.originalname,
+                filename: file.filename,
+                path: `/uploads/${file.filename}`,
+                mimetype: file.mimetype,
+                size: file.size
+            }));
         const contract = await Contract.findById(contractId)
         if (!contract) return error(res, 404, "contract not found")
 
@@ -67,11 +77,11 @@ exports.submitWork = async (req, res) => {
             return error(res, 400, "the contract is closed")
 
         // check if freelancer is in the contract
-        if (contract.freelancerId.toString() !== freelancer._id.toString())
+        if (contract.freelancer.toString() !== freelancer._id.toString())
             return error(res, 403, "cant submit work for this project")
 
         // update contract
-        contract.submission = { message, files, submittedAt: new Date() }
+        contract.submissions = [...contract.submissions, { message, files: formattedFiles, submittedAt: new Date() }]
         contract.status = contractStatus.SUBMITTED
         await contract.save()
         success(res, 200, { contract })

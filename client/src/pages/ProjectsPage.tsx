@@ -1,48 +1,37 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { fetchProjects } from "../features/projects/projects.reducers";
 import { ProjectCard } from "../components/ProjectCard";
+import Spinner from "../components/Spinner";
+import { getCategories } from "../features/category/category.reducer";
+import useDebounce from "../hooks/useDebounce";
 
 const ProjectsPage = () => {
     const dispatch = useAppDispatch();
 
     const { projects, loading } = useAppSelector(state => state.projects)
-
+    const { categories, loading: categoryLoading } = useAppSelector(state => state.category)
     // Filters
-    const [search, setSearch] = useState("");
-    const [type, setType] = useState("");
-    const [category, setCategory] = useState("");
-    const [minPrice, setMinPrice] = useState<number | "">("");
-    const [maxPrice, setMaxPrice] = useState<number | "">("");
+    const [filters, setFilters] = useState({
+        search: "",
+        category: "",
+        minPrice: 0,
+        maxPrice: 0
+    })
 
     useEffect(() => {
-        dispatch(fetchProjects());
+        dispatch(fetchProjects({}));
+        dispatch(getCategories())
     }, [dispatch]);
 
-    // Filter logic (frontend filtering)
-    // const filteredProjects = useMemo(() => {
-    //     return projects
-    //         .filter((project) => {
-    //             const matchSearch =
-    //                 project.title.toLowerCase().includes(search.toLowerCase()) ||
-    //                 project.desc.toLowerCase().includes(search.toLowerCase());
+    const debouncedSearch = useDebounce(filters.search, 500);
 
-    //             // const matchType = type ? project.type === type : true;
-
-    //             // const matchCategory = category
-    //             //     ? project.category?._id === category
-    //             //     : true;
-
-    //             const matchMin =
-    //                 minPrice !== "" ? project.minPrice >= Number(minPrice) : true;
-
-    //             const matchMax =
-    //                 maxPrice !== "" ? project.maxPrice <= Number(maxPrice) : true;
-
-    //             return matchSearch && matchMin && matchMax;
-    //         })
-    //         .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-    // }, [projects, search, minPrice, maxPrice]);
+    useEffect(() => {
+        dispatch(fetchProjects({
+            ...filters,
+            search: debouncedSearch
+        }))
+    }, [dispatch, debouncedSearch, filters])
 
     return (
         <div className="max-w-6xl mx-auto p-4">
@@ -56,57 +45,51 @@ const ProjectsPage = () => {
                     type="text"
                     placeholder="Search projects..."
                     className="border p-2 rounded-md md:col-span-2"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    value={filters.search}
+                    onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                 />
 
-                {/* Type */}
-                <select
-                    className="border p-2 rounded-md"
-                    value={type}
-                    onChange={(e) => setType(e.target.value)}
-                >
-                    <option value="">All Types</option>
-                    <option value="fixed">Fixed</option>
-                    <option value="hourly">Hourly</option>
-                </select>
-
                 {/* Category */}
-                <select
-                    className="border p-2 rounded-md"
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                >
-                    <option value="">All Categories</option>
-                    {/* replace with your dynamic categories from redux if available */}
-                </select>
+                {
+                    categoryLoading ? <Spinner /> :
+                        <select
+                            className="border p-2 rounded-md"
+                            value={filters.category}
+                            onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+                        >
+                            <option value="">All Categories</option>
+                            {
+                                categories.length && categories.map(category => (
+                                    <option value={category._id} key={category._id}>{category.title}</option>
+                                ))
+                            }
+                        </select>
+                }
 
                 {/* Price Range */}
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
+                    <p>Min:</p>
                     <input
                         type="number"
                         placeholder="Min"
                         className="border p-2 rounded-md w-full"
-                        value={minPrice}
-                        onChange={(e) =>
-                            setMinPrice(e.target.value ? Number(e.target.value) : "")
-                        }
+                        value={filters.minPrice}
+                        onChange={(e) => setFilters({ ...filters, minPrice: +e.target.value })}
                     />
+                    <p>Max:</p>
                     <input
                         type="number"
                         placeholder="Max"
                         className="border p-2 rounded-md w-full"
-                        value={maxPrice}
-                        onChange={(e) =>
-                            setMaxPrice(e.target.value ? Number(e.target.value) : "")
-                        }
+                        value={filters.maxPrice}
+                        onChange={(e) => setFilters({ ...filters, maxPrice: +e.target.value })}
                     />
                 </div>
             </div>
 
             {/* Content */}
             {loading ? (
-                <p>Loading...</p>
+                <Spinner size="lg" />
             ) : projects.length === 0 ? (
                 <p className="text-gray-500">No projects found</p>
             ) : (

@@ -26,9 +26,14 @@ const contractSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    Submissions: [{
-        files: [{ type: mongoose.Schema.ObjectId, ref: "file" }],
-        submittedAt: Date
+
+    submissions: [{
+        files: [{ originalName: String, fileName: String, mimeType: String, path: String, size: Number }],
+        message: String,
+        submittedAt: {
+            type: Date,
+            default: Date.now
+        }
     }],
     status: {
         type: String,
