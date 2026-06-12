@@ -1,4 +1,4 @@
-# NextStack Freelancing Platform
+# NextTask Freelancing Platform
 
 A modern freelancing platform built to connect clients and freelancers in one secure and scalable system.
 The platform allows users to create projects, submit proposals, manage contracts, and collaborate through a role-based access control (RBAC) system.
@@ -7,7 +7,7 @@ The platform allows users to create projects, submit proposals, manage contracts
 
 # About
 
-NextStack is a full-stack freelancing platform designed to simulate real-world marketplace systems such as Upwork and Freelancer.
+NextTask is a full-stack freelancing platform designed to simulate real-world marketplace systems such as Upwork and Freelancer.
 
 The system supports multiple user roles including:
 
