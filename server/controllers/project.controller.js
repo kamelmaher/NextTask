@@ -75,7 +75,7 @@ exports.getAdminProjects = async (req, res) => {
         const projects = await Project.find(filters)
             .populate("employer", "firstName lastName")
             .populate("category", "title")
-            .populate("contract")
+            // .populate("contract")
             .sort({ createdAt: -1 })
 
         success(res, 200, { projects })
@@ -109,7 +109,7 @@ exports.createProject = async (req, res) => {
         if (!foundCategory) return error(res, 404, "invalid category")
         const newProject = { title, desc, category, minPrice, maxPrice, deliveryDuration, employer: _id }
         const project = await Project.create(newProject);
-        success(res, 201, { msg: "project created succefully!", project });
+        success(res, 201, { project });
     } catch (err) {
         console.log(err)
         return serverError(res)

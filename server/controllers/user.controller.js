@@ -88,7 +88,7 @@ exports.getUsers = async (req, res) => {
     const { role } = req.body
     try {
         let filterRoles;
-        const allowedRoles = [roles.FREELANCER, roles.EMPLOYER];
+        const allowedRoles = [roles.USER];
         const notAllowedRoles = [roles.ADMIN];
         if (!role) {
             filterRoles = allowedRoles;

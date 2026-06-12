@@ -11,9 +11,11 @@ const upload = require("../middlewares/upload")
 
 router.use(verifyToken)
 
+// admin
+router.get("/", allowedTo(roles.ADMIN), getContracts)
+
 // users
 router.use(allowedTo(roles.USER))
-router.get("/", getContracts)
 router.get("/:id", getContract)
 router.post("/:id", upload.array("files"), submitWork)
 router.post("/:id/accept", acceptSubmission)

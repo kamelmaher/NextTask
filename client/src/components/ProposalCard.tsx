@@ -21,6 +21,7 @@ export function ProposalCard({ proposal, handleAccept, isEmployer }: ProposalCar
     const [err, setErr] = useState<string | null>(null)
     const acceptHandler = async () => {
         setLoading(true)
+        setErr(null)
         try {
             await handleAccept(proposal._id)
         } catch (err) {

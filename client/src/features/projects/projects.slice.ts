@@ -26,7 +26,6 @@ const ProjectsSlice = createSlice({
     initialState,
     reducers: {},
     extraReducers: (builder) => {
-
         builder
             // fetch projects
             .addCase(fetchProjects.pending, (state) => {
@@ -124,43 +123,6 @@ const ProjectsSlice = createSlice({
                 state.updateErr = action.payload as string;
                 state.updateLoading = false;
             })
-
-        // fetch user projects
-        // .addCase(fetchUserProjects.fulfilled, (state, action) => {
-        //     state.projects = action.payload.projects
-        //     state.loading = false;
-        // })
-        // .addCase(fetchUserProjects.pending, (state) => {
-        //     state.loading = true;
-        //     state.err = null
-        // })
-        // .addCase(fetchUserProjects.rejected, (state, action) => {
-        //     state.projects = [];
-        //     state.err = action.payload as string;
-        //     state.loading = false;
-        // })
-
-        // update project after accept proposal 
-        // .addCase(acceptProposal.fulfilled, (state, action) => {
-        //     const updatedProject = action.payload.project
-        //     state.projects = state.projects.map(project =>
-        //         project._id === updatedProject._id
-        //             ?
-        //             updatedProject :
-        //             project
-        //     )
-        // })
-
-        // // update project after accept work 
-        // .addCase(acceptWork.fulfilled, (state, action) => {
-        //     const updatedProject = action.payload.project
-        //     state.projects = state.projects.map(project =>
-        //         project._id === updatedProject._id
-        //             ?
-        //             updatedProject :
-        //             project
-        //     )
-        // })
     },
 });
 

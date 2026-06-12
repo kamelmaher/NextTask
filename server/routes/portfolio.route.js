@@ -25,20 +25,13 @@ router.use(allowedTo(roles.USER))
 
 router.post(
     "/",
-    upload.fields([
-        { name: "cover", maxCount: 1 },
-        { name: "images", maxCount: 10 },
-    ]),
-    uploadToCloudinary({ coverRequired: true }),
+    ...uploadToCloudinary({ coverRequired: true }),
     createPortfolioItem
 );
+
 router.put(
     "/:id",
-    upload.fields([
-        { name: "cover", maxCount: 1 },
-        { name: "images", maxCount: 10 },
-    ]),
-    uploadToCloudinary({ coverRequired: false }),
+    ...uploadToCloudinary({ coverRequired: false }),
     updatePortfolioItem
 );
 

@@ -16,13 +16,7 @@ exports.getContracts = async (req, res) => {
         filters.status = status
     }
     try {
-        const contracts = await Contract.find(filters).sort({ createdAt: -1 }).populate({
-            path: "project",
-            populate: {
-                path: "employer",
-                select: "firstName lastName"
-            }
-        }).populate("freelancer", "firstName lastName title")
+        const contracts = await Contract.find(filters).sort({ createdAt: -1 }).populate("project").populate("freelancer", "firstName lastName title").populate("employer")
 
         success(res, 200, { contracts })
     } catch (err) {
@@ -34,15 +28,40 @@ exports.getContracts = async (req, res) => {
 exports.getContract = async (req, res) => {
     const contractId = req.params.id
     if (!contractId) return error(res, 400, "contract not found")
+    const _id = req.user._id || null
+    if (!_id) return error(res, 401, "UnAuthorized")
     try {
-        const contract = await Contract.findById(contractId).populate({
-            path: "project",
-            populate: {
-                path: "employer",
-                select: "firstName lastName"
-            }
-        }).populate("freelancer", "firstName lastName title")
-        if (!contract) return error(res, 404, "contract not found")
+        const contract = await Contract.findById(contractId);
+
+        if (!contract) {
+            return error(res, 404, "contract not found");
+        }
+
+        // check permission BEFORE populate
+        const isEmployer =
+            contract.employer?.toString() === _id.toString();
+
+        const isFreelancer =
+            contract.freelancer?.toString() === _id.toString();
+
+        if (!isEmployer && !isFreelancer) {
+            return error(res, 401, "cant get this contract");
+        }
+
+        // populate after authorization
+        await contract.populate([
+            {
+                path: "project",
+                populate: {
+                    path: "employer",
+                    select: "firstName lastName",
+                },
+            },
+            {
+                path: "freelancer",
+                select: "firstName lastName title",
+            },
+        ]);
         success(res, 200, { contract })
     } catch (err) {
         console.log(err)
@@ -73,8 +92,8 @@ exports.submitWork = async (req, res) => {
         if (!contract) return error(res, 404, "contract not found")
 
         // check if contract is in progress
-        if (contract.status !== contractStatus.INPROGRESS)
-            return error(res, 400, "the contract is closed")
+        // if (contract.status !== contractStatus.INPROGRESS)
+        //     return error(res, 400, "the contract is closed")
 
         // check if freelancer is in the contract
         if (contract.freelancer.toString() !== freelancer._id.toString())
@@ -84,6 +103,19 @@ exports.submitWork = async (req, res) => {
         contract.submissions = [...contract.submissions, { message, files: formattedFiles, submittedAt: new Date() }]
         contract.status = contractStatus.SUBMITTED
         await contract.save()
+        await contract.populate([
+            {
+                path: "project",
+                populate: {
+                    path: "employer",
+                    select: "firstName lastName",
+                },
+            },
+            {
+                path: "freelancer",
+                select: "firstName lastName title",
+            },
+        ])
         success(res, 200, { contract })
     } catch (err) {
         console.log(err)
@@ -120,7 +152,7 @@ exports.acceptSubmission = async (req, res) => {
         // update contract
         const updatedContract = await Contract.findByIdAndUpdate(contract._id, {
             status: contractStatus.FINISHED
-        }, { returnDocument: "after" }).populate("freelancer").populate("project")
+        }, { returnDocument: "after" }).populate("freelancer").populate("project").populate("employer")
         if (!updatedContract) return error(res, 400, "cant update the contract")
 
         // contract.status = contractStatus.FINISHED

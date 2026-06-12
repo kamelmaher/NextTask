@@ -3,6 +3,7 @@ import Spinner from "../../components/Spinner";
 import { getContracts } from "../../features/contract/contract.reducer";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { contractStatus } from "../../utils/status";
+import { NavLink } from "react-router-dom";
 
 export default function DashboardContractsPage() {
     const dispatch = useAppDispatch();
@@ -12,7 +13,7 @@ export default function DashboardContractsPage() {
     useEffect(() => {
         dispatch(getContracts({ status }));
     }, [dispatch, status]);
-
+    console.log(contracts)
     return (
         <div className="min-h-screen bg-background">
             <div className="mx-auto max-w-6xl px-6 py-10">
@@ -55,7 +56,11 @@ export default function DashboardContractsPage() {
                             <tbody>
                                 {contracts.map((contract) => (
                                     <tr key={contract._id} className="border-t border-border hover:bg-slate-50">
-                                        <td className="px-6 py-4 font-semibold text-text-dark">{contract.project?.title}</td>
+                                        <td className="px-6 py-4 font-semibold text-text-dark">
+                                            <NavLink to={`/project/${contract.project?._id}`}>
+                                                {contract.project?.title}
+                                            </NavLink>
+                                        </td>
                                         <td className="px-6 py-4">{contract.freelancer?.firstName} {contract.freelancer?.lastName}</td>
                                         <td className="px-6 py-4">{contract.employer?.firstName} {contract.employer?.lastName}</td>
                                         <td className="px-6 py-4">${contract.agreedPrice.toLocaleString()}</td>

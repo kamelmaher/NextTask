@@ -25,7 +25,6 @@ export default function ContractPage() {
 
     if (loading || !contract)
         return <Spinner size="lg" />;
-
     const { project, freelancer } = contract
     if (!project || !freelancer) {
         return <p>Invalid contract data.</p>;
@@ -39,7 +38,10 @@ export default function ContractPage() {
                 <div className="space-y-6 lg:col-span-2">
 
                     {/* Project Card */}
-                    <ProjectCard project={project} />
+                    {
+                        project &&
+                        <ProjectCard project={project} />
+                    }
 
                     {/* Submission Form */}
                     {user && user._id === freelancer._id && contract.status === contractStatus.INPROGRESS && (

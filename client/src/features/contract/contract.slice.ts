@@ -69,6 +69,7 @@ const ContractSlice = createSlice({
             })
             .addCase(acceptWork.fulfilled, (state, action) => {
                 const updatedContract = action.payload.contract
+                console.log(updatedContract)
                 state.contracts = state.contracts.map(contract => contract._id === updatedContract._id ? updatedContract : contract)
                 state.contract = updatedContract
                 state.acceptWorkLoading = false

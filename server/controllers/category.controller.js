@@ -15,12 +15,12 @@ exports.getCategories = async (req, res) => {
 
 // Admins and Moderators
 exports.createCategory = async (req, res) => {
-    const { title, icon } = req.body;
+    const { title } = req.body;
     try {
         const foundCategory = await Category.findOne({ title })
         if (foundCategory) return error(res, 400, "category already exists")
-        const category = await Category.create({ title, icon: icon || "" })
-        success(res, 201, { msg: "category created succefully", category })
+        const category = await Category.create({ title })
+        success(res, 201, { category })
     } catch (err) {
         console.log(err)
         return serverError(res)
@@ -34,7 +34,7 @@ exports.updateCategory = async (req, res) => {
     try {
         const category = await Category.findByIdAndUpdate(id, { title }, { returnDocument: "after" })
         if (!category) return error(res, 400, "category not found")
-        success(res, 200, { msg: "category updated Succefully", category })
+        success(res, 200, { category })
     } catch (err) {
         console.log(err)
         serverError(res)
@@ -47,7 +47,7 @@ exports.deleteCategory = async (req, res) => {
     try {
         const category = await Category.findByIdAndDelete(id)
         if (!category) return error(res, 400, "category not found")
-        success(res, 200, { msg: "category deleted succefully" })
+        success(res, 200, { category })
     } catch (err) {
         console.log(err)
         return serverError(res)
