@@ -6,7 +6,7 @@ import Spinner from "../components/Spinner";
 
 export default function PortfolioItemPage() {
     const { id } = useParams()
-    const { item, loading, error, deleteLoading, deleteError } = useAppSelector(state => state.portfolio)
+    const { item, loading, error, deleteLoading } = useAppSelector(state => state.portfolio)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     useEffect(() => {

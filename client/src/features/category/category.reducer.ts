@@ -32,7 +32,7 @@ export const updateCategory = createAsyncThunk(
     "category/updateCategory",
     async (data: updateCategoryType, thunkAPI) => {
         try {
-            const res = await api.patch(`${baseUrl}/${data.id}`, { title: data.title, icon: data.icon })
+            const res = await api.patch(`${baseUrl}/${data.id}`, { title: data.title })
             return res.data
         } catch (err: any) {
             return thunkAPI.rejectWithValue(err.response.data.msg || "something went wrong")
