@@ -8,7 +8,8 @@ const app = express()
 
 const allowedOrigins = [
     "http://localhost:5173",
-    process.env.WEBSITE_URL
+    process.env.WEBSITE_URL,
+    "http://localhost:5174"
 ];
 
 app.use(cors({
