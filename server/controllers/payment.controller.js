@@ -21,8 +21,8 @@ exports.deposite = async (req, res) => {
                     quantity: 1,
                 },
             ],
-            success_url: `${process.env.CLIENT_URL}/wallet/success`,
-            cancel_url: `${process.env.CLIENT_URL}/wallet/cancel`,
+            success_url: `${process.env.WEBSITE_URL}/wallet/success`,
+            cancel_url: `${process.env.WEBSITE_URL}/wallet/cancel`,
             metadata: {
                 userId,
                 amount,
