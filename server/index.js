@@ -8,9 +8,9 @@ const app = express()
 
 const allowedOrigins = [
     "http://localhost:5173",
-    process.env.WEBSITE_URL,
-    "https://next-task-weld.vercel.app/",
-    "http://localhost:5174"
+    "http://localhost:5174",
+    "https://next-task-weld.vercel.app",
+    process.env.WEBSITE_URL
 ];
 
 app.use(cors({
