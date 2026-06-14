@@ -6,11 +6,21 @@ const cookieParser = require("cookie-parser");
 const { stripeWebhook } = require("./webhooks/stripeWebhook");
 const app = express()
 
+const allowedOrigins = [
+    "http://localhost:5173",
+    process.env.WEBSITE_URL
+];
 
 app.use(cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-}))
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("CORS blocked"));
+        }
+    },
+    credentials: true
+}));
 
 // stripe webhook
 app.post("/webhook", express.raw({ type: "application/json" }), stripeWebhook);
