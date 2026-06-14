@@ -3,12 +3,18 @@ const mongoose = require("mongoose")
 require("dotenv").config()
 const cors = require("cors")
 const cookieParser = require("cookie-parser");
+const { stripeWebhook } = require("./webhooks/stripeWebhook");
 const app = express()
+
 
 app.use(cors({
     origin: "http://localhost:5173",
     credentials: true,
 }))
+
+// stripe webhook
+app.post("/webhook", express.raw({ type: "application/json" }), stripeWebhook);
+
 app.use(express.json())
 app.use(cookieParser());
 app.use("/uploads", express.static("uploads"));
@@ -20,6 +26,7 @@ const categoryRoute = require("./routes/category.route")
 const proposalRoute = require("./routes/proposal.route")
 const contractRoute = require("./routes/contract.route")
 const portfolioRoute = require("./routes/portfolio.route")
+const paymentRoute = require("./routes/payment.route");
 
 app.use("/user", userRoute)
 app.use("/project", projectRoute)
@@ -27,6 +34,7 @@ app.use("/category", categoryRoute)
 app.use("/proposal", proposalRoute)
 app.use("/contract", contractRoute)
 app.use("/portfolio", portfolioRoute)
+app.use("/payment", paymentRoute)
 
 mongoose
     .connect(process.env.DB_URL)

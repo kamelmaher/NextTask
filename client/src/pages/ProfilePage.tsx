@@ -3,6 +3,7 @@ import { useAppSelector } from "../store/store";
 import { useEffect, useState } from "react";
 import UpdateProfileForm from "../components/UpdateProfileForm";
 import Spinner from "../components/Spinner";
+import WalletTopUp from "../components/WalletTopUp";
 
 export default function ProfilePage() {
     const { user, isAuthenticated, fetchUserLoading, authChecked } = useAppSelector(state => state.auth)
@@ -22,6 +23,7 @@ export default function ProfilePage() {
         { label: "First name", value: user?.firstName },
         { label: "Last name", value: user?.lastName },
         { label: "Email", value: user?.email },
+        { label: "Wallet balance", value: `$${user?.balance?.toFixed(2) ?? "0.00"}` },
         // { label: "Mobile", value: user?.mobile },
         { label: "Professional title", value: user?.title },
         // { label: "Category", value: user?.category },
@@ -64,6 +66,8 @@ export default function ProfilePage() {
                     {user?.about}
                 </p>
             </div>
+
+            <WalletTopUp />
 
             {
                 showUpdateForm &&

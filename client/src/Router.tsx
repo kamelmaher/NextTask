@@ -15,6 +15,8 @@ import PortfolioNewPage from "./pages/Portfolio.new";
 import UserProjects from "./pages/Profile.projects";
 import ContractPage from "./pages/ContractPage";
 import PostedProjects from "./pages/Profile.PostedProjects";
+import WalletSuccess from "./pages/WalletSuccess";
+import WalletCancel from "./pages/WalletCancel";
 import AdminLayout from "./layouts/AdminLayout";
 import DashboardUsers from "./pages/Admin/DashboardUsers";
 import DashboardProjects from "./pages/Admin/DashboardProjects";
@@ -61,6 +63,10 @@ export default function AppRoutes() {
 
                 <Route path="/login" element={<LoginPage />}></Route>
                 <Route path="/register" element={<Register />}></Route>
+                <Route path="/wallet">
+                    <Route path="success" element={<WalletSuccess />} />
+                    <Route path="cancel" element={<WalletCancel />} />
+                </Route>
             </Route>
         </Routes>
     );
