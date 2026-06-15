@@ -23,9 +23,16 @@ const contractStatus = {
     FINISHED: "accepted"
 }
 
+const transactionStatus = {
+    COMPLETED: "completed",
+    DECLINED: "declined",
+    PENDING: "pending"
+}
+
 module.exports = {
     projectStatus,
     projectApprovalStatus,
     proposalStatus,
-    contractStatus
+    contractStatus,
+    transactionStatus
 }

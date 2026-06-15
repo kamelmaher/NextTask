@@ -39,6 +39,7 @@ const proposalRoute = require("./routes/proposal.route")
 const contractRoute = require("./routes/contract.route")
 const portfolioRoute = require("./routes/portfolio.route")
 const paymentRoute = require("./routes/payment.route");
+const transactionRoute = require("./routes/transaction.route");
 
 app.use("/user", userRoute)
 app.use("/project", projectRoute)
@@ -47,6 +48,7 @@ app.use("/proposal", proposalRoute)
 app.use("/contract", contractRoute)
 app.use("/portfolio", portfolioRoute)
 app.use("/payment", paymentRoute)
+app.use("/transaction", transactionRoute)
 
 mongoose
     .connect(process.env.DB_URL)

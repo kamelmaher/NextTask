@@ -1,7 +1,9 @@
 const Contract = require("../models/contract.model")
 const Project = require("../models/project.model")
+const Transaction = require("../models/transaction.model")
+const { transactionTypes } = require("../utils")
 const { serverError, error, success } = require("../utils/responses")
-const { contractStatus, projectStatus } = require("../utils/status")
+const { contractStatus, projectStatus, transactionStatus } = require("../utils/status")
 
 exports.getContracts = async (req, res) => {
     const { _id } = req.user
@@ -132,10 +134,6 @@ exports.acceptSubmission = async (req, res) => {
         const contract = await Contract.findById(contractId)
         if (!contract) return error(res, 404, "contract not found")
 
-        // check if contract submitted
-        // if (contract.status !== contractStatus.SUBMITTED)
-        //     return error(res, 400, "contract has no submissions")
-
         // check if employer is in the contract
         if (contract.employer.toString() !== employer._id.toString())
             return error(res, 403, "cant accept submissions for this project")
@@ -146,17 +144,26 @@ exports.acceptSubmission = async (req, res) => {
         }, { returnDocument: "after" })
         if (!updatedProject) return error(res, 400, "cant update project status")
 
-        // project.status = projectStatus.FINISHED
-        // const updatedProject = await project.save()
-
         // update contract
         const updatedContract = await Contract.findByIdAndUpdate(contract._id, {
             status: contractStatus.FINISHED
         }, { returnDocument: "after" }).populate("freelancer").populate("project").populate("employer")
         if (!updatedContract) return error(res, 400, "cant update the contract")
 
-        // contract.status = contractStatus.FINISHED
-        // const updatedContract = await contract.save()
+        // update Freelancer Balance
+        await User.findByIdAndUpdate(contract.freelancer, {
+            $inc: { balance: contract.agreedPrice },
+        })
+
+        // create transaction record
+        await Transaction.create({
+            fromUserId: contract.employer,
+            toUserId: contract.freelancer,
+            amount: contract.agreedPrice,
+            type: transactionTypes.TRANSFER,
+            status: transactionStatus.COMPLETED,
+            contractId: contract._id
+        })
 
         success(res, 200, { contract: updatedContract, project: updatedProject })
     } catch (err) {

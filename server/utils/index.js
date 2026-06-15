@@ -14,9 +14,15 @@ const MAIN_LIMIT = 15
 
 const userAllowedFields = ["firstName", "lastName", "userName", "email", "password", "about", "title", "profileImage", "categoryId"]
 
+const transactionTypes = {
+    DEPOSITE: "deposite",
+    WITHDRAW: "withdraw",
+    TRANSFER: "transfer"
+}
 module.exports = {
     roles,
     mainPriceRange,
     MAIN_LIMIT,
-    userAllowedFields
+    userAllowedFields,
+    transactionTypes
 }

@@ -22,6 +22,7 @@ import DashboardUsers from "./pages/Admin/DashboardUsers";
 import DashboardProjects from "./pages/Admin/DashboardProjects";
 import DashboardContracts from "./pages/Admin/DashboardContracts";
 import DashboardCategories from "./pages/Admin/DashboardCategories";
+import DashboardPayments from "./pages/Admin/DashboardPayments";
 import ProtectedRoute from "./ProtectedRoute";
 
 export default function AppRoutes() {
@@ -59,6 +60,7 @@ export default function AppRoutes() {
                     <Route path="users" element={<DashboardUsers />} />
                     <Route path="contracts" element={<DashboardContracts />} />
                     <Route path="categories" element={<DashboardCategories />} />
+                    <Route path="payments" element={<DashboardPayments />} />
                 </Route>
 
                 <Route path="/login" element={<LoginPage />}></Route>

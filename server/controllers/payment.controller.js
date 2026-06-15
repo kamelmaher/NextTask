@@ -1,6 +1,9 @@
 const stripe = require("../config/stripe");
 const User = require("../models/user.model");
+const Transaction = require("../models/transaction.model")
 const { serverError, success } = require("../utils/responses");
+const { transactionTypes } = require("../utils");
+const { transactionStatus } = require("../utils/status");
 
 exports.deposite = async (req, res) => {
     const { amount } = req.body;
@@ -29,6 +32,7 @@ exports.deposite = async (req, res) => {
                 type: "WALLET_TOPUP",
             },
         });
+        
         success(res, 200, { url: session.url });
     } catch (err) {
         console.log(err)

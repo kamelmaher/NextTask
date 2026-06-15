@@ -1,6 +1,7 @@
 const Project = require("../models/project.model")
 const Proposal = require("../models/proposal.model")
 const Contract = require("../models/contract.model")
+const User = require("../models/user.model")
 const { error, serverError, success } = require("../utils/responses")
 const { projectApprovalStatus, projectStatus, proposalStatus } = require("../utils/status")
 
@@ -94,6 +95,7 @@ exports.acceptProposal = async (req, res) => {
         )
 
 
+
         // create a new contract 
         const contract = new Contract({
             project: proposal.project,
@@ -104,6 +106,10 @@ exports.acceptProposal = async (req, res) => {
             deadline: proposal.deliveryDuration
         })
 
+        // update user balance 
+        await User.findByIdAndUpdate(employer, {
+            $inc: { balance: -contract.agreedPrice }
+        })
         // update Project Status - add the contract to the project
         // project.status = projectStatus.INPROGRESS
         // project.contract = contract._id

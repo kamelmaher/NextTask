@@ -1,5 +1,6 @@
 const Project = require("../models/project.model")
 const Category = require("../models/category.model")
+const User = require("../models/user.model")
 const Proposal = require("../models/proposal.model")
 const { success, error, serverError } = require("../utils/responses")
 const { MAIN_LIMIT } = require("../utils")
@@ -105,8 +106,16 @@ exports.createProject = async (req, res) => {
     if (!_id) return error(res, 400, "user Id is required")
     // const _id = "6a11d094317e8974831c015e"
     try {
+        const user = await User.findById(_id)
+        if (!user) return error(res, 404, "user not found")
+
+        // check user balance
+        const userBalance = user.balance || 0
+        if (userBalance < maxPrice) return error(res, 400, "not enough balance")
+
         const foundCategory = await Category.findOne({ _id: category })
         if (!foundCategory) return error(res, 404, "invalid category")
+
         const newProject = { title, desc, category, minPrice, maxPrice, deliveryDuration, employer: _id }
         const project = await Project.create(newProject);
         success(res, 201, { project });

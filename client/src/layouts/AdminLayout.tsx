@@ -5,6 +5,7 @@ const tabs = [
     { label: "Users", to: "/admin/users" },
     { label: "Contracts", to: "/admin/contracts" },
     { label: "Categories", to: "/admin/categories" },
+    { label: "Payments", to: "/admin/payments" },
 ];
 
 const tabClass = ({ isActive }: { isActive: boolean }) =>
