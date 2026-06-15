@@ -4,7 +4,6 @@ const { transactionTypes } = require("../utils")
 
 exports.getTransactions = async (req, res) => {
     const { type } = req.query
-
     const validTypes = [
         transactionTypes.DEPOSITE,
         transactionTypes.WITHDRAW,
@@ -22,10 +21,17 @@ exports.getTransactions = async (req, res) => {
     try {
         const transactions = await Transaction.find(filter)
             .sort({ createdAt: -1 })
-            .populate("userId", "firstName lastName")
-            .populate("fromUserId", "firstName lastName")
-            .populate("toUserId", "firstName lastName")
-            .populate("contractId", "title")
+            .populate("user", "firstName lastName")
+            .populate("fromUser", "firstName lastName")
+            .populate("toUser", "firstName lastName")
+            .populate([{
+                path: "contract",
+                populate: {
+                    path: "project",
+                    select: "title"
+                }
+            }
+            ])
 
         success(res, 200, { transactions })
     } catch (err) {

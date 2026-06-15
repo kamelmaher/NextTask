@@ -1,6 +1,7 @@
 const Contract = require("../models/contract.model")
 const Project = require("../models/project.model")
 const Transaction = require("../models/transaction.model")
+const User = require("../models/user.model")
 const { transactionTypes } = require("../utils")
 const { serverError, error, success } = require("../utils/responses")
 const { contractStatus, projectStatus, transactionStatus } = require("../utils/status")

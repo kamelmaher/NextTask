@@ -17,31 +17,31 @@ const transactionSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    userId: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
         default: null
     },
-    fromUserId: {
+    fromUser: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "user",
         default: null
     },
-    toUserId: {
+    toUser: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "user",
         default: null
     },
     stripeSessionId: {
         type: String,
         default: null,
     },
-    contractId: {
+    contract: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "contract",
         default: null
     }
-})
+}, { timestamps: true })
 
-const Transaction = mongoose.Model("transaction", transactionSchema)
+const Transaction = mongoose.model("transaction", transactionSchema)
 module.exports = Transaction

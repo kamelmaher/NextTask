@@ -15,7 +15,7 @@ const MAIN_LIMIT = 15
 const userAllowedFields = ["firstName", "lastName", "userName", "email", "password", "about", "title", "profileImage", "categoryId"]
 
 const transactionTypes = {
-    DEPOSITE: "deposite",
+    DEPOSITE: "deposit",
     WITHDRAW: "withdraw",
     TRANSFER: "transfer"
 }

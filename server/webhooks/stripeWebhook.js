@@ -35,7 +35,7 @@ exports.stripeWebhook = async (req, res) => {
         });
 
         await Transaction.create({
-            userId,
+            user: userId,
             type: transactionTypes.DEPOSITE,
             status: transactionStatus.COMPLETED,
             stripeSessionId: session.id,

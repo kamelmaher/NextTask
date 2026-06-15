@@ -32,7 +32,6 @@ exports.deposite = async (req, res) => {
                 type: "WALLET_TOPUP",
             },
         });
-        
         success(res, 200, { url: session.url });
     } catch (err) {
         console.log(err)

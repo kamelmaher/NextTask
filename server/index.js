@@ -25,7 +25,7 @@ app.use(cors({
 }));
 
 // stripe webhook
-app.post("/webhook", express.raw({ type: "application/json" }), stripeWebhook);
+// app.post("/webhook", express.raw({ type: "application/json" }), stripeWebhook);
 
 app.use(express.json())
 app.use(cookieParser());
