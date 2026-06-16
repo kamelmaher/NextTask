@@ -11,13 +11,13 @@ export default function MainLayout() {
     }, [dispatch]);
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div>
             <Navbar />
             <main>
                 <Outlet />
             </main>
 
-            <footer className="bg-white mt-10">
+            <footer className="bg-white">
                 <div className="max-w-6xl mx-auto p-4 text-center text-sm text-gray-500">
                     © {new Date().getFullYear()} NextTask. All rights reserved.
                 </div>

@@ -158,12 +158,12 @@ exports.acceptSubmission = async (req, res) => {
 
         // create transaction record
         await Transaction.create({
-            fromUserId: contract.employer,
-            toUserId: contract.freelancer,
+            fromUser: contract.employer,
+            toUser: contract.freelancer,
             amount: contract.agreedPrice,
             type: transactionTypes.TRANSFER,
             status: transactionStatus.COMPLETED,
-            contractId: contract._id
+            contract: contract._id
         })
 
         success(res, 200, { contract: updatedContract, project: updatedProject })

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 import Spinner from "../../components/Spinner";
 import { getCategories, createCategory, updateCategory, deleteCategory } from "../../features/category/category.reducer";
-import { useAppDispatch, useAppSelector } from "../../store/store";
 import type { Category, createCategoryType, updateCategoryType } from "../../features/category/category.types";
+import { FolderKanban, Plus, Pencil, Trash2, X, Check, AlertCircle } from "lucide-react";
 
 export default function DashboardCategoriesPage() {
     const dispatch = useAppDispatch();
@@ -46,19 +47,14 @@ export default function DashboardCategoriesPage() {
 
         try {
             if (editingId) {
-                const updateData: updateCategoryType = {
-                    id: editingId,
-                    title: formData.title,
-                };
+                const updateData: updateCategoryType = { id: editingId, title: formData.title };
                 await dispatch(updateCategory(updateData));
             } else {
-                const createData: createCategoryType = {
-                    title: formData.title,
-                };
+                const createData: createCategoryType = { title: formData.title };
                 await dispatch(createCategory(createData));
             }
             handleCloseForm();
-        } catch (error) {
+        } catch {
             setSubmitError("Failed to save category");
         }
     };
@@ -74,120 +70,98 @@ export default function DashboardCategoriesPage() {
     };
 
     return (
-        <div className="min-h-screen bg-background">
-            <div className="mx-auto max-w-6xl px-6 py-10">
-                <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold text-text-dark">Categories Management</h1>
-                        <p className="text-text-dim">Add, edit, and delete project categories.</p>
-                    </div>
-                    <button
-                        onClick={() => handleOpenForm()}
-                        className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 transition"
-                    >
-                        + Add Category
-                    </button>
+        <div className="space-y-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h1 className="section-title">Categories</h1>
+                    <p className="section-subtitle">Manage project categories</p>
                 </div>
-
-                {err && (
-                    <div className="mb-4 rounded-lg bg-red-50 p-4 text-red-600 border border-red-200">
-                        {err}
-                    </div>
-                )}
-
-                {loading && <Spinner label="Loading categories..." />}
-
-                {!loading && categories.length === 0 && !err && (
-                    <div className="rounded-lg border border-border bg-surface p-8 text-center">
-                        <p className="text-text-dim mb-4">No categories found.</p>
-                        <button
-                            onClick={() => handleOpenForm()}
-                            className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 transition"
-                        >
-                            Create First Category
-                        </button>
-                    </div>
-                )}
-
-                {!loading && categories.length > 0 && (
-                    <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
-                        <table className="w-full border-collapse text-sm">
-                            <thead className="bg-background text-left text-text-dim">
-                                <tr>
-                                    <th className="px-6 py-4">Category Name</th>
-                                    <th className="px-6 py-4 text-center">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {categories.map((category) => (
-                                    <tr key={category._id} className="border-t border-border hover:bg-slate-50 transition">
-                                        <td className="px-6 py-4 font-semibold text-text-dark">
-                                            {category.title}
-                                        </td>
-                                        <td className="px-6 py-4 text-center">
-                                            <button
-                                                onClick={() => handleOpenForm(category)}
-                                                className="mr-3 rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600 transition text-sm"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(category._id)}
-                                                className="rounded bg-red-500 px-3 py-1 text-white hover:bg-red-600 transition text-sm"
-                                            >
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                <button onClick={() => handleOpenForm()} className="btn-primary">
+                    <Plus className="h-4 w-4" />
+                    Add Category
+                </button>
             </div>
 
+            {err && (
+                <div className="rounded-xl bg-[#FEE2E2] border border-[#FECACA] p-4">
+                    <p className="text-sm text-[#EF4444] flex items-center gap-2">
+                        <AlertCircle className="h-4 w-4" />
+                        {err}
+                    </p>
+                </div>
+            )}
+
+            {loading ? (
+                <div className="flex justify-center py-12"><Spinner size="lg" /></div>
+            ) : categories.length === 0 && !err ? (
+                <div className="rounded-2xl border border-[#E2E8F0] bg-white p-12 text-center shadow-sm">
+                    <FolderKanban className="h-12 w-12 text-[#94A3B8] mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-[#0F172A] mb-2">No categories yet</h3>
+                    <button onClick={() => handleOpenForm()} className="btn-primary mt-4">Create First Category</button>
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {categories.map((category) => (
+                        <div key={category._id} className="group rounded-2xl border border-[#E2E8F0] bg-white p-6 shadow-sm transition-all hover:border-[#A78BFA] hover:shadow-[0_0_0_1px_rgba(124,58,237,0.1),0_4px_20px_rgba(124,58,237,0.08)]">
+                            <div className="flex items-start justify-between">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#F3E8FF]">
+                                    <FolderKanban className="h-6 w-6 text-[#7C3AED]" />
+                                </div>
+                                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button onClick={() => handleOpenForm(category)} className="rounded-lg p-2 text-[#64748B] hover:bg-[#F3E8FF] hover:text-[#7C3AED] transition-colors">
+                                        <Pencil className="h-4 w-4" />
+                                    </button>
+                                    <button onClick={() => handleDelete(category._id)} className="rounded-lg p-2 text-[#64748B] hover:bg-[#FEE2E2] hover:text-[#EF4444] transition-colors">
+                                        <Trash2 className="h-4 w-4" />
+                                    </button>
+                                </div>
+                            </div>
+                            <h3 className="mt-4 text-lg font-semibold text-[#0F172A]">{category.title}</h3>
+                            <p className="mt-1 text-xs text-[#94A3B8] uppercase tracking-wider font-semibold">Category</p>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {/* Modal */}
             {showForm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/50">
-                    <div className="w-full max-w-md rounded-lg bg-surface p-6 shadow-lg border border-border">
-                        <h2 className="mb-4 text-xl font-bold text-text-dark">
-                            {editingId ? "Edit Category" : "Add New Category"}
-                        </h2>
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                    <div className="modal-overlay" onClick={handleCloseForm} />
+                    <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-xl border border-[#E2E8F0]">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-bold text-[#0F172A]">
+                                {editingId ? "Edit Category" : "Add New Category"}
+                            </h2>
+                            <button onClick={handleCloseForm} className="rounded-lg p-2 text-[#64748B] hover:bg-[#F8FAFC]">
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
 
                         {submitError && (
-                            <div className="mb-4 rounded-lg bg-red-50 p-3 text-red-600 border border-red-200 text-sm">
-                                {submitError}
+                            <div className="mb-4 rounded-xl bg-[#FEE2E2] border border-[#FECACA] p-3">
+                                <p className="text-sm text-[#EF4444] flex items-center gap-2">
+                                    <AlertCircle className="h-4 w-4" />
+                                    {submitError}
+                                </p>
                             </div>
                         )}
 
                         <form onSubmit={handleSubmit} className="space-y-4">
-                            {/* Title Input */}
                             <div>
-                                <label className="block text-sm font-medium text-text-dark mb-2">
-                                    Category Name *
-                                </label>
+                                <label className="block text-sm font-semibold text-[#0F172A] mb-2">Category Name *</label>
                                 <input
                                     type="text"
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                     placeholder="Enter category name"
-                                    className="w-full rounded-lg border border-border bg-background px-4 py-2 text-text-dark placeholder-text-dim focus:border-blue-500 focus:outline-none"
-                                    required
+                                    className="form-input"
+                                    autoFocus
                                 />
                             </div>
-
-                            {/* Buttons */}
-                            <div className="mt-6 flex gap-3">
-                                <button
-                                    type="button"
-                                    onClick={handleCloseForm}
-                                    className="flex-1 rounded-lg border border-border bg-background px-4 py-2 font-medium text-text-dark hover:bg-slate-50 transition"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="flex-1 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 transition"
-                                >
+                            <div className="flex gap-3 pt-2">
+                                <button type="button" onClick={handleCloseForm} className="btn-ghost flex-1">Cancel</button>
+                                <button type="submit" className="btn-primary flex-1">
+                                    <Check className="h-4 w-4" />
                                     {editingId ? "Update" : "Create"}
                                 </button>
                             </div>

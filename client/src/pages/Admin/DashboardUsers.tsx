@@ -4,6 +4,8 @@ import Spinner from "../../components/Spinner";
 import { deleteUser, getAllUsers, toggleRole } from "../../features/auth/auth.reducer";
 import { ConfirmModal } from "../../components/ConfirmModal";
 import { roles } from "../../utils";
+import { DashHeader, DataTable, StatGrid } from "../../components/DashboardUi";
+import { UserPlus, Search, Badge } from "lucide-react";
 
 export default function DashboardUsersPage() {
     const dispatch = useAppDispatch();
@@ -63,79 +65,48 @@ export default function DashboardUsersPage() {
     }
 
     return (
-        <div className="min-h-screen bg-background">
-            <div className="mx-auto max-w-6xl px-6 py-10">
-                <div className="mb-6 flex items-center justify-between gap-4">
-                    <div>
-                        <h1 className="text-3xl font-bold text-text-dark">User Listing</h1>
-                        <p className="text-text-dim">Browse registered users and their account details.</p>
-                    </div>
-                </div>
-                {updateProfileErr && <p className="text-sm text-red-500">{updateProfileErr}</p>}
-                {loading ? (
-                    <Spinner label="Loading users..." />
-                ) : err ? (
-                    <p className="text-red-500">{err}</p>
-                ) : users.length === 0 ? (
-                    <p className="text-text-dim">No users found.</p>
-                ) : (
-                    <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
-                        <table className="w-full border-collapse text-sm">
-                            <thead className="bg-background text-left text-text-dim">
-                                <tr>
-                                    <th className="px-6 py-4">Name</th>
-                                    <th className="px-6 py-4">Email</th>
-                                    <th className="px-6 py-4">Role</th>
-                                    <th className="px-6 py-4">Title</th>
-                                    <th className="px-6 py-4">Assign Role</th>
-                                    <th className="px-6 py-4">Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {users.map((user) => (
-                                    <tr key={user._id} className="border-t border-border hover:bg-slate-50">
-                                        <td className="px-6 py-4 font-semibold text-text-dark">{user.firstName} {user.lastName}</td>
-                                        <td className="px-6 py-4">{user.email}</td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex gap-1">
-                                                {user.roles.map(role => (
-                                                    <div className="relative" key={role}>
-                                                        <span
-                                                            className="bg-red-500 text-white w-[20px]
-                                                        h-[20px] right-[-5px] top-[-5px] absolute rounded-full text-center cursor-pointer"
-                                                            onClick={() => openToggleRoleConfirm(user._id, role)}
-                                                        >x</span>
-                                                        <button className="bg-gray-500 p-2 text-white rounded-3xl">{role}</button>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">{user.title || "—"}</td>
-                                        <td>
-                                            <select
-                                                onChange={e => openToggleRoleConfirm(user._id, e.target.value)}
-                                            >
-                                                <option value="">Select Role</option>
-                                                {
-                                                    availableRolesForUser(user._id).map(role => (
-                                                        <option key={role} value={role}>{role}</option>
-                                                    ))
-                                                }
-                                            </select>
-                                        </td>
-                                        <td className="px-6 py-4"><button
-                                            className="bg-red-500 text-white p-2 rounded-xl"
-                                            onClick={() => openDeleteConfirm(user._id, `${user.firstName} ${user.lastName}`)}>delete</button></td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-                <ConfirmModal isOpen={deleteConfirm} onClose={onDeleteClose} onConfirm={handleDeleteConfirm} action="Delete User" loading={deleteLoading} err={deleteErr} selectedUser={{ name: selectedUser?.name }} />
+        <div>
+            <DashHeader
+                title="Users"
+                subtitle="Manage clients and freelancers on the platform."
+                // action={
+                //     <button className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-brand hover:bg-primary-dark">
+                //         <UserPlus className="h-4 w-4" /> Invite user
+                //     </button>
+                // }
+            />
+            <StatGrid stats={[
+                { label: "Total users", value: "12,486", delta: "+128 this week" },
+                // { label: "Freelancers", value: "8,210", delta: "+96 this week" },
+                // { label: "Clients", value: "4,276", delta: "+32 this week" },
+                // { label: "Suspended", value: "47" },
+            ]} />
 
-                <ConfirmModal isOpen={toggleRoleConfirm} onClose={onToggleRoleClose} onConfirm={handleToggleRoleConfirm} action="Toggle Role" loading={updateProfileLoading} selectedUser={{ role: selectedUser?.role }} />
+            <div className="mb-4 flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2">
+                <Search className="h-4 w-4 text-text-dim" />
+                <input className="w-full bg-transparent text-sm outline-none placeholder:text-text-dim" placeholder="Search users by name or email..." />
             </div>
+
+            <DataTable headers={["User", "Title", "Joined"]}>
+                {users.map((u) => (
+                    <tr key={u._id} className="hover:bg-muted/30">
+                        <td className="px-5 py-4">
+                            <div className="flex items-center gap-3">
+                                <div className="grid h-9 w-9 place-items-center rounded-full bg-primary-soft text-xs font-semibold text-primary-dark">
+                                    {u.firstName.split(" ").map((p) => p[0]).join("")}
+                                </div>
+                                <div>
+                                    <p className="font-medium text-text-dark">{u.firstName} {u.lastName}</p>
+                                    <p className="text-xs text-text-muted">{u.email}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td className="px-5 py-4 text-text-body">{u.title}</td>
+                        {/* <td className="px-5 py-4 font-mono text-text-dark">{u.projects}</td> */}
+                        <td className="px-5 py-4 text-text-muted">{new Date(u.createdAt).toLocaleDateString("en-GB")}</td>
+                    </tr>
+                ))}
+            </DataTable>
         </div>
     );
 }

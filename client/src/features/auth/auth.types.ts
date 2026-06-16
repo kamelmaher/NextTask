@@ -12,6 +12,7 @@ export type User = {
     profileImg: string,
     category: Category
     balance: number
+    createdAt: string
 }
 
 export type authState = {

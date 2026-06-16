@@ -1,20 +1,66 @@
-import { Outlet } from "react-router-dom";
-import { ProfileSidebar } from "../components/ProfileSidebar";
+import { User, Image, FileText, Hammer, Megaphone, MapPin, Star } from "lucide-react";
+import { NavLink, Outlet } from "react-router-dom";
 
 
-export default function ProfileLayout() {
+const items: { to: string; icon: typeof User; label: string; exact?: boolean }[] = [
+    { to: "/profile", icon: User, label: "Profile", exact: true },
+    { to: "/profile/portfolio", icon: Image, label: "Portfolio" },
+    { to: "/profile/proposals", icon: FileText, label: "Proposals" },
+    { to: "/profile/working-on", icon: Hammer, label: "Working on" },
+    { to: "/profile/posted", icon: Megaphone, label: "Posted projects" },
+];
+
+export default function ProfilePage() {
     return (
-        <div className="min-h-screen bg-background">
-            <main className="mx-auto max-w-7xl px-6 py-10">
-                <div className="grid grid-cols-12 gap-8">
-                    <div className="col-span-12 lg:col-span-3">
-                        <ProfileSidebar />
+        <div className="min-h-screen">
+            {/* Profile header */}
+            <div className="border-b border-border bg-surface">
+                <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-5 px-6 py-8">
+                    <div className="grid h-20 w-20 place-items-center rounded-full gradient-hero text-2xl font-bold text-white shadow-brand">
+                        EV
                     </div>
-                    <div className="col-span-12 lg:col-span-9">
-                        <Outlet />
+                    <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                            <h1 className="text-2xl font-bold text-text-dark">Elena Vasquez</h1>
+                            <span className="badge-pill bg-success-light text-success">Top Rated</span>
+                        </div>
+                        <p className="mt-1 text-text-body">Senior Product Designer & Frontend Developer</p>
+                        <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-text-muted">
+                            <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" /> Barcelona, Spain</span>
+                            <span className="flex items-center gap-1.5"><Star className="h-3.5 w-3.5 fill-warning text-warning" /> 4.96 (218 reviews)</span>
+                            <span>$85/hr · $128k earned</span>
+                        </div>
                     </div>
+                    <button className="rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium hover:border-primary hover:text-primary">
+                        Edit profile
+                    </button>
                 </div>
-            </main>
-        </div>
+            </div>
+
+            <div className="mx-auto flex max-w-[1280px] gap-6 px-6 py-8">
+                <aside className="hidden w-60 shrink-0 md:block">
+                    <nav className="sticky top-20 rounded-xl border border-border bg-surface p-3">
+                        {items.map((it) => {
+                            return (
+                                <NavLink
+                                    key={it.to}
+                                    to={it.to}
+                                    className={
+                                        ({ isActive }) =>
+                                            `flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition ${isActive ? "bg-primary-soft text-primary-dark" : "text-text-body hover:bg-muted"
+                                            }`}
+                                >
+                                    <it.icon className="h-4 w-4" />
+                                    {it.label}
+                                </NavLink>
+                            );
+                        })}
+                    </nav>
+                </aside>
+                <main className="min-w-0 flex-1">
+                    <Outlet />
+                </main>
+            </div>
+        </div >
     );
 }

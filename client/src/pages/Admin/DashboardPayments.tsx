@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Spinner from "../../components/Spinner";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { getTransactions } from "../../features/transactions/transactions.reducer";
+import { StatGrid } from "../../components/DashboardUi";
 
 
 export default function DashboardPayments() {
@@ -11,6 +12,7 @@ export default function DashboardPayments() {
     useEffect(() => {
         dispatch(getTransactions(tab))
     }, [tab, dispatch])
+
     return (
         <div className="min-h-screen bg-background">
             <div className="mx-auto max-w-6xl px-6 py-10">
@@ -18,7 +20,13 @@ export default function DashboardPayments() {
                     <h1 className="text-3xl font-bold text-text-dark">Payments & Transactions</h1>
                     <p className="text-text-dim">Track deposits, withdraws and transfers performed in the system.</p>
                 </div>
-
+                
+                <StatGrid stats={[
+                    { label: "Released (30d)", value: "$184k", delta: "+8.2%" },
+                    { label: "In escrow", value: "$62k" },
+                    { label: "Platform fees", value: "$18.4k", delta: "+12%" },
+                    { label: "Refunded", value: "$1.2k" },
+                ]} />
                 <div className="mb-6 flex gap-2">
                     <button onClick={() => setTab("deposit")} className={`px-4 py-2 rounded ${tab === "deposit" ? "bg-primary text-white" : "bg-surface border"}`}>Deposits</button>
                     <button onClick={() => setTab("withdraw")} className={`px-4 py-2 rounded ${tab === "withdraw" ? "bg-primary text-white" : "bg-surface border"}`}>Withdraws</button>
@@ -31,6 +39,7 @@ export default function DashboardPayments() {
                     <Spinner label="Loading transactions..." />
                 ) : (
                     <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
+
                         <table className="w-full border-collapse text-sm">
                             <thead className="bg-background text-left text-text-dim">
                                 <tr>
@@ -78,3 +87,5 @@ export default function DashboardPayments() {
         </div >
     )
 }
+
+
