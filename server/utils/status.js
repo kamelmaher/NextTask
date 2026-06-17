@@ -20,7 +20,7 @@ const contractStatus = {
     INPROGRESS: "inprogress",
     DECLINED: "declined",
     SUBMITTED: "submitted",
-    FINISHED: "accepted"
+    ACCEPTED: "accepted"
 }
 
 const transactionStatus = {

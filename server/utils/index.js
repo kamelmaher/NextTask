@@ -1,8 +1,6 @@
 const roles = {
     ADMIN: "admin",
-    MODERATOR: "moderator",
     USER: "user",
-    MANAGER: "manager"
 }
 
 const mainPriceRange = {
@@ -15,7 +13,7 @@ const MAIN_LIMIT = 15
 const userAllowedFields = ["firstName", "lastName", "userName", "email", "password", "about", "title", "profileImage", "categoryId"]
 
 const transactionTypes = {
-    DEPOSITE: "deposit",
+    DEPOSIT: "deposit",
     WITHDRAW: "withdraw",
     TRANSFER: "transfer"
 }

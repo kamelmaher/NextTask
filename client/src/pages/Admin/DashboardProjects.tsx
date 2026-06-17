@@ -19,6 +19,7 @@ const statusConfig = {
 export default function DashboardProjectsPage() {
     const dispatch = useAppDispatch();
     const { projects, loading, updateLoading, err, updateErr } = useAppSelector((state) => state.projects);
+    const { dashboardStatics, loading: staticsLoading } = useAppSelector(state => state.statics)
     const [status, setStatus] = useState("");
     const [approveStatus, setApproveStatus] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
@@ -31,19 +32,18 @@ export default function DashboardProjectsPage() {
         dispatch(changeProjectApprovalStatus({ id, status: nextStatus }));
     };
 
-    // const filteredProjects = projects.filter(p =>
-    //     searchTerm === "" || p.title.toLowerCase().includes(searchTerm.toLowerCase())
-    // );
-    console.log(projects)
     return (
         <div>
             <DashHeader title="Projects" subtitle="All projects posted on the platform." />
-            <StatGrid stats={[
-                { label: "Active projects", value: "2,431", delta: "+184 this week" },
-                { label: "Completed", value: "18,402" },
-                { label: "Avg budget", value: "$1,840" },
-                { label: "Total value", value: "$4.6M", delta: "+12% MoM" },
-            ]} />
+            {
+                staticsLoading ? <Spinner size="md" /> :
+                    dashboardStatics &&
+                    <StatGrid stats={[
+                        { label: "Active projects", value: `${dashboardStatics.projectStatics.activeProjects}` },
+                        { label: "Completed", value: `${dashboardStatics.projectStatics.completedProjects}` },
+                        { label: "Pending projects", value: `${dashboardStatics.projectStatics.pendingProjects}` },
+                    ]} />
+            }
             {
                 loading ? <Spinner size="lg" /> :
                     <DataTable headers={["Title", "Category", "Budget", "Proposals", "Status", ""]}>

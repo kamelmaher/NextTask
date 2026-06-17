@@ -9,6 +9,7 @@ import { DashHeader, DataTable, StatGrid } from "../../components/DashboardUi";
 export default function DashboardContractsPage() {
     const dispatch = useAppDispatch();
     const { contracts, loading, err } = useAppSelector((state) => state.contract);
+    const { dashboardStatics, loading: staticsLoading } = useAppSelector(state => state.statics)
     const [status, setStatus] = useState("");
 
     useEffect(() => {
@@ -18,12 +19,17 @@ export default function DashboardContractsPage() {
     return (
         <div>
             <DashHeader title="Contracts" subtitle="Active and completed contracts between clients and freelancers." />
-            <StatGrid stats={[
-                { label: "Active", value: "284" },
-                { label: "Completed", value: "1,902" },
-                { label: "Disputed", value: "7" },
-                { label: "Total value", value: "$1.2M" },
-            ]} />
+            {
+                staticsLoading ? <Spinner /> :
+                    dashboardStatics &&
+                    <StatGrid stats={[
+                        { label: "Active", value: `${dashboardStatics.contractStatics.inProgress}` },
+                        { label: "Completed", value: `${dashboardStatics.contractStatics.completed}` },
+                        { label: "cancelled", value: `${dashboardStatics.contractStatics.declined}` },
+                        { label: "Total value", value: `$${dashboardStatics.contractStatics.totalValue}` },
+                    ]} />
+            }
+
             {
                 loading ? <Spinner size="lg" /> :
                     <DataTable headers={["Project", "Client", "Freelancer", "Amount", "Status", "Started"]}>

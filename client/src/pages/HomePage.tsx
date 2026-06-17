@@ -4,26 +4,20 @@ import StatCard from "../components/StatCard";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { fetchProjects } from "../features/projects/projects.reducers";
 import { useEffect } from "react";
-import { getContracts } from "../features/contract/contract.reducer";
-import { getProposals } from "../features/proposal/proposal.reducer";
-import { contractStatus, proposalStatus } from "../utils/status";
 import { ArrowRight, Users, Briefcase, Sparkles, Zap, Shield, Plus, Wallet, TrendingUp } from "lucide-react";
 import Spinner from "../components/Spinner";
+import { getUserStatics } from "../features/statics/statics.reducer";
 
 export const HomePage = () => {
     const { user, isAuthenticated, fetchUserLoading } = useAppSelector(state => state.auth);
-    const { projects, loading } = useAppSelector(state => state.projects);
-    const { contracts, loading: contractLoading } = useAppSelector(state => state.contract);
-    const { proposals, loading: proposalsLoading } = useAppSelector(state => state.proposal);
-
+    const { projects, loading: projectsLoading } = useAppSelector(state => state.projects);
+    const { userStatics, loading} = useAppSelector(state => state.statics)
     const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(fetchProjects({}));
-        dispatch(getContracts({ status: contractStatus.INPROGRESS, freelancer: user?._id }));
-        if (user) dispatch(getProposals({ status: proposalStatus.PENDING, userId: user?._id }));
+        dispatch(getUserStatics())
     }, [dispatch, user]);
-
     return (
         <div className="min-h-screen bg-[#F8FAFC]">
             {/* Hero Section - Creative Gradient */}
@@ -177,35 +171,40 @@ export const HomePage = () => {
                         </div>
 
                         {/* Creative Stats Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                            <StatCard
-                                label="Wallet Balance"
-                                value={`$${(user.balance || 0).toFixed(2)}`}
-                                icon={<Wallet className="h-5 w-5" />}
-                                accent
+                        {
+                            loading ? <Spinner size="lg" /> :
+                                userStatics &&
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                                    <StatCard
+                                        label="Wallet Balance"
+                                        value={`$${(user.balance || 0).toFixed(2)}`}
+                                        icon={<Wallet className="h-5 w-5" />}
+                                        accent
 
-                            />
-                            <StatCard
-                                label="In Progress"
-                                value={contracts.length.toString()}
-                                icon={<Briefcase className="h-5 w-5" />}
-                                link="/profile/projects"
-                                loading={contractLoading}
+                                    />
+                                    <StatCard
+                                        label="In Progress"
+                                        value={`${userStatics.inProgress}`}
+                                        icon={<Briefcase className="h-5 w-5" />}
+                                        link="/profile/projects"
+                                    // loading={contractLoading}
 
-                            />
-                            <StatCard
-                                label="Pending Proposals"
-                                value={proposals.length.toString()}
-                                icon={<TrendingUp className="h-5 w-5" />}
-                                link="/profile/proposals"
-                                loading={proposalsLoading}
-                            />
-                            <StatCard
-                                label="Total Earnings"
-                                value="$12,450"
-                                icon={<Sparkles className="h-5 w-5" />}
-                            />
-                        </div>
+                                    />
+                                    <StatCard
+                                        label="Pending Proposals"
+                                        value={`${userStatics.pendingProposals}`}
+                                        icon={<TrendingUp className="h-5 w-5" />}
+                                        link="/profile/proposals"
+                                    // loading={proposalsLoading}
+                                    />
+                                    <StatCard
+                                        label="Total Earnings"
+                                        value={`$${userStatics.totalEarned}`}
+                                        icon={<Sparkles className="h-5 w-5" />}
+                                        accent
+                                    />
+                                </div>
+                        }
                     </div>
                 )}
 
@@ -227,7 +226,7 @@ export const HomePage = () => {
                         </NavLink>
                     </div>
 
-                    {loading ? (
+                    {projectsLoading ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {[1, 2, 3].map(i => (
                                 <div key={i} className="rounded-2xl bg-white border border-[#E2E8F0] p-6 space-y-4">

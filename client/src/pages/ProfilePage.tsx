@@ -1,58 +1,41 @@
-import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../store/store";
-import { useEffect, useState } from "react";
-import UpdateProfileForm from "../components/UpdateProfileForm";
 import Spinner from "../components/Spinner";
-import WalletTopUp from "../components/WalletTopUp";
-import { Edit3, MapPin, Link as LinkIcon, Calendar, Award, Star, Briefcase, DollarSign, Mail, Shield } from "lucide-react";
 import { StatGrid } from "../components/DashboardUi";
 
 export default function ProfilePage() {
-    const { user, isAuthenticated, fetchUserLoading, authChecked } = useAppSelector(state => state.auth);
-    const navigate = useNavigate();
-    const [showUpdateForm, setShowUpdateForm] = useState(false);
-
-    useEffect(() => {
-        if (fetchUserLoading || !authChecked) return;
-        if (!isAuthenticated) navigate("/login");
-    }, [isAuthenticated, fetchUserLoading, authChecked, navigate]);
-
-    if (fetchUserLoading || !authChecked) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
-                <Spinner size="lg" />
-            </div>
-        );
-    }
-
+    const { userStatics, loading } = useAppSelector(state => state.statics)
+    const { user } = useAppSelector(state => state.auth)
     return (
         <div className="space-y-6">
-            <StatGrid stats={[
-                { label: "Total earned", value: "$128k", delta: "+$8.2k this month" },
-                { label: "Jobs done", value: "84" },
-                { label: "Repeat clients", value: "62%" },
-                { label: "Response time", value: "2h" },
-            ]} />
+            {
+                loading ? <Spinner size="lg" /> :
+                    userStatics &&
+                    <StatGrid stats={[
+                        { label: "Total earned", value: `$${userStatics.totalEarned}`, delta: "+$8.2k this month" },
+                        { label: "Jobs done", value: `${userStatics.finishedWork}` },
+                        { label: "Total Proposals", value: `${userStatics.proposalsCount}` },
+                        { label: "Pending Proposals", value: `${userStatics.pendingProposals}` },
+                        { label: "total Posted Projects", value: `${userStatics.postedProjects}` },
+                    ]} />
+            }
 
             <div className="rounded-xl border border-border bg-surface p-6">
                 <h2 className="text-lg font-semibold text-text-dark">About</h2>
                 <p className="mt-3 leading-7 text-text-body">
-                    I'm a senior product designer turned full-stack developer with 9+ years of experience shipping polished digital
-                    products for startups and enterprise teams. I specialize in React, Tailwind, and design systems — from initial
-                    discovery through delivery and post-launch iteration. I care deeply about craft, communication, and shipping
-                    on time.
+                    {user?.about}
                 </p>
             </div>
-
-            <div className="rounded-xl border border-border bg-surface p-6">
+            {/* Skills */}
+            {/* <div className="rounded-xl border border-border bg-surface p-6">
                 <h2 className="text-lg font-semibold text-text-dark">Skills</h2>
                 <div className="mt-4 flex flex-wrap gap-2">
                     {["React", "TypeScript", "Tailwind CSS", "Figma", "Design Systems", "Framer Motion", "Node.js", "PostgreSQL", "Next.js", "Product Strategy"].map((s) => (
                         <span key={s} className="rounded-full bg-primary-soft px-3 py-1.5 text-sm font-medium text-primary-dark">{s}</span>
                     ))}
                 </div>
-            </div>
+            </div> */}
 
+            {/* History */}
             <div className="rounded-xl border border-border bg-surface p-6">
                 <h2 className="text-lg font-semibold text-text-dark">Work history</h2>
                 <ul className="mt-4 space-y-4">

@@ -3,13 +3,16 @@ import Spinner from "../../components/Spinner";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { getTransactions } from "../../features/transactions/transactions.reducer";
 import { StatGrid } from "../../components/DashboardUi";
+import { getTransactionStatics } from "../../features/statics/statics.reducer";
 
 
 export default function DashboardPayments() {
     const [tab, setTab] = useState<"deposit" | "withdraw" | "transfer">("deposit");
     const { transactions, loading, err } = useAppSelector(state => state.transactions)
+    const { transactionStatics, loading: staticsLoading } = useAppSelector(state => state.statics)
     const dispatch = useAppDispatch()
     useEffect(() => {
+        dispatch(getTransactionStatics())
         dispatch(getTransactions(tab))
     }, [tab, dispatch])
 
@@ -20,13 +23,15 @@ export default function DashboardPayments() {
                     <h1 className="text-3xl font-bold text-text-dark">Payments & Transactions</h1>
                     <p className="text-text-dim">Track deposits, withdraws and transfers performed in the system.</p>
                 </div>
-                
-                <StatGrid stats={[
-                    { label: "Released (30d)", value: "$184k", delta: "+8.2%" },
-                    { label: "In escrow", value: "$62k" },
-                    { label: "Platform fees", value: "$18.4k", delta: "+12%" },
-                    { label: "Refunded", value: "$1.2k" },
-                ]} />
+                {
+                    staticsLoading ? <Spinner /> :
+                        transactionStatics &&
+                        <StatGrid stats={[
+                            { label: "Total Deposits", value: `$${transactionStatics.depositValue || 0}` },
+                            { label: "Total Withdraws", value: `$${transactionStatics.withdrawsValue || 0}` },
+                            { label: "Total Transfers", value: `$${transactionStatics.totalTransfers || 0}` },
+                        ]} />
+                }
                 <div className="mb-6 flex gap-2">
                     <button onClick={() => setTab("deposit")} className={`px-4 py-2 rounded ${tab === "deposit" ? "bg-primary text-white" : "bg-surface border"}`}>Deposits</button>
                     <button onClick={() => setTab("withdraw")} className={`px-4 py-2 rounded ${tab === "withdraw" ? "bg-primary text-white" : "bg-surface border"}`}>Withdraws</button>

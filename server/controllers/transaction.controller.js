@@ -5,7 +5,7 @@ const { transactionTypes } = require("../utils")
 exports.getTransactions = async (req, res) => {
     const { type } = req.query
     const validTypes = [
-        transactionTypes.DEPOSITE,
+        transactionTypes.DEPOSIT,
         transactionTypes.WITHDRAW,
         transactionTypes.TRANSFER,
     ]

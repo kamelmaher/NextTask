@@ -55,9 +55,8 @@ export default function AppRoutes() {
 
                 {/* Dashboard */}
                 <Route path="/admin" element={<ProtectedRoute forAdmin={true}><AdminLayout /></ProtectedRoute>}>
-                    <Route index element={<DashboardProjects />} />
+                    <Route index element={<DashboardUsers />} />
                     <Route path="projects" element={<DashboardProjects />} />
-                    <Route path="users" element={<DashboardUsers />} />
                     <Route path="contracts" element={<DashboardContracts />} />
                     <Route path="categories" element={<DashboardCategories />} />
                     <Route path="payments" element={<DashboardPayments />} />
