@@ -6,7 +6,7 @@ const { transactionTypes } = require("../utils")
 const { serverError, error, success } = require("../utils/responses")
 const { contractStatus, projectStatus, transactionStatus } = require("../utils/status")
 
-exports.getContracts = async (req, res) => {
+exports.getAllContracts = async (req, res) => {
     const { _id } = req.user
     if (!_id) return error(res, 400, "user not found")
     const { status, freelancer, employer } = req.query || {}
@@ -28,6 +28,24 @@ exports.getContracts = async (req, res) => {
     }
 }
 
+exports.getMyContracts = async (req, res) => {
+    const { _id } = req.user
+    if (!_id) return error(res, 400, "user not found")
+    try {
+        const contracts = await Contract.find({ freelancer: _id }).sort({ createdAt: -1 })
+            .populate({
+                path: "project",
+                populate: {
+                    path: "employer",
+                    select: "firstName lastName"
+                }
+            }).populate("freelancer", "firstName lastName title").populate("employer", "firstName lastName")
+        success(res, 200, { contracts })
+    } catch (err) {
+        console.log(err)
+        serverError(res)
+    }
+}
 exports.getContract = async (req, res) => {
     const contractId = req.params.id
     if (!contractId) return error(res, 400, "contract not found")

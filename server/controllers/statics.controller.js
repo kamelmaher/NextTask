@@ -5,7 +5,7 @@ const Proposal = require("../models/proposal.model")
 const Transaction = require("../models/transaction.model")
 const mongoose = require("mongoose")
 const { serverError, error, success } = require("../utils/responses")
-const { contractStatus, projectStatus, proposalStatus, projectApprovalStatus } = require("../utils/status")
+const { contractStatus, projectStatus, proposalStatus, projectApprovalStatus, transactionStatus } = require("../utils/status")
 const { transactionTypes } = require("../utils")
 
 exports.getUserStatics = async (req, res) => {
@@ -69,21 +69,35 @@ exports.getUserStatics = async (req, res) => {
 exports.getAdminStatics = async (req, res) => {
     const { _id } = req.user
     if (!_id) return error(res, 401, "UnAuthorized")
-
     try {
         const [
             totalUsers,
+
+            // projects
+            totalProjects,
             activeProjects,
             pendingProjects,
             completedProjects,
+
             // contracts
+            totalContracts,
             inProgress,
             completed,
             declined,
-            totalValue
+            totalValue,
+
+            // activity 
+            recentProjects,
+            recentContracts,
+            recentDeposits,
+
+            // pending Actions
+            pendingWithdrawalsAction
         ] = await Promise.all([
             User.countDocuments(),
 
+            // projects
+            Project.countDocuments(),
             Project.countDocuments({
                 status: {
                     $in: [projectStatus.OPEN, projectStatus.INPROGRESS]
@@ -93,6 +107,8 @@ exports.getAdminStatics = async (req, res) => {
             Project.countDocuments({ approveStatus: projectApprovalStatus.PENDING }),
             Project.countDocuments({ status: projectStatus.FINISHED }),
 
+            // contracts
+            Contract.countDocuments(),
             Contract.countDocuments({ status: contractStatus.INPROGRESS }),
             Contract.countDocuments({ status: contractStatus.ACCEPTED }),
             Contract.countDocuments({ status: contractStatus.DECLINED }),
@@ -109,26 +125,54 @@ exports.getAdminStatics = async (req, res) => {
                     }
                 }
             ]),
+
+            // activity
+            Project.find().sort({ createdAt: -1 }).limit(5).populate("employer", "firstName lastName"),
+            Contract.find({}).sort({ createdAt: -1 })
+                .limit(5)
+                .populate("employer", "firstName lastName")
+                .populate("project", "title")
+                .populate("freelancer", "firstName lastName"),
+            Transaction.find({ type: transactionTypes.DEPOSIT, status: transactionStatus.COMPLETED })
+                .sort({ createdAt: -1 })
+                .limit(5)
+                .populate("user", "firstName lastName"),
+
+            // pending actions
+            Transaction.countDocuments({ type: transactionTypes.WITHDRAW, status: transactionStatus.PENDING })
         ])
         const contractTotalValue = totalValue[0].totalValue
 
         const projectStatics = {
+            totalProjects,
             activeProjects,
             pendingProjects,
             completedProjects
         }
 
         const contractStatics = {
+            totalContracts,
             inProgress,
             completed,
             declined,
             totalValue: contractTotalValue
         }
 
+        const activity = {
+            recentProjects,
+            recentContracts,
+            recentDeposits
+        }
+
+        const pendingActions = {
+            pendingWithdrawalsAction
+        }
         success(res, 200, {
             totalUsers,
             projectStatics,
-            contractStatics
+            contractStatics,
+            activity,
+            pendingActions
         })
     } catch (err) {
         console.log(err)
@@ -205,3 +249,6 @@ exports.getPaymentStatics = async (req, res) => {
         serverError(res)
     }
 }
+
+
+

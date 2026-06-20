@@ -41,6 +41,8 @@ const contractSchema = new mongoose.Schema({
         default: contractStatus.INPROGRESS
     },
 }, { timestamps: true })
+contractSchema.index({ status: 1 });
+contractSchema.index({ createdAt: -1 });
 
 const Contract = mongoose.model("contract", contractSchema)
 module.exports = Contract

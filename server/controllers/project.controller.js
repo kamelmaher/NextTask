@@ -8,8 +8,8 @@ const { projectApprovalStatus, projectStatus } = require("../utils/status")
 
 // Public Access
 exports.getProjects = async (req, res) => {
-    const page = req.query.page || 1
-    const skip = (page - 1) * MAIN_LIMIT
+    const page = req.query.page || 1;
+    const skip = (page - 1) * MAIN_LIMIT;
     const {
         search,
         category,
@@ -19,7 +19,7 @@ exports.getProjects = async (req, res) => {
         status,
     } = req.query || {};
 
-    let filters = {}
+    let filters = {};
     if (!employer)
         filters = { status: projectStatus.OPEN, approveStatus: projectApprovalStatus.ACCEPTED };
 
@@ -60,14 +60,15 @@ exports.getProjects = async (req, res) => {
 }
 
 exports.getAdminProjects = async (req, res) => {
-    const { status, approveStatus, employer, searchTerm } = req.query || {}
+    const { status, approveStatus, employer, title, category } = req.query || {}
     const filters = {}
     if (status) filters.status = status
     if (approveStatus) filters.approveStatus = approveStatus
     if (employer) filters.employer = employer
-    if (searchTerm) {
+    if (category) filters.category = category
+    if (title) {
         filters.title = {
-            $regex: searchTerm,
+            $regex: title,
             $options: "i",
         }
     }
@@ -90,7 +91,7 @@ exports.getSingleProject = async (req, res) => {
     const { id } = req.params
     if (!id) return error(res, 400, "id is required")
     try {
-        const project = await Project.findById(id).populate("employer", "firstName lastName").populate("category", "title")
+        const project = await Project.findById(id).populate("employer").populate("category", "title")
         if (!project) return error(res, 404, "project not found")
         success(res, 200, { project })
     } catch (err) {
@@ -199,6 +200,7 @@ exports.deleteProject = async (req, res) => {
 exports.changeApproveStatus = async (req, res) => {
     const { id } = req.params
     const { approveStatus } = req.body
+    console.log(approveStatus)
     try {
         const allowedStatuses = Object.values(projectApprovalStatus);
         if (!allowedStatuses.includes(approveStatus)) {

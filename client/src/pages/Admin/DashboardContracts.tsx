@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Spinner from "../../components/Spinner";
-import { getContracts } from "../../features/contract/contract.reducer";
+import { getAllContracts } from "../../features/contract/contract.reducer";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { contractStatus } from "../../utils/status";
 import { NavLink } from "react-router-dom";
@@ -13,7 +13,7 @@ export default function DashboardContractsPage() {
     const [status, setStatus] = useState("");
 
     useEffect(() => {
-        dispatch(getContracts({ status }));
+        dispatch(getAllContracts({ status }));
     }, [dispatch, status]);
     console.log(contracts)
     return (

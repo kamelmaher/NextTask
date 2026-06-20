@@ -94,7 +94,7 @@ export const changeProjectApprovalStatus = createAsyncThunk(
 
 export const fetchAdminProjects = createAsyncThunk(
     "projects/fetchAdminProjects",
-    async (filters: { status?: string; approveStatus?: string; employer?: string; searchTerm?: string } = {}, thunkAPI) => {
+    async (filters: { status?: string; approveStatus?: string; employer?: string; title?: string, category?: string } = {}, thunkAPI) => {
         try {
             const res = await api.get(`${baseUrl}/admin`, { params: filters })
             return res.data

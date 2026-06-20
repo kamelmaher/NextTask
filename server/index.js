@@ -41,6 +41,7 @@ const portfolioRoute = require("./routes/portfolio.route")
 const paymentRoute = require("./routes/payment.route");
 const transactionRoute = require("./routes/transaction.route");
 const statiscsRoute = require("./routes/statics.route");
+const { getAdminStatics } = require("./controllers/statics.controller");
 
 app.use("/user", userRoute)
 app.use("/project", projectRoute)
@@ -51,6 +52,7 @@ app.use("/portfolio", portfolioRoute)
 app.use("/payment", paymentRoute)
 app.use("/transaction", transactionRoute)
 app.use("/statics", statiscsRoute)
+
 
 mongoose
     .connect(process.env.DB_URL)

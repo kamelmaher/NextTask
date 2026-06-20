@@ -82,62 +82,63 @@ export default function DashboardUsersPage() {
                 <Search className="h-4 w-4 text-text-dim" />
                 <input className="w-full bg-transparent text-sm outline-none placeholder:text-text-dim" placeholder="Search users by name or email..." />
             </div>
-
-            <DataTable headers={["User", "Title", "Joined", "Roles", "Assign Role", "Delete"]}>
-                {
-                    loading ? <Spinner size="lg" /> :
-                        users.map((u) => (
-                            <tr key={u._id} className="hover:bg-muted/30">
-                                <td className="px-5 py-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="grid h-9 w-9 place-items-center rounded-full bg-primary-soft text-xs font-semibold text-primary-dark">
-                                            {u.firstName.split(" ").map((p) => p[0]).join("")}
-                                        </div>
-                                        <div>
-                                            <p className="font-medium text-text-dark">{u.firstName} {u.lastName}</p>
-                                            <p className="text-xs text-text-muted">{u.email}</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="px-5 py-4 text-text-body">{u.title}</td>
-                                <td className="px-5 py-4 text-text-muted">{new Date(u.createdAt).toLocaleDateString("en-GB")}</td>
-                                <td>
-                                    <div className="flex gap-1">
-                                        {u.roles.map(role => (
-                                            <div className="relative" key={role}>
-                                                <span
-                                                    className="bg-red-500 text-white w-[20px]
-                                                        h-[20px] right-[-5px] top-[-5px] absolute rounded-full text-center cursor-pointer"
-                                                    onClick={() => openToggleRoleConfirm(u._id, role)}
-                                                >x</span>
-                                                <button className="bg-gray-500 p-2 text-white rounded-3xl">{role}</button>
+            {
+                loading ? <Spinner size="md" /> :
+                    <DataTable headers={["User", "Title", "Joined", "Roles", "Assign Role", "Delete"]}>
+                        {
+                            users.map((u) => (
+                                <tr key={u._id} className="hover:bg-muted/30">
+                                    <td className="px-5 py-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="grid h-9 w-9 place-items-center rounded-full bg-primary-soft text-xs font-semibold text-primary-dark">
+                                                {u.firstName.split(" ").map((p) => p[0]).join("")}
                                             </div>
-                                        ))}
-                                    </div>
-                                </td>
-                                <td>
-                                    <select
-                                        onChange={(e) => {
-                                            openToggleRoleConfirm(u._id, e.target.value)
-                                        }}
-                                    >
-                                        <option value="">Select Role</option>
-                                        {
-                                            availableRolesForUser(u._id).map(role => (
-                                                <option key={role} value={role}>{role}</option>
-                                            ))
-                                        }
-                                    </select>
-                                </td>
-                                <td>
-                                    <button
-                                        className="p-2 bg-red-500 rounded text-white"
-                                        onClick={() => openDeleteConfirm(u._id, `${u.firstName} ${u.lastName}`)}
-                                    >Delete</button>
-                                </td>
-                            </tr>
-                        ))}
-            </DataTable>
+                                            <div>
+                                                <p className="font-medium text-text-dark">{u.firstName} {u.lastName}</p>
+                                                <p className="text-xs text-text-muted">{u.email}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-5 py-4 text-text-body">{u.title}</td>
+                                    <td className="px-5 py-4 text-text-muted">{new Date(u.createdAt).toLocaleDateString("en-GB")}</td>
+                                    <td>
+                                        <div className="flex gap-1">
+                                            {u.roles.map(role => (
+                                                <div className="relative" key={role}>
+                                                    <span
+                                                        className="bg-red-500 text-white w-[20px]
+                                                        h-[20px] right-[-5px] top-[-5px] absolute rounded-full text-center cursor-pointer"
+                                                        onClick={() => openToggleRoleConfirm(u._id, role)}
+                                                    >x</span>
+                                                    <button className="bg-gray-500 p-2 text-white rounded-3xl">{role}</button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <select
+                                            onChange={(e) => {
+                                                openToggleRoleConfirm(u._id, e.target.value)
+                                            }}
+                                        >
+                                            <option value="">Select Role</option>
+                                            {
+                                                availableRolesForUser(u._id).map(role => (
+                                                    <option key={role} value={role}>{role}</option>
+                                                ))
+                                            }
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button
+                                            className="p-2 bg-red-500 rounded text-white"
+                                            onClick={() => openDeleteConfirm(u._id, `${u.firstName} ${u.lastName}`)}
+                                        >Delete</button>
+                                    </td>
+                                </tr>
+                            ))}
+                    </DataTable>
+            }
 
             <ConfirmModal
                 isOpen={deleteConfirm}

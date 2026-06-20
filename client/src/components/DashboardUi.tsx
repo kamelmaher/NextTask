@@ -12,12 +12,17 @@ export function DashHeader({ title, subtitle, action }: { title: string; subtitl
     );
 }
 
-export function StatGrid({ stats }: { stats: { label: string; value: string; delta?: string }[] }) {
+export function StatGrid({ stats }: { stats: { label: string; value: string; delta?: string, icon?: ReactNode }[] }) {
     return (
         <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((s) => (
                 <div key={s.label} className="rounded-xl border border-border bg-surface p-5">
-                    <p className="text-xs font-medium uppercase tracking-wide text-text-muted">{s.label}</p>
+                    <div className="flex gap-2 items-center">
+                        <div className="text-primary">
+                            {s.icon}
+                        </div>
+                        <p className="text-xs font-medium uppercase tracking-wide text-text-muted">{s.label}</p>
+                    </div>
                     <p className="mt-2 font-mono text-2xl font-bold text-text-dark">{s.value}</p>
                     {s.delta && <p className="mt-1 text-xs font-medium text-success">{s.delta}</p>}
                 </div>
@@ -38,7 +43,7 @@ export function DataTable({ headers, children }: { headers: string[]; children: 
                             ))}
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-border">{children}</tbody>
+                    <tbody className="divide-y divide-border text-center">{children}</tbody>
                 </table>
             </div>
         </div>

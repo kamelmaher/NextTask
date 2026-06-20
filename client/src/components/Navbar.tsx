@@ -62,7 +62,7 @@ export function Navbar() {
                             </div>
 
                             {/* Admin Link */}
-                            {(user?.roles.includes(roles.ADMIN) || user?.roles.includes(roles.MANAGER)) && (
+                            {user?.roles.includes(roles.ADMIN) && (
                                 <NavLink
                                     to={"/admin"}
                                     className="hidden sm:flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] transition-all"

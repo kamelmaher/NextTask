@@ -1,15 +1,16 @@
-import { Briefcase, CreditCard, FileText, Tag, Users } from "lucide-react";
+import { Briefcase, CreditCard, FileText, LayoutDashboard, Tag, Users } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 import { useAppDispatch } from "../store/store";
 import { useEffect } from "react";
 import { getDashboardStatics } from "../features/statics/statics.reducer";
 
 const tabs = [
-    { to: "/admin", icon: Users, label: "Users" },
+    { to: "/admin", icon: LayoutDashboard, label: "Admin" },
+    { to: "/admin/users", icon: Users, label: "Users" },
     { to: "/admin/projects", icon: Briefcase, label: "Projects" },
     { to: "/admin/categories", icon: Tag, label: "Categories" },
     { to: "/admin/contracts", icon: FileText, label: "Contracts" },
-    { to: "/admin/payments", icon: CreditCard, label: "Payments" },
+    { to: "/admin/transactions", icon: CreditCard, label: "Payments" },
 ]
 export default function AdminLayout() {
     const dispatch = useAppDispatch()

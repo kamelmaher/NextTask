@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { ContractState } from "./contract.types";
 import { acceptProposal } from "../proposal/proposal.reducer";
-import { acceptWork, getContract, getContracts, requestRevision, submitWork } from "./contract.reducer";
+import { acceptWork, getAllContracts, getContract, getMyContracts, requestRevision, submitWork } from "./contract.reducer";
 
 const initialState: ContractState = {
     contracts: [],
@@ -21,15 +21,29 @@ const ContractSlice = createSlice({
     extraReducers: (builder) => {
         builder
             // get contracts
-            .addCase(getContracts.pending, (state) => {
+            .addCase(getMyContracts.pending, (state) => {
                 state.err = null
                 state.loading = true
             })
-            .addCase(getContracts.fulfilled, (state, action) => {
+            .addCase(getMyContracts.fulfilled, (state, action) => {
                 state.contracts = action.payload.contracts
                 state.loading = false
             })
-            .addCase(getContracts.rejected, (state, action) => {
+            .addCase(getMyContracts.rejected, (state, action) => {
+                state.err = action.payload as string
+                state.loading = false
+            })
+
+            // get all contracts
+            .addCase(getAllContracts.pending, (state) => {
+                state.err = null
+                state.loading = true
+            })
+            .addCase(getAllContracts.fulfilled, (state, action) => {
+                state.contracts = action.payload.contracts
+                state.loading = false
+            })
+            .addCase(getAllContracts.rejected, (state, action) => {
                 state.err = action.payload as string
                 state.loading = false
             })

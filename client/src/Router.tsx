@@ -24,6 +24,7 @@ import DashboardContracts from "./pages/Admin/DashboardContracts";
 import DashboardCategories from "./pages/Admin/DashboardCategories";
 import DashboardPayments from "./pages/Admin/DashboardPayments";
 import ProtectedRoute from "./ProtectedRoute";
+import DashboardHome from "./pages/Admin/DashboardHome";
 
 export default function AppRoutes() {
     return (
@@ -55,11 +56,12 @@ export default function AppRoutes() {
 
                 {/* Dashboard */}
                 <Route path="/admin" element={<ProtectedRoute forAdmin={true}><AdminLayout /></ProtectedRoute>}>
-                    <Route index element={<DashboardUsers />} />
+                    <Route index element={<DashboardHome />} />
+                    <Route path="users" element={<DashboardUsers />} />
                     <Route path="projects" element={<DashboardProjects />} />
                     <Route path="contracts" element={<DashboardContracts />} />
                     <Route path="categories" element={<DashboardCategories />} />
-                    <Route path="payments" element={<DashboardPayments />} />
+                    <Route path="transactions" element={<DashboardPayments />} />
                 </Route>
 
                 <Route path="/login" element={<LoginPage />}></Route>

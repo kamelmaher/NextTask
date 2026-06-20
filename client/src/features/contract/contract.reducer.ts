@@ -58,11 +58,22 @@ export const getContract = createAsyncThunk(
         }
     })
 
-export const getContracts = createAsyncThunk(
-    "contract/getContracts",
+export const getMyContracts = createAsyncThunk(
+    "contract/getMyContracts",
     async (filters: contractFilters, thunkApi) => {
         try {
             const res = await api.get(baseUrl, { params: filters })
+            return res.data
+        } catch (err: any) {
+            return thunkApi.rejectWithValue(err.response.data.msg || "something went wrong")
+        }
+    })
+
+export const getAllContracts = createAsyncThunk(
+    "contract/getAllContracts",
+    async (filters: contractFilters, thunkApi) => {
+        try {
+            const res = await api.get(`${baseUrl}/admin`, { params: filters })
             return res.data
         } catch (err: any) {
             return thunkApi.rejectWithValue(err.response.data.msg || "something went wrong")

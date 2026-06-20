@@ -6,6 +6,7 @@ import { useEffect, useMemo } from "react";
 import { fetchSingleProject } from "../features/projects/projects.reducers";
 import { acceptProposal, getProposals } from "../features/proposal/proposal.reducer";
 import Spinner from "../components/Spinner";
+import { Badge, Clock, Briefcase, Users, Star, DollarSign } from "lucide-react";
 
 export default function ProjectPage() {
     const { id } = useParams()
@@ -15,7 +16,7 @@ export default function ProjectPage() {
 
     const user = useAppSelector(state => state.auth.user)
 
-    const accpeptProposal = async (proposalId: string) => {
+    const handleAccpeptProposal = async (proposalId: string) => {
         await dispatch(acceptProposal(proposalId))
     }
 
@@ -31,6 +32,7 @@ export default function ProjectPage() {
     const isEmployer = useMemo(() => {
         return user?._id === project?.employer?._id
     }, [user, project?.employer?._id]);
+
     const haveProposal = useMemo(() => {
         if (!user) return false
         const foundProposal = proposals.find(proposal => proposal.freelancer._id === user._id)
@@ -41,114 +43,121 @@ export default function ProjectPage() {
     if (projectLoading) return <Spinner size="lg" />
     if (projectErr) return <p className="text-sm text-red-500">{projectErr}</p>
     if (!project) return
-    const projectDetails = [
-        { label: "Budget", value: `$${project.minPrice} - $${project.maxPrice}` },
-        { label: "Duration", value: `${project.deliveryDuration} days` },
-        { label: "Status", value: project.status },
-        { label: "Posted At", value: new Date(project.createdAt).toLocaleDateString("en-GB") },
-    ]
 
     return (
-        <div className="min-h-screen bg-background px-4 py-8 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 ">
-                {/* Main Content */}
-                <div className="space-y-8 lg:col-span-2">
-                    {/* Project Details */}
-                    <div className="rounded-2xl border border-border bg-surface p-8
-                    order-1 lg:order-1 lg:col-span-2">
-                        <h1 className="font-display text-3xl font-bold tracking-tight text-text-dark">
-                            {project.title}
-                        </h1>
-
-                        <p className="mt-4 text-base leading-relaxed text-text-dim">
-                            {project.desc}
-                        </p>
+        <div className="mx-auto grid max-w-[1280px] gap-8 px-6 py-10 lg:grid-cols-[1fr_360px]">
+            {/* Main column */}
+            <div className="space-y-6">
+                {/* Header */}
+                <div className="rounded-xl border border-border bg-surface p-7">
+                    <div className="flex items-center gap-2">
+                        <span className="p-2 rounded-3xl bg-primary/70 text-white text-sm">
+                            {project.category.title}
+                        </span>
+                        <span className="p-2 rounded-3xl bg-primary/70 text-white text-sm">
+                            {project.status}
+                        </span>
                     </div>
-
-                    {/* Sidebar */}
-                    <aside className="space-y-6 order-2 lg:order-2">
-                        <div className="rounded-2xl border border-border bg-surface p-6">
-                            {projectDetails.map((detail) => (
-                                <div
-                                    key={detail.label}
-                                    className="mt-3 flex items-center justify-between"
-                                >
-                                    <p className="font-medium tracking-wider">
-                                        {detail.label}
-                                    </p>
-
-                                    <p className="font-display text-xl font-bold tracking-tight text-blue-500">
-                                        {detail.value}
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="rounded-2xl border border-border bg-surface p-6">
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-text-dim">
-                                About the client
-                            </p>
-
-                            <p className="mt-2 font-display text-lg font-bold text-text-dark">
-                                {project.employer &&
-                                    `${project.employer.firstName} ${project.employer.lastName}`}
-                            </p>
-
-                            <div className="mt-4 space-y-2 text-sm">
-                                <div className="flex justify-between">
-                                    <span className="text-text-dim">Rating</span>
-                                </div>
-
-                                <div className="flex justify-between">
-                                    <span className="text-text-dim">Jobs posted</span>
-                                </div>
-                            </div>
-                        </div>
-                    </aside>
-
-                    {/* Proposal Form */}
-                    <div className="order-3 lg:order-3 lg:col-span-2">
-                        {
-                            user &&
-                            !isEmployer &&
-                            !haveProposal &&
-                            <ProposalForm project={project} />
-                        }
+                    <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-text-dark">
+                        {project.title}
+                    </h1>
+                    <div className="mt-4 flex flex-wrap items-center gap-5 text-sm text-text-muted">
+                        <span className="flex items-center gap-1.5">
+                            <Clock className="h-4 w-4" /> Posted {new Date(project.createdAt).toLocaleDateString("en-GB")}
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                            <Briefcase className="h-4 w-4" /> {project.deliveryDuration} days
+                        </span>
+                        <span className="flex items-center gap-1">
+                            <DollarSign className="h-4 w-4" /> {project.minPrice} - {project.maxPrice}
+                        </span>
                     </div>
-
-                    {/* Proposals */}
-                    <section className="order-4 lg:order-4 lg:col-span-2">
-                        <div className="mb-4 flex items-end justify-between">
-                            <h2 className="font-display text-xl font-bold tracking-tight">
-                                Proposals ({proposals.length})
-                            </h2>
-
-                            <span className="text-xs text-text-dim">
-                                Sorted by recency
-                            </span>
-                        </div>
-
-                        <div className="space-y-4">
-                            {proposalLoading ? (
-                                <Spinner size="md" />
-                            ) : proposals.length === 0 ? (
-                                <p className="rounded-2xl border border-dashed border-border bg-surface p-8 text-center text-sm text-text-dim">
-                                    No proposals yet. Be the first to apply.
-                                </p>
-                            ) : (
-                                proposals.map((p) => (
-                                    <ProposalCard
-                                        key={p._id}
-                                        proposal={p}
-                                        handleAccept={accpeptProposal}
-                                        isEmployer={isEmployer}
-                                    />
-                                ))
-                            )}
-                        </div>
-                    </section>
                 </div>
+
+                {/* Description */}
+                <div className="rounded-xl border border-border bg-surface p-7">
+                    <h2 className="font-display text-xl font-semibold text-text-dark">
+                        Project description
+                    </h2>
+                    <p className="mt-4 leading-7 text-text-body">{project.desc}</p>
+                </div>
+
+                {user && !isEmployer && !haveProposal && (
+                    <ProposalForm project={project} />
+                )}
+
+                {user && !isEmployer && haveProposal && (
+                    <div className="rounded-xl border border-success/30 bg-success-light/50 p-5 text-sm text-success">
+                        You've already submitted a proposal for this project.
+                    </div>
+                )}
+
+                {/* Proposals list */}
+                <section>
+                    <div className="mb-4 flex items-end justify-between">
+                        <h2 className="font-display text-xl font-bold tracking-tight text-text-dark">
+                            Proposals ({proposals.length})
+                        </h2>
+                        <span className="text-xs text-text-muted">Sorted by recency</span>
+                    </div>
+                    <div className="space-y-3">
+                        {proposals.length === 0 ? (
+                            <p className="rounded-xl border border-dashed border-border bg-surface p-8 text-center text-sm text-text-muted">
+                                No proposals yet. Be the first to apply.
+                            </p>
+                        ) : (
+                            proposals.map((pr) => (
+                                <ProposalCard
+                                    key={pr._id}
+                                    proposal={pr}
+                                    isEmployer={isEmployer}
+                                    handleAccept={() => handleAccpeptProposal(pr._id)}
+                                />
+                            ))
+                        )}
+                    </div>
+                </section>
             </div>
+
+            {/* Sidebar */}
+            <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
+                <div className="rounded-xl border border-border bg-surface p-6">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+                        About the client
+                    </h3>
+                    <div className="mt-4 flex items-center gap-3">
+                        <div className="grid h-12 w-12 place-items-center rounded-full bg-primary-soft text-sm font-semibold text-primary-dark">
+                            KF
+                        </div>
+                        <div>
+                            <p className="font-semibold text-text-dark">{project.employer.firstName} {project.employer.lastName}</p>
+                            <p className="text-sm text-gray-500">{project.employer.title}</p>
+                            <p className="flex items-center gap-1 text-xs text-text-muted">
+                            </p>
+                        </div>
+                    </div>
+                    <div className="mt-5 space-y-3 border-t border-border pt-4 text-sm">
+                        <Row
+                            label="Rating"
+                            value={
+                                <span className="flex items-center gap-1">
+                                    <Star className="h-3.5 w-3.5 fill-warning text-warning" />4
+                                </span>
+                            }
+                        />
+                        <Row label="Member since" value={`${new Date(project.employer.createdAt).toLocaleDateString("en-GB")}`} />
+                    </div>
+                </div>
+            </aside>
+        </div >
+    );
+}
+
+function Row({ label, value }: { label: string; value: React.ReactNode }) {
+    return (
+        <div className="flex items-center justify-between">
+            <span className="text-text-muted">{label}</span>
+            <span className="text-text-body">{value}</span>
         </div>
     );
 }

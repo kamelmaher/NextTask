@@ -9,7 +9,7 @@ import { Clock, DollarSign, Trash2, ArrowUpRight, User } from "lucide-react";
 type ProjectCardProps = {
     project: Project,
     link?: string,
-    canDelete?: boolean
+    canDelete?: boolean,
 }
 
 export function ProjectCard({ project, link, canDelete }: ProjectCardProps) {
@@ -41,7 +41,7 @@ export function ProjectCard({ project, link, canDelete }: ProjectCardProps) {
                 <div className="flex items-start justify-between gap-4 mb-4">
                     <div className="flex items-center gap-3">
                         <div className="h-11 w-11 shrink-0 rounded-xl bg-[#F3E8FF] flex items-center justify-center text-sm font-bold text-[#7C3AED]">
-                            {project.category?.title?.charAt(0) || 'P'}
+                            {project?.category?.title?.charAt(0) || 'P'}
                         </div>
                         <div className="min-w-0">
                             <h3 className="font-semibold text-[#0F172A] group-hover:text-[#7C3AED] transition-colors line-clamp-1">
@@ -51,7 +51,7 @@ export function ProjectCard({ project, link, canDelete }: ProjectCardProps) {
                                 <Clock className="h-3 w-3" />
                                 <span>{new Date(project.createdAt).toLocaleDateString('en-GB')}</span>
                                 <span>•</span>
-                                <span>{project.category?.title}</span>
+                                <span>{project?.category?.title}</span>
                             </div>
                         </div>
                     </div>
@@ -71,7 +71,7 @@ export function ProjectCard({ project, link, canDelete }: ProjectCardProps) {
                     <div className="flex flex-wrap items-center gap-3">
                         <div className="flex items-center gap-1.5 text-sm font-semibold text-[#0F172A]">
                             <DollarSign className="h-4 w-4 text-[#7C3AED]" />
-                            {project.minPrice.toLocaleString()} - {project.maxPrice.toLocaleString()}
+                            {project.minPrice} - {project.maxPrice}
                         </div>
                         <div className="flex items-center gap-1.5 text-xs text-[#64748B]">
                             <Clock className="h-3.5 w-3.5" />
@@ -96,13 +96,13 @@ export function ProjectCard({ project, link, canDelete }: ProjectCardProps) {
                         <User className="h-3 w-3 text-[#94A3B8]" />
                     </div>
                     <span className="text-xs text-[#64748B]">
-                        Posted by <span className="font-medium text-[#334155]">{project.employer?.firstName} {project.employer?.lastName}</span>
+                        Posted by <span className="font-medium text-[#334155]">{project.employer?.firstName} {project?.employer?.lastName}</span>
                     </span>
                 </div>
             </NavLink>
 
             {/* Delete Button */}
-            {canDelete && project.employer._id == user?._id && (
+            {canDelete && project?.employer?._id == user?._id && (
                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                         className="flex items-center gap-1.5 rounded-lg bg-[#FEE2E2] px-3 py-1.5 text-xs font-semibold text-[#EF4444] hover:bg-[#EF4444] hover:text-white transition-all"

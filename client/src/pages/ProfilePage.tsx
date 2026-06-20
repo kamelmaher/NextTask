@@ -11,7 +11,7 @@ export default function ProfilePage() {
                 loading ? <Spinner size="lg" /> :
                     userStatics &&
                     <StatGrid stats={[
-                        { label: "Total earned", value: `$${userStatics.totalEarned}`, delta: "+$8.2k this month" },
+                        { label: "Total earned", value: `$${userStatics.totalEarned}` },
                         { label: "Jobs done", value: `${userStatics.finishedWork}` },
                         { label: "Total Proposals", value: `${userStatics.proposalsCount}` },
                         { label: "Pending Proposals", value: `${userStatics.pendingProposals}` },

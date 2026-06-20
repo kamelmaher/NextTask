@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "../store/store";
 import { createProposal } from "../features/proposal/proposal.reducer";
 import Spinner from "./Spinner";
 import type { Project } from "../features/projects/projects.types";
+import { Field } from "./AuthLayout";
 
 type ProposalFormProps = {
     project: Project
@@ -62,64 +63,63 @@ const ProposalForm = ({ project }: ProposalFormProps) => {
 
     return (
         <div className="mt-8 border rounded-xl p-6 bg-white shadow-sm">
-            <h2 className="text-xl font-semibold mb-4">Submit a Proposal</h2>
 
-            <form className="space-y-4" onSubmit={handleSubmit}>
-                {/* Cover Letter */}
-                <div>
-                    <label className="block text-sm font-medium mb-1">
-                        Cover Letter
-                    </label>
-                    <textarea
-                        className="w-full border rounded-md p-3 min-h-[120px] focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Write your proposal cover letter..."
-                        value={formData.content}
-                        onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+            <form
+                id="submit-proposal"
+                onSubmit={handleSubmit}
+            >
+                <h2 className="font-display text-xl font-semibold text-text-dark">Submit a proposal</h2>
+                <p className="mt-1 text-sm text-text-muted">
+                    Pitch your approach, timeline, and price. Be specific.
+                </p>
+
+                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                    <Field
+                        label="Your bid (USD)"
+                        type="number"
+                        min={1}
+                        value={formData.price}
+                        onChange={(e) => setFormData(prev => ({ ...prev, price: +e.target.value }))}
+                        placeholder="1500"
+                        className="w-full rounded-lg border border-border bg-bg px-3 py-2.5 text-sm text-text-dark outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                        required
                     />
-                    {errors.content && <p className="text-sm text-red-500">{errors.content}</p>}
+                    <Field label="Estimated duration"
+                        type="text"
+                        value={formData.deliveryDuration}
+                        onChange={(e) => setFormData(prev => ({ ...prev, deliveryDuration: +e.target.value }))}
+                        placeholder="e.g. 2 weeks"
+                        className="w-full rounded-lg border border-border bg-bg px-3 py-2.5 text-sm text-text-dark outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                        required
+                    />
                 </div>
 
-                {/* Price + Delivery Time */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium mb-1">
-                            Proposed Price ($)
-                        </label>
-                        <input
-                            type="number"
-                            className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="e.g. 500"
-                            value={formData.price}
-                            onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium mb-1">
-                            Delivery Time (days)
-                        </label>
-                        <input
-                            type="number"
-                            className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="e.g. 7"
-                            value={formData.deliveryDuration}
-                            onChange={(e) => setFormData({ ...formData, deliveryDuration: parseInt(e.target.value) })}
-                        />
-                    </div>
+                <div className="mt-4">
+                    <label>COVER LETTER</label>
+                    <textarea
+                        rows={3}
+                        value={formData.content}
+                        onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                        placeholder="Why are you a great fit for this project?"
+                        className="w-full resize-y rounded-lg border border-border bg-bg px-3 py-2.5 text-sm text-text-dark outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                        required
+                    />
                 </div>
                 {errors.price && <p className="text-sm text-red-500">{errors.price}</p>}
                 {errors.deliveryDuration && <p className="text-sm text-red-500">{errors.deliveryDuration}</p>}
-
-                {/* Submit Button */}
-                {addProposalErr && <p className="text-red-500 text-sm">{addProposalErr}</p>}
-                <button
-                    type="submit"
-                    className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-                >
-                    {
-                        addProposalLoading ? <Spinner size="sm" /> : "Submit Proposal"
-                    }
-                </button>
+                {errors.content && <p className="text-sm text-red-500">{errors.content}</p>}
+                {addProposalErr && <p className="text-sm text-red-50">{addProposalErr}</p>}
+                <div className="mt-5 flex items-center justify-end gap-3">
+                    <button
+                        type="submit"
+                        className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-dark"
+                    >
+                        {
+                            addProposalLoading ? <Spinner size="md" /> :
+                                "Send proposal"
+                        }
+                    </button>
+                </div>
             </form>
         </div>
     );

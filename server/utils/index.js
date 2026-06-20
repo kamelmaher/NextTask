@@ -17,10 +17,16 @@ const transactionTypes = {
     WITHDRAW: "withdraw",
     TRANSFER: "transfer"
 }
+const transactionStatus = {
+    COMPLETED: "completed",
+    INPROGRESS: "inprogress",
+    CANCELLED: "cancelled"
+}
 module.exports = {
     roles,
     mainPriceRange,
     MAIN_LIMIT,
     userAllowedFields,
-    transactionTypes
+    transactionTypes,
+    transactionStatus
 }

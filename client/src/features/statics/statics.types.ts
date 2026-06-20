@@ -1,3 +1,7 @@
+import type { Contract } from "../contract/contract.types"
+import type { Project } from "../projects/projects.types"
+import type { Transaction } from "../transactions/transactions.types"
+
 type userStatics = {
     postedProjects: number,
     proposalsCount: number,
@@ -8,12 +12,14 @@ type userStatics = {
 }
 
 type projectStatics = {
+    totalProjects: number,
     activeProjects: number,
     pendingProjects: number,
     completedProjects: number
 }
 
 type contractStatics = {
+    totalContracts: number
     inProgress: number,
     completed: number,
     declined: number,
@@ -22,8 +28,10 @@ type contractStatics = {
 
 type dashboardStatics = {
     totalUsers: number,
-    projectStatics: projectStatics
-    contractStatics: contractStatics
+    projectStatics: projectStatics,
+    contractStatics: contractStatics,
+    activity: activity,
+    pendingActions: pendingActions
 }
 
 type transactionsStatics = {
@@ -32,6 +40,16 @@ type transactionsStatics = {
     withdrawsTotal: number,
     withdrawsValue: number,
     totalTransfers: number
+}
+
+type activity = {
+    recentProjects: Project[],
+    recentContracts: Contract[],
+    recentDeposits: Transaction[]
+}
+
+type pendingActions = {
+    pendingWithdrawals: number
 }
 export type statics = {
     userStatics: userStatics | null
