@@ -6,13 +6,13 @@ import { useEffect, useMemo } from "react";
 import { fetchSingleProject } from "../features/projects/projects.reducers";
 import { acceptProposal, getProposals } from "../features/proposal/proposal.reducer";
 import Spinner from "../components/Spinner";
-import { Badge, Clock, Briefcase, Users, Star, DollarSign } from "lucide-react";
+import { Clock, Briefcase, Star, DollarSign } from "lucide-react";
 
 export default function ProjectPage() {
     const { id } = useParams()
     const dispatch = useAppDispatch()
     const { project, projectLoading, createErr: projectErr } = useAppSelector(state => state.projects)
-    const { proposals, loading: proposalLoading } = useAppSelector(state => state.proposal)
+    const { proposals } = useAppSelector(state => state.proposal)
 
     const user = useAppSelector(state => state.auth.user)
 

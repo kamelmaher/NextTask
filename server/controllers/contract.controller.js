@@ -9,7 +9,7 @@ const { contractStatus, projectStatus, transactionStatus } = require("../utils/s
 exports.getAllContracts = async (req, res) => {
     const { _id } = req.user
     if (!_id) return error(res, 400, "user not found")
-    const { status, freelancer, employer } = req.query || {}
+    const { status, freelancer, employer, approveStatus, minPrice, maxPrice } = req.query || {}
     const filters = {}
     if (freelancer)
         filters.freelancer = freelancer
@@ -18,8 +18,27 @@ exports.getAllContracts = async (req, res) => {
     if (status) {
         filters.status = status
     }
+    if (minPrice || maxPrice) {
+        filters.agreedPrice = {}
+        if (minPrice) filters.agreedPrice.$gte = Number(minPrice)
+        if (maxPrice) filters.agreedPrice.$lte = Number(maxPrice)
+    }
+
     try {
-        const contracts = await Contract.find(filters).sort({ createdAt: -1 }).populate("project").populate("freelancer", "firstName lastName title").populate("employer")
+        if (approveStatus) {
+            const projects = await require("../models/project.model").find({ approveStatus }).select("_id")
+            const projectIds = projects.map((project) => project._id)
+            if (!projectIds.length) {
+                return success(res, 200, { contracts: [] })
+            }
+            filters.project = { $in: projectIds }
+        }
+
+        const contracts = await Contract.find(filters)
+            .sort({ createdAt: -1 })
+            .populate("project")
+            .populate("freelancer", "firstName lastName title")
+            .populate("employer")
 
         success(res, 200, { contracts })
     } catch (err) {

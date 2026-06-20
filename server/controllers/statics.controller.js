@@ -109,7 +109,14 @@ exports.getAdminStatics = async (req, res) => {
 
             // contracts
             Contract.countDocuments(),
-            Contract.countDocuments({ status: contractStatus.INPROGRESS }),
+            Contract.countDocuments({
+                status: {
+                    $in: [
+                        contractStatus.INPROGRESS,
+                        contractStatus.SUBMITTED
+                    ]
+                }
+            }),
             Contract.countDocuments({ status: contractStatus.ACCEPTED }),
             Contract.countDocuments({ status: contractStatus.DECLINED }),
             Contract.aggregate([

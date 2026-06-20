@@ -40,6 +40,9 @@ export type contractFilters = {
     freelancer?: string,
     employer?: string,
     status?: string,
+    approveStatus?: string,
+    minPrice?: number,
+    maxPrice?: number,
 }
 
 export type submissionType = {

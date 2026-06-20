@@ -2,8 +2,6 @@ import { useEffect } from "react"
 import Spinner from "../components/Spinner"
 import { useAppDispatch, useAppSelector } from "../store/store"
 import { ProjectCard } from "../components/ProjectCard"
-import { fetchProjects } from "../features/projects/projects.reducers"
-import { projectStatus } from "../utils/status"
 import { getMyContracts } from "../features/contract/contract.reducer"
 
 const UserProjects = () => {
