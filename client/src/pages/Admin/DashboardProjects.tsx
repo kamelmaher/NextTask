@@ -9,18 +9,9 @@ import { useSearchParams } from "react-router-dom";
 import useDebounce from "../../hooks/useDebounce";
 import { Search } from "lucide-react";
 
-// const statusConfig = {
-//     open: { bg: "bg-[#DBEAFE]", text: "text-[#3B82F6]", label: "Open" },
-//     inProgress: { bg: "bg-[#FEF3C7]", text: "text-[#F59E0B]", label: "In Progress" },
-//     finished: { bg: "bg-[#D1FAE5]", text: "text-[#10B981]", label: "Finished" },
-//     declined: { bg: "bg-[#FEE2E2]", text: "text-[#EF4444]", label: "Declined" },
-//     pending: { bg: "bg-[#F3E8FF]", text: "text-[#7C3AED]", label: "Pending" },
-//     accepted: { bg: "bg-[#D1FAE5]", text: "text-[#10B981]", label: "Accepted" },
-// };
-
 export default function DashboardProjectsPage() {
     const dispatch = useAppDispatch();
-    const { projects, loading, updateLoading, err, updateErr } = useAppSelector((state) => state.projects);
+    const { projects, loading, updateLoading, err, } = useAppSelector((state) => state.projects);
     const { categories } = useAppSelector(state => state.category)
     const { dashboardStatics, loading: staticsLoading } = useAppSelector(state => state.statics)
     const [searchTerm, setSearchTerm] = useState("");
