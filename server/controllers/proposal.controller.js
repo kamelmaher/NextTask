@@ -76,6 +76,9 @@ exports.acceptProposal = async (req, res) => {
         // check employer is the owner of the project 
         if (project.employer.toString() !== employer._id.toString())
             return error(res, 401, "cant accept proposals for this project")
+        
+        // check user balance 
+        if (user.balance < proposal.price) return error(res, 400, "no enough balance")
 
         // accept proposal
         const updatedProposal = await Proposal.findByIdAndUpdate(proposalId, {
