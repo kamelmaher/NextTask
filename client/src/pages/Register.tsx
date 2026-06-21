@@ -3,6 +3,7 @@ import { AuthLayout, Field } from "../components/AuthLayout";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { useState } from "react";
 import { signup } from "../features/auth/auth.reducer";
+import Spinner from "../components/Spinner";
 
 
 export default function RegisterPage() {
@@ -60,10 +61,10 @@ export default function RegisterPage() {
                 {err && <p className="text-red-500 font-semibold text-sm">{err}</p>}
                 <button
                     type="submit"
-                    className="w-full rounded-xl bg-brand py-3 text-sm font-semibold text-brand-foreground shadow-sm transition-transform hover:bg-brand/90 active:scale-[0.99]"
+                    className="w-full rounded-xl bg-primary py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-transform hover:bg-primary/90 active:scale-[0.99]"
                 >
                     {
-                        loading ? <p>loading...</p> :
+                        loading ? <Spinner /> :
                             <p>Create account</p>
                     }
                 </button>

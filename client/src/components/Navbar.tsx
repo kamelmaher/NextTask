@@ -160,13 +160,6 @@ export function Navbar() {
                         >
                             Explore Projects
                         </NavLink>
-                        <NavLink
-                            to="/find"
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="rounded-lg px-3 py-2 text-sm font-medium text-[#64748B] hover:bg-[#F8FAFC]"
-                        >
-                            Find Freelancers
-                        </NavLink>
                         {isAuthenticated && (
                             <>
                                 <NavLink
@@ -183,6 +176,10 @@ export function Navbar() {
                                 >
                                     Profile
                                 </NavLink>
+                                {
+                                    user?.roles.includes(roles.ADMIN)
+                                    && <NavLink to={"/admin"} className={"rounded-lg px-3 py-2 text-sm font-medium text-[#64748B] hover:bg-[#F8FAFC]"}>Dashboard </NavLink>
+                                }
                             </>
                         )}
                     </div>

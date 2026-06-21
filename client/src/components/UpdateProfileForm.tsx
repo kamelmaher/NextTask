@@ -108,15 +108,23 @@ const UpdateProfileForm = ({ onClose }: UpdateProfileProps) => {
                     {updateProfileErr && <p className="text-sm font-semibold text-red-500">{updateProfileErr}</p>}
 
                     {/* Submit */}
-                    <button
-                        type="submit"
-                        className="w-full bg-green-500 text-white py-2 rounded-md font-semibold hover:bg-brand/90 transition"
-                    >
-                        {
-                            updateProfileLoading ? <Spinner size="sm" /> :
-                                "Save Changes"
-                        }
-                    </button>
+                    <div className="flex justify-center gap-2">
+                        <button
+                            type="submit"
+                            className="p-2 bg-green-500 text-white py-2 rounded-md"
+                        >
+                            {
+                                updateProfileLoading ? <Spinner size="sm" /> :
+                                    "Save Changes"
+                            }
+                        </button>
+                        <button
+                            className="p-2 bg-gray-500 text-white py-2 rounded-md"
+                            onClick={onClose}
+                        >
+                            cancel
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

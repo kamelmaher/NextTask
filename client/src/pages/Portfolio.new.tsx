@@ -182,9 +182,9 @@ export default function PortfolioNewPage() {
                             <button
                                 type="submit"
                                 disabled={saving}
-                                className="inline-flex items-center justify-center rounded-2xl bg-brand px-6 py-3 text-sm font-semibold text-brand-foreground transition hover:bg-brand/90 disabled:cursor-not-allowed disabled:bg-brand/60"
+                                className="inline-flex items-center justify-center rounded-2xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-primary/60"
                             >
-                                {saving ? "Saving..." : isEdit ? "Update Item" : "Add Item"}
+                                {saving ? <Spinner size="sm" /> : isEdit ? "Update Item" : "Add Item"}
                             </button>
                         </form>
                     )}
