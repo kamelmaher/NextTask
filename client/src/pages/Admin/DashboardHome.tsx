@@ -61,9 +61,11 @@ export default function DashboardHome() {
                                         Recent Projects
                                     </h2>
 
-                                    <button className="text-sm font-medium text-primary">
+                                    <NavLink
+                                        to={"/projects"}
+                                        className="text-sm font-medium text-primary">
                                         View All
-                                    </button>
+                                    </NavLink>
                                 </div>
 
                                 <div className="space-y-3">
@@ -179,9 +181,9 @@ export default function DashboardHome() {
                                                         {new Date(contract.createdAt).toLocaleDateString("en-GB")}
                                                     </p>
                                                 </div>
-                                                <div>
+                                                <div className="text-center">
                                                     <p className="text-green-500">${contract.agreedPrice}</p>
-                                                    <p>{contract.status}</p>
+                                                    <p className="text-sm">{contract.status}</p>
                                                     <p></p>
                                                 </div>
                                             </div>

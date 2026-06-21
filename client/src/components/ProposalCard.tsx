@@ -33,11 +33,8 @@ export function ProposalCard({ proposal, handleAccept, isEmployer }: ProposalCar
     return (
         <div className="rounded-2xl border border-border bg-surface p-5">
             <div className="flex items-start gap-4">
-                <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand-soft text-sm font-semibold text-brand">
-                    {proposal.freelancer.firstName}
-                </div>
                 <div className="min-w-0 flex-1">
-                    <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
+                    <div className="mb-1 flex flex-wrap justify-between gap-2">
                         <div>
                             <p className="text-sm font-semibold text-text-dark">
                                 {proposal.freelancer.firstName} {proposal.freelancer.lastName}
@@ -45,10 +42,13 @@ export function ProposalCard({ proposal, handleAccept, isEmployer }: ProposalCar
                                     • {proposal.freelancer.title}
                                 </span>
                             </p>
-                            {/* <p className="text-xs text-text-dim">Submitted {proposal.submittedAt}</p> */}
+                            <p className="mt-3 text-sm leading-relaxed text-black/80">
+                                {proposal.content}
+                            </p>
                         </div>
                         <div className="text-right flex flex-col items-center">
                             <p className="text-base font-bold">${proposal.price}</p>
+                            <p className="text-sm text-primary font-semibold">{proposal.deliveryDuration} Days</p>
                             <span
                                 className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${statusStyles[proposal.status]}`}
                             >
@@ -56,9 +56,6 @@ export function ProposalCard({ proposal, handleAccept, isEmployer }: ProposalCar
                             </span>
                         </div>
                     </div>
-                    <p className="mt-3 text-sm leading-relaxed text-text-dim">
-                        {proposal.content}
-                    </p>
                 </div>
             </div>
             {err && <p className="text-sm text-red-500">{err}</p>}

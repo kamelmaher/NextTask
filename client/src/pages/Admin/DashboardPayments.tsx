@@ -70,8 +70,8 @@ export default function DashboardPayments() {
                                         {
                                             transaction.fromUser &&
                                             <>
-                                                <td className="px-6 py-4">{transaction.fromUser.firstName} {transaction.fromUser.firstName}</td>
-                                                <td className="px-6 py-4">{transaction.toUser?.firstName} {transaction.toUser?.firstName}</td>
+                                                <td className="px-6 py-4">{transaction.fromUser.firstName} {transaction.fromUser.lastName}</td>
+                                                <td className="px-6 py-4">{transaction.toUser?.firstName} {transaction.toUser?.lastName}</td>
                                                 <td className="px-6 py-4">{transaction.contract?.project?.title}</td>
                                             </>
                                         }

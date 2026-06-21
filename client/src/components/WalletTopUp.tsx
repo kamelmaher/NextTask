@@ -82,7 +82,7 @@ export default function WalletTopUp() {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="inline-flex items-center justify-center rounded-2xl bg-brand px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center justify-center rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                     {loading ? <Spinner size="sm" label="Starting checkout..." /> : "Deposit with Stripe"}
                 </button>

@@ -184,7 +184,7 @@ exports.acceptSubmission = async (req, res) => {
 
         // update contract
         const updatedContract = await Contract.findByIdAndUpdate(contract._id, {
-            status: contractStatus.FINISHED
+            status: contractStatus.ACCEPTED
         }, { returnDocument: "after" }).populate("freelancer").populate("project").populate("employer")
         if (!updatedContract) return error(res, 400, "cant update the contract")
 

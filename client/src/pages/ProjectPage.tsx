@@ -86,11 +86,11 @@ export default function ProjectPage() {
                     <ProposalForm project={project} />
                 )}
 
-                {user && !isEmployer && haveProposal && (
+                {/* {user && !isEmployer && haveProposal && (
                     <div className="rounded-xl border border-success/30 bg-success-light/50 p-5 text-sm text-success">
                         You've already submitted a proposal for this project.
                     </div>
-                )}
+                )} */}
 
                 {/* Proposals list */}
                 <section>

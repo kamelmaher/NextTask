@@ -7,7 +7,7 @@ export default function WalletSuccess() {
             <p className="mt-4 text-sm text-text-dim">
                 Your wallet has been updated. You can return to your profile to continue.
             </p>
-            <Link to="/profile" className="mt-6 inline-flex rounded-2xl bg-brand px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-brand-dark">
+            <Link to="/profile" className="mt-6 inline-flex rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-primary-dark">
                 Go to Profile
             </Link>
         </div>

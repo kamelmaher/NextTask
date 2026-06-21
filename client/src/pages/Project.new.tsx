@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { useEffect, useState, type FormEvent } from "react";
 import { getCategories } from "../features/category/category.reducer";
@@ -8,6 +8,7 @@ import { createProject } from "../features/projects/projects.reducers";
 export default function NewProjectPage() {
     const { categories, loading } = useAppSelector((state) => state.category)
     const { createLoading, createErr } = useAppSelector(state => state.projects)
+    const navigate = useNavigate()
     const dispatch = useAppDispatch()
     const [formData, setFormData] = useState({
         title: "",
@@ -17,6 +18,7 @@ export default function NewProjectPage() {
         maxPrice: 0,
         deliveryDuration: 0,
     })
+
     const [errors, setErrors] = useState({
         title: "",
         desc: "",
@@ -33,7 +35,7 @@ export default function NewProjectPage() {
             setErrors(formErrors)
             return
         }
-        await dispatch(createProject(formData))
+        await dispatch(createProject(formData)).unwrap()
         setFormData({
             title: "",
             desc: "",
@@ -50,6 +52,7 @@ export default function NewProjectPage() {
             deliveryDuration: "",
             category: ""
         })
+        navigate("/")
     }
 
     const formHandler = () => {
@@ -210,7 +213,7 @@ export default function NewProjectPage() {
                         </NavLink>
                         <button
                             type="submit"
-                            className="rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-brand-foreground shadow-sm transition-transform hover:bg-brand/90 active:scale-[0.99]"
+                            className="rounded-xl bg-primary text-white px-5 py-2.5 text-sm font-semibold text-brand-foreground shadow-sm transition-transform hover:bg-primary/90 active:scale-[0.99]"
                         >
                             {
                                 createLoading ? <Spinner size="sm" /> : "Publish project"

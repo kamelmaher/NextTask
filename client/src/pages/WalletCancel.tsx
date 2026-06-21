@@ -7,7 +7,7 @@ export default function WalletCancel() {
             <p className="mt-4 text-sm text-text-dim">
                 Your deposit was canceled. You can try again from your profile page.
             </p>
-            <Link to="/profile" className="mt-6 inline-flex rounded-2xl bg-brand px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-brand-dark">
+            <Link to="/profile" className="mt-6 inline-flex rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-primary-dark">
                 Back to Profile
             </Link>
         </div>

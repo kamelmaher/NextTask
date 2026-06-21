@@ -37,7 +37,7 @@ export function AuthLayout({
                 {/* Middle Section - Creative Widget */}
                 <div className="relative z-10 space-y-8">
                     <div>
-                        <h2 className="text-3xl font-bold leading-tight mb-4">
+                        <h2 className="text-3xl font-bold leading-tight mb-4 text-white/90">
                             Where senior builders<br />
                             <span className="text-[#A78BFA]">find work that respects</span><br />
                             their craft.

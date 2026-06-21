@@ -40,7 +40,7 @@ export const HomePage = () => {
                                             <span className="text-sm font-medium text-[#A78BFA]">Trusted by 12,400+ freelancers</span>
                                         </div>
 
-                                        <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight tracking-tight">
+                                        <h1 className="text-4xl lg:text-5xl xl:text-6xl text-white/90 font-bold leading-tight tracking-tight">
                                             Find Talent.{' '}
                                             <span className="bg-[#7C3AED] bg-clip-text text-transparent">Get Work Done.</span>{' '}
                                             Fast.

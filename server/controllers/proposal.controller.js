@@ -94,8 +94,6 @@ exports.acceptProposal = async (req, res) => {
             }
         )
 
-
-
         // create a new contract 
         const contract = new Contract({
             project: proposal.project,
@@ -110,15 +108,14 @@ exports.acceptProposal = async (req, res) => {
         await User.findByIdAndUpdate(employer, {
             $inc: { balance: -contract.agreedPrice }
         })
-        // update Project Status - add the contract to the project
-        // project.status = projectStatus.INPROGRESS
-        // project.contract = contract._id
-        // await project.save()
+
+
 
         const updatedProject = await Project.findByIdAndUpdate(project._id, {
             status: projectStatus.INPROGRESS,
             contract: contract._id
         })
+
         await contract.save()
         success(res, 200, { proposal: updatedProposal, project: updatedProject, contract })
     } catch (err) {

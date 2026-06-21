@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { authState } from "./auth.types";
 import { login, logout, me, signup, updateProfile, toggleRole, getAllUsers, deleteUser } from "./auth.reducer";
+import { acceptProposal } from "../proposal/proposal.reducer";
 
 const initialState: authState = {
     users: [],
@@ -153,6 +154,11 @@ const AuthSlice = createSlice({
             })
             .addCase(deleteUser.rejected, (state, action) => {
                 state.deleteErr = action.payload as string
+            })
+
+            .addCase(acceptProposal.fulfilled, (state, action) => {
+                const proposalPrice = action.payload.proposal
+                state.user!.balance -= proposalPrice.price
             })
     },
 });

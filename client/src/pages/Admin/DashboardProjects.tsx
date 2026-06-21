@@ -133,15 +133,13 @@ export default function DashboardProjectsPage() {
                                         <td className="px-5 py-4">
                                             <div className="flex gap-2">
                                                 {
-                                                    p.approveStatus !== projectApprovalStatus.PENDING &&
                                                     <button
                                                         className="bg-green-500 p-2 rounded text-white"
                                                         onClick={(e) => handleApproval(p._id, e.currentTarget.textContent.toLowerCase())}
                                                     >
                                                         {
                                                             updateLoading ? <Spinner size="md" /> :
-                                                                p.approveStatus === projectApprovalStatus.ACCEPTED ?
-                                                                    "Decline" : "Accept"
+                                                                (p.approveStatus === projectApprovalStatus.PENDING || p.approveStatus === projectApprovalStatus.DECLINED) ? "Accept" : "Decline"
                                                         }
                                                     </button>
                                                 }
