@@ -22,7 +22,6 @@ const PostedProjects = () => {
                                     key={project._id
                                     } project={project}
                                     link={link}
-                                    canDelete={true}
                                 />
                             }
                             )}

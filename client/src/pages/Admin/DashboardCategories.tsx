@@ -6,9 +6,9 @@ import { useCreateCategory, useDeleteCategory, useLoadCategories, useUpdateCateg
 
 export default function DashboardCategoriesPage() {
     const { data, isPending } = useLoadCategories()
-    const { mutateAsync: createCategory, isPending: createLoading, error } = useCreateCategory()
-    const { mutateAsync: updateCategory, isPending: updateLoading } = useUpdateCategory()
-    const { mutateAsync: deleteCategory, isPending: deleteLoading } = useDeleteCategory()
+    const { mutateAsync: createCategory, error } = useCreateCategory()
+    const { mutateAsync: updateCategory, } = useUpdateCategory()
+    const { mutateAsync: deleteCategory, } = useDeleteCategory()
     const categories = data?.categories || []
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
