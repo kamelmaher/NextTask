@@ -1,21 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Spinner from "../../components/Spinner";
-import { useAppDispatch, useAppSelector } from "../../store/store";
-import { getTransactions } from "../../features/transactions/transactions.reducer";
 import { StatGrid } from "../../components/DashboardUi";
-import { getTransactionStatics } from "../../features/statics/statics.reducer";
+import { useLoadTransactionsStatics } from "../../hooks/useStatics";
+import { useLoadTransactions } from "../../hooks/useTransaction";
 
 
 export default function DashboardPayments() {
     const [tab, setTab] = useState<"deposit" | "withdraw" | "transfer">("deposit");
-    const { transactions, loading, err } = useAppSelector(state => state.transactions)
-    const { transactionStatics, loading: staticsLoading } = useAppSelector(state => state.statics)
-    const dispatch = useAppDispatch()
-    useEffect(() => {
-        dispatch(getTransactionStatics())
-        dispatch(getTransactions(tab))
-    }, [tab, dispatch])
-
+    const { data, isPending: loading } = useLoadTransactions(tab)
+    const transactions = data?.transactions || []
+    const { data: transactionStatics, isPending: staticsLoading } = useLoadTransactionsStatics()
     return (
         <div className="min-h-screen bg-background">
             <div className="mx-auto max-w-6xl px-6 py-10">
@@ -37,8 +31,6 @@ export default function DashboardPayments() {
                     <button onClick={() => setTab("withdraw")} className={`px-4 py-2 rounded ${tab === "withdraw" ? "bg-primary text-white" : "bg-surface border"}`}>Withdraws</button>
                     <button onClick={() => setTab("transfer")} className={`px-4 py-2 rounded ${tab === "transfer" ? "bg-primary text-white" : "bg-surface border"}`}>Transfers</button>
                 </div>
-
-                {err && <p className="text-red-500 mb-4">{err}</p>}
 
                 {loading ? (
                     <Spinner label="Loading transactions..." />

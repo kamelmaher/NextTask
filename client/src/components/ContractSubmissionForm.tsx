@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../store/store";
-import { submitWork } from "../features/contract/contract.reducer";
 import Spinner from "./Spinner";
+import { useSubmitWork } from "../hooks/useContracts";
 
 type ContractSubmissionFormProps = {
     contractId: string;
@@ -15,8 +14,7 @@ const formatFileSize = (size: number) => {
 };
 
 const ContractSubmissionForm = ({ contractId }: ContractSubmissionFormProps) => {
-    const dispatch = useAppDispatch();
-    const { submitLoading, submitErr } = useAppSelector((state) => state.contract);
+    const { mutateAsync: submitWork, isPending, isError, error: submitError } = useSubmitWork()
     const [message, setMessage] = useState("");
     const [files, setFiles] = useState<File[]>([]);
     const [error, setError] = useState("");
@@ -71,7 +69,7 @@ const ContractSubmissionForm = ({ contractId }: ContractSubmissionFormProps) => 
         }
         formData.append("message", message)
         formData.append("_id", contractId)
-        await dispatch(submitWork(formData));
+        await submitWork(formData);
         setMessage("");
         setFiles([]);
     };
@@ -131,16 +129,16 @@ const ContractSubmissionForm = ({ contractId }: ContractSubmissionFormProps) => 
                     />
                 </div>
 
-                {(error || submitErr) && (
-                    <p className="text-sm text-red-500">{error || submitErr}</p>
+                {(error || isError) && (
+                    <p className="text-sm text-red-500">{error || submitError?.message}</p>
                 )}
 
                 <button
                     type="submit"
                     className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-                    disabled={submitLoading}
+                    disabled={isPending}
                 >
-                    {submitLoading ? <Spinner size="sm" /> : "Submit Files"}
+                    {isPending ? <Spinner size="sm" /> : "Submit Files"}
                 </button>
             </form>
         </div>

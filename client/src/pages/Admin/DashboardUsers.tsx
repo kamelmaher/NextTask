@@ -6,14 +6,17 @@ import { roles } from "../../utils";
 import { DashHeader, DataTable, StatGrid } from "../../components/DashboardUi";
 import { Search } from "lucide-react";
 import Spinner from "../../components/Spinner";
+import { useLoadDashboardStatics } from "../../hooks/useStatics";
 
 export default function DashboardUsersPage() {
     const dispatch = useAppDispatch();
     const { users, loading, deleteLoading, deleteErr, updateProfileErr, updateProfileLoading } = useAppSelector((state) => state.auth);
-    const { dashboardStatics, loading: staicsLoading } = useAppSelector(state => state.statics)
     useEffect(() => {
         dispatch(getAllUsers("user"))
     }, [dispatch]);
+
+    const { data: dashboardStatics, isPending: staticsLoading } = useLoadDashboardStatics()
+
     const [deleteConfirm, setDeleteConfirm] = useState(false)
     const [toggleRoleConfirm, setToggleRoleConfirm] = useState(false)
     const [selectedUser, setSelectedUser] = useState<{ id: string; name?: string, role?: string } | null>(null)
@@ -72,7 +75,7 @@ export default function DashboardUsersPage() {
                 subtitle="Manage clients and freelancers on the platform."
             />
             {
-                staicsLoading ? <Spinner size="md" /> :
+                staticsLoading ? <Spinner size="md" /> :
                     <StatGrid stats={[
                         { label: "Total users", value: `${dashboardStatics?.totalUsers}` },
                     ]} />

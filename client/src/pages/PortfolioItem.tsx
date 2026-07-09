@@ -1,18 +1,15 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../store/store";
-import { useEffect } from "react";
-import { getPortfolioItem, deletePortfolioItem } from "../features/portfolio/portfolio.reducer";
 import Spinner from "../components/Spinner";
+import { useDeletePortfolioItem, useLoadPortfolio } from "../hooks/usePortfolio";
 
 export default function PortfolioItemPage() {
     const { id } = useParams()
-    const { item, loading, error, deleteLoading } = useAppSelector(state => state.portfolio)
-    const dispatch = useAppDispatch()
     const navigate = useNavigate()
-    useEffect(() => {
-        if (id)
-            dispatch(getPortfolioItem(id))
-    }, [dispatch, id])
+
+    const { data, isPending: loading, isError, error } = useLoadPortfolio(id || "")
+    const item = data?.portfolioItem || null
+    
+    const { mutateAsync: deletePortfolioItem, isPending: deleteLoading } = useDeletePortfolioItem()
 
     const handleDelete = async () => {
         if (!item?._id) return
@@ -20,7 +17,7 @@ export default function PortfolioItemPage() {
         if (!confirmDelete) return
 
         try {
-            await dispatch(deletePortfolioItem(item._id)).unwrap()
+            await deletePortfolioItem(item._id)
             navigate("/profile/portfolio")
         } catch (deleteError) {
             console.error("Delete failed", deleteError)
@@ -32,7 +29,7 @@ export default function PortfolioItemPage() {
             <div className="mx-auto max-w-6xl px-6 py-10">
                 {
                     loading ? <Spinner /> :
-                        error ? <p className="text-sm text-red-500">{error}</p> :
+                        isError ? <p className="text-sm text-red-500">{error.message}</p> :
                             item &&
                             <>
                                 {/* Hero */}

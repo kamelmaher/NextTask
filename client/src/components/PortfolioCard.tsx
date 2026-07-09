@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import type { PortfolioItem } from "../features/portfolio/portfolio.types";
+import type { PortfolioItem } from "../hooks/usePortfolio";
 
 export function PortfolioCard({ item }: { item: PortfolioItem }) {
     return (

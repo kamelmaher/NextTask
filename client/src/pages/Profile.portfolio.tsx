@@ -1,19 +1,14 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { PortfolioCard } from "../components/PortfolioCard";
 import Spinner from "../components/Spinner";
-import { useAppDispatch, useAppSelector } from "../store/store";
-import { getPortfolioItems } from "../features/portfolio/portfolio.reducer";
+import { useAppSelector } from "../store/store";
+import { useLoadPortfolios } from "../hooks/usePortfolio";
 
 export default function PortfolioPage() {
-    const { items, loading, error } = useAppSelector(state => state.portfolio)
     const { user } = useAppSelector(state => state.auth)
-    const dispatch = useAppDispatch()
+    const { data, isPending: loading } = useLoadPortfolios(user?._id || "")
+    const items = data?.portfolioItems || []
     const navigate = useNavigate()
-    useEffect(() => {
-        if (!user) return
-        dispatch(getPortfolioItems(user._id))
-    }, [dispatch, user])
     return (
         <div className="space-y-8">
             <div className="flex items-end justify-between">
@@ -31,12 +26,11 @@ export default function PortfolioPage() {
             </div>
             {
                 loading ? <Spinner size="md" /> :
-                    error ? <p className="text-sm text-red-500">{error}</p> :
-                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                            {items.map((item) => (
-                                <PortfolioCard key={item._id} item={item} />
-                            ))}
-                        </div>
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        {items.map((item) => (
+                            <PortfolioCard key={item._id} item={item} />
+                        ))}
+                    </div>
             }
         </div>
     );

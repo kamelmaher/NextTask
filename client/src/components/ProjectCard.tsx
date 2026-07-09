@@ -1,22 +1,14 @@
 import { NavLink } from "react-router-dom";
-import type { Project } from "../features/projects/projects.types";
+import type { Project } from "../hooks/useProjects";
 import { projectApprovalStatus } from "../utils/status";
-import { useAppDispatch, useAppSelector } from "../store/store";
-import { deleteProject } from "../features/projects/projects.reducers";
-import Spinner from "./Spinner";
-import { Clock, DollarSign, Trash2, ArrowUpRight, User } from "lucide-react";
+import { Clock, DollarSign, ArrowUpRight, User } from "lucide-react";
 
 type ProjectCardProps = {
     project: Project,
     link?: string,
-    canDelete?: boolean,
 }
 
-export function ProjectCard({ project, link, canDelete }: ProjectCardProps) {
-    const dispatch = useAppDispatch();
-    const { deleteLoading, deleteErr } = useAppSelector(state => state.projects);
-    const { user } = useAppSelector(state => state.auth);
-
+export function ProjectCard({ project, link }: ProjectCardProps) {
     if (!project) return null;
 
     const url = link || `/project/${project._id}`;
@@ -101,25 +93,6 @@ export function ProjectCard({ project, link, canDelete }: ProjectCardProps) {
                 </div>
             </NavLink>
 
-            {/* Delete Button */}
-            {canDelete && project?.employer?._id == user?._id && (
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                        className="flex items-center gap-1.5 rounded-lg bg-[#FEE2E2] px-3 py-1.5 text-xs font-semibold text-[#EF4444] hover:bg-[#EF4444] hover:text-white transition-all"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            dispatch(deleteProject(project._id));
-                        }}
-                    >
-                        {deleteLoading ? <Spinner size="sm" /> : <Trash2 className="h-3.5 w-3.5" />}
-                    </button>
-                </div>
-            )}
-
-            {deleteErr && (
-                <p className="mt-2 text-xs text-[#EF4444]">{deleteErr}</p>
-            )}
         </div>
     );
 }

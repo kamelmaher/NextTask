@@ -1,20 +1,14 @@
-import { useEffect } from "react"
 import { ProjectCard } from "../components/ProjectCard"
 import Spinner from "../components/Spinner"
-import { fetchProjects } from "../features/projects/projects.reducers"
-import { useAppSelector, useAppDispatch } from "../store/store"
+import { useAppSelector } from "../store/store"
 import { projectStatus } from "../utils/status"
+import { useLoadProjects } from "../hooks/useProjects"
 
 const PostedProjects = () => {
     const { user } = useAppSelector(state => state.auth)
-    const { projects, loading, err } = useAppSelector(state => state.projects)
-    const dispatch = useAppDispatch()
+    const { data, isPending: loading, isError: err } = useLoadProjects({ employer: user?._id })
+    const projects = data?.projects || []
 
-    useEffect(() => {
-        if (user) {
-            dispatch(fetchProjects({ employer: user._id }))
-        }
-    }, [dispatch, user])
     return (
         <div>
             <h2 className="font-display text-2xl font-bold text-text-dark">My Projects</h2>

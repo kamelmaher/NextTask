@@ -1,21 +1,20 @@
-import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../store/store";
+import { useState } from "react";
 import Spinner from "../../components/Spinner";
-import { getCategories, createCategory, updateCategory, deleteCategory } from "../../features/category/category.reducer";
-import type { Category, createCategoryType, updateCategoryType } from "../../features/category/category.types";
+import type { Category, createCategoryType, updateCategoryType } from "../../hooks/useCategories";
 import { FolderKanban, Plus, Pencil, Trash2, X, Check, AlertCircle } from "lucide-react";
+import { useCreateCategory, useDeleteCategory, useLoadCategories, useUpdateCategory } from "../../hooks/useCategories";
 
 export default function DashboardCategoriesPage() {
-    const dispatch = useAppDispatch();
-    const { categories, loading, err } = useAppSelector((state) => state.category);
+    const { data, isPending } = useLoadCategories()
+    const { mutateAsync: createCategory, isPending: createLoading, error } = useCreateCategory()
+    const { mutateAsync: updateCategory, isPending: updateLoading } = useUpdateCategory()
+    const { mutateAsync: deleteCategory, isPending: deleteLoading } = useDeleteCategory()
+    const categories = data?.categories || []
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [formData, setFormData] = useState({ title: "" });
     const [submitError, setSubmitError] = useState("");
 
-    useEffect(() => {
-        dispatch(getCategories());
-    }, [dispatch]);
 
     const handleOpenForm = (category?: Category) => {
         if (category) {
@@ -39,7 +38,6 @@ export default function DashboardCategoriesPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSubmitError("");
-
         if (!formData.title.trim()) {
             setSubmitError("Category title is required");
             return;
@@ -47,11 +45,11 @@ export default function DashboardCategoriesPage() {
 
         try {
             if (editingId) {
-                const updateData: updateCategoryType = { id: editingId, title: formData.title };
-                await dispatch(updateCategory(updateData));
+                const updateData: updateCategoryType = { _id: editingId, title: formData.title };
+                await updateCategory(updateData)
             } else {
                 const createData: createCategoryType = { title: formData.title };
-                await dispatch(createCategory(createData));
+                await createCategory(createData);
             }
             handleCloseForm();
         } catch {
@@ -62,7 +60,7 @@ export default function DashboardCategoriesPage() {
     const handleDelete = async (id: string) => {
         if (confirm("Are you sure you want to delete this category?")) {
             try {
-                await dispatch(deleteCategory(id));
+                await deleteCategory(id);
             } catch (error) {
                 console.error("Failed to delete category:", error);
             }
@@ -82,18 +80,18 @@ export default function DashboardCategoriesPage() {
                 </button>
             </div>
 
-            {err && (
+            {error && (
                 <div className="rounded-xl bg-[#FEE2E2] border border-[#FECACA] p-4">
                     <p className="text-sm text-[#EF4444] flex items-center gap-2">
                         <AlertCircle className="h-4 w-4" />
-                        {err}
+                        {error.message}
                     </p>
                 </div>
             )}
 
-            {loading ? (
+            {isPending ? (
                 <div className="flex justify-center py-12"><Spinner size="lg" /></div>
-            ) : categories.length === 0 && !err ? (
+            ) : categories.length === 0 && !error ? (
                 <div className="rounded-2xl border border-[#E2E8F0] bg-white p-12 text-center shadow-sm">
                     <FolderKanban className="h-12 w-12 text-[#94A3B8] mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-[#0F172A] mb-2">No categories yet</h3>

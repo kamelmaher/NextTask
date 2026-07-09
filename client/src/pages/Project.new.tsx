@@ -1,15 +1,14 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../store/store";
-import { useEffect, useState, type FormEvent } from "react";
-import { getCategories } from "../features/category/category.reducer";
+import { useState, type FormEvent } from "react";
 import Spinner from "../components/Spinner";
-import { createProject } from "../features/projects/projects.reducers";
+import { useCreateProject } from "../hooks/useProjects";
+import { useLoadCategories } from "../hooks/useCategories";
 
 export default function NewProjectPage() {
-    const { categories, loading } = useAppSelector((state) => state.category)
-    const { createLoading, createErr } = useAppSelector(state => state.projects)
+    const { data, isPending: categoryLoading } = useLoadCategories()
+    const categories = data?.categories || []
+    const { mutateAsync: createProject, isPending, error } = useCreateProject()
     const navigate = useNavigate()
-    const dispatch = useAppDispatch()
     const [formData, setFormData] = useState({
         title: "",
         desc: "",
@@ -35,7 +34,7 @@ export default function NewProjectPage() {
             setErrors(formErrors)
             return
         }
-        await dispatch(createProject(formData)).unwrap()
+        await createProject(formData)
         setFormData({
             title: "",
             desc: "",
@@ -85,10 +84,6 @@ export default function NewProjectPage() {
         return formErrors
     }
 
-    useEffect(() => {
-        dispatch(getCategories())
-    }, [dispatch])
-
     return (
         <div className="min-h-screen bg-background">
             <main className="mx-auto max-w-3xl px-6 py-10">
@@ -135,7 +130,7 @@ export default function NewProjectPage() {
                     <Field label="Category" required>
                         {
 
-                            loading ? <Spinner size="sm" /> :
+                            categoryLoading ? <Spinner size="sm" /> :
                                 <select
                                     className="w-full rounded-xl border border-border bg-surface px-4 py-2.5 text-sm outline-none transition-all focus:border-brand focus:ring-2 focus:ring-brand/20"
                                     value={formData.category}
@@ -216,11 +211,11 @@ export default function NewProjectPage() {
                             className="rounded-xl bg-primary text-white px-5 py-2.5 text-sm font-semibold text-brand-foreground shadow-sm transition-transform hover:bg-primary/90 active:scale-[0.99]"
                         >
                             {
-                                createLoading ? <Spinner size="sm" /> : "Publish project"
+                                isPending ? <Spinner size="sm" /> : "Publish project"
                             }
                         </button>
                     </div>
-                    {createErr && <p className="text-sm text-red-500">{createErr}</p>}
+                    {error && <p className="text-sm text-red-500">{error.message}</p>}
                 </form>
             </main>
         </div>

@@ -1,8 +1,10 @@
-import type { Contract } from "../contract/contract.types"
-import type { Project } from "../projects/projects.types"
-import type { Transaction } from "../transactions/transactions.types"
+import { useQuery } from "@tanstack/react-query";
+import { api } from "../lib/axios";
 
-type userStatics = {
+const baseUrl = "/statics";
+const staticsKey = ["statics"]
+
+export type userStatics = {
     postedProjects: number,
     proposalsCount: number,
     inProgress: number,
@@ -11,14 +13,14 @@ type userStatics = {
     finishedWork: number,
 }
 
-type projectStatics = {
+export type projectStatics = {
     totalProjects: number,
     activeProjects: number,
     pendingProjects: number,
     completedProjects: number
 }
 
-type contractStatics = {
+export type contractStatics = {
     totalContracts: number
     inProgress: number,
     completed: number,
@@ -26,7 +28,7 @@ type contractStatics = {
     totalValue: number
 }
 
-type dashboardStatics = {
+export type dashboardStatics = {
     totalUsers: number,
     projectStatics: projectStatics,
     contractStatics: contractStatics,
@@ -34,7 +36,7 @@ type dashboardStatics = {
     pendingActions: pendingActions
 }
 
-type transactionsStatics = {
+export type transactionsStatics = {
     depositTotal: number,
     depositValue: number,
     withdrawsTotal: number,
@@ -42,15 +44,16 @@ type transactionsStatics = {
     totalTransfers: number
 }
 
-type activity = {
-    recentProjects: Project[],
-    recentContracts: Contract[],
-    recentDeposits: Transaction[]
+export type activity = {
+    recentProjects: any[],
+    recentContracts: any[],
+    recentDeposits: any[]
 }
 
-type pendingActions = {
+export type pendingActions = {
     pendingWithdrawals: number
 }
+
 export type statics = {
     userStatics: userStatics | null
     dashboardStatics: dashboardStatics | null
@@ -58,6 +61,7 @@ export type statics = {
     loading: boolean,
     err: string | null
 }
+
 export const initialState: statics = {
     userStatics: null,
     dashboardStatics: null,
@@ -65,3 +69,21 @@ export const initialState: statics = {
     loading: false,
     err: null
 }
+
+export const useLoadUserStatics = () =>
+    useQuery<userStatics>({
+        queryKey: [...staticsKey, "user"],
+        queryFn: () => api.get(`${baseUrl}/user`).then(res => res.data),
+    })
+
+export const useLoadDashboardStatics = () =>
+    useQuery<dashboardStatics>({
+        queryKey: [...staticsKey, "dashboard"],
+        queryFn: () => api.get(`${baseUrl}/admin`).then(res => res.data)
+    })
+
+export const useLoadTransactionsStatics = () =>
+    useQuery<transactionsStatics>({
+        queryKey: [...staticsKey, "transaction"],
+        queryFn: () => api.get(`${baseUrl}/transactions`).then(res => res.data)
+    })

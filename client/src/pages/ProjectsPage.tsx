@@ -1,16 +1,11 @@
-import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../store/store";
-import { fetchProjects } from "../features/projects/projects.reducers";
+import { useState } from "react";
 import { ProjectCard } from "../components/ProjectCard";
 import Spinner from "../components/Spinner";
-import { getCategories } from "../features/category/category.reducer";
 import useDebounce from "../hooks/useDebounce";
+import { useLoadProjects } from "../hooks/useProjects";
+import { useLoadCategories } from "../hooks/useCategories";
 
 const ProjectsPage = () => {
-    const dispatch = useAppDispatch();
-
-    const { projects, loading } = useAppSelector(state => state.projects)
-    const { categories, loading: categoryLoading } = useAppSelector(state => state.category)
     // Filters
     const [filters, setFilters] = useState({
         search: "",
@@ -18,20 +13,15 @@ const ProjectsPage = () => {
         minPrice: 0,
         maxPrice: 0
     })
-
-    useEffect(() => {
-        dispatch(fetchProjects({}));
-        dispatch(getCategories())
-    }, [dispatch]);
-
     const debouncedSearch = useDebounce(filters.search, 500);
 
-    useEffect(() => {
-        dispatch(fetchProjects({
-            ...filters,
-            search: debouncedSearch
-        }))
-    }, [dispatch, debouncedSearch, filters])
+    const { data: projectsData, isPending: projectsLoading } = useLoadProjects({
+        ...filters,
+        search: debouncedSearch
+    })
+    const { data: categoriesData, isPending: categoryLoading } = useLoadCategories()
+    const projects = projectsData?.projects || []
+    const categories = categoriesData?.categories || []
 
     return (
         <div className="max-w-6xl mx-auto p-4">
@@ -88,7 +78,7 @@ const ProjectsPage = () => {
             </div>
 
             {/* Content */}
-            {loading ? (
+            {projectsLoading ? (
                 <Spinner size="lg" />
             ) : projects.length === 0 ? (
                 <p className="text-gray-500">No projects found</p>
