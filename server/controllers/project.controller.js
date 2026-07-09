@@ -60,15 +60,15 @@ exports.getProjects = async (req, res) => {
 }
 
 exports.getAdminProjects = async (req, res) => {
-    const { status, approveStatus, employer, title, category } = req.query || {}
+    const { status, approveStatus, employer, search, category } = req.query || {}
     const filters = {}
     if (status) filters.status = status
     if (approveStatus) filters.approveStatus = approveStatus
     if (employer) filters.employer = employer
     if (category) filters.category = category
-    if (title) {
+    if (search) {
         filters.title = {
-            $regex: title,
+            $regex: search,
             $options: "i",
         }
     }

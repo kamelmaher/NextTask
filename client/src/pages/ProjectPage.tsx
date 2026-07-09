@@ -1,33 +1,21 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useParams } from "react-router-dom";
 import { ProposalCard } from "../components/ProposalCard";
 import ProposalForm from "../components/ProposalForm";
-import { useAppDispatch, useAppSelector } from "../store/store";
-import { useEffect, useMemo } from "react";
-import { fetchSingleProject } from "../features/projects/projects.reducers";
-import { acceptProposal, getProposals } from "../features/proposal/proposal.reducer";
+import { useAppSelector } from "../store/store";
+import { useMemo } from "react";
 import Spinner from "../components/Spinner";
 import { Clock, Briefcase, Star, DollarSign } from "lucide-react";
+import { useLoadProject } from "../hooks/useProjects";
+import { useLoadProposalsByProject } from "../hooks/useProposal";
 
 export default function ProjectPage() {
     const { id } = useParams()
-    const dispatch = useAppDispatch()
-    const { project, projectLoading, createErr: projectErr } = useAppSelector(state => state.projects)
-    const { proposals } = useAppSelector(state => state.proposal)
-
+    const { data, isPending: projectLoading } = useLoadProject(id || "")
+    const project = data?.project || null
+    const { data: proposalsData, isPending } = useLoadProposalsByProject(id || "")
+    const proposals = proposalsData?.proposals || []
     const user = useAppSelector(state => state.auth.user)
-
-    const handleAccpeptProposal = async (proposalId: string) => {
-        await dispatch(acceptProposal(proposalId))
-    }
-
-    useEffect(() => {
-        dispatch(fetchSingleProject(id || ""))
-    }, [id, dispatch])
-
-    useEffect(() => {
-        if (project)
-            dispatch(getProposals({ projectId: id }))
-    }, [id, dispatch, project])
 
     const isEmployer = useMemo(() => {
         return user?._id === project?.employer?._id
@@ -41,7 +29,6 @@ export default function ProjectPage() {
     }, [proposals, user])
 
     if (projectLoading) return <Spinner size="lg" />
-    if (projectErr) return <p className="text-sm text-red-500">{projectErr}</p>
     if (!project) return
 
     return (
@@ -86,41 +73,40 @@ export default function ProjectPage() {
                     <ProposalForm project={project} />
                 )}
 
-                {/* {user && !isEmployer && haveProposal && (
-                    <div className="rounded-xl border border-success/30 bg-success-light/50 p-5 text-sm text-success">
-                        You've already submitted a proposal for this project.
-                    </div>
-                )} */}
-
                 {/* Proposals list */}
                 <section>
-                    <div className="mb-4 flex items-end justify-between">
-                        <h2 className="font-display text-xl font-bold tracking-tight text-text-dark">
-                            Proposals ({proposals.length})
-                        </h2>
-                        <span className="text-xs text-text-muted">Sorted by recency</span>
-                    </div>
-                    <div className="space-y-3">
-                        {proposals.length === 0 ? (
-                            <p className="rounded-xl border border-dashed border-border bg-surface p-8 text-center text-sm text-text-muted">
-                                No proposals yet. Be the first to apply.
-                            </p>
-                        ) : (
-                            proposals.map((pr) => (
-                                <ProposalCard
-                                    key={pr._id}
-                                    proposal={pr}
-                                    isEmployer={isEmployer}
-                                    handleAccept={() => handleAccpeptProposal(pr._id)}
-                                />
-                            ))
-                        )}
-                    </div>
+                    {
+                        isPending ? <Spinner /> : (
+                            <>
+                                <div className="mb-4 flex items-end justify-between">
+                                    <h2 className="font-display text-xl font-bold tracking-tight text-text-dark">
+                                        Proposals ({proposals.length})
+                                    </h2>
+                                    <span className="text-xs text-text-muted">Sorted by recency</span>
+                                </div>
+                                <div className="space-y-3">
+                                    {proposals.length === 0 ? (
+                                        <p className="rounded-xl border border-dashed border-border bg-surface p-8 text-center text-sm text-text-muted">
+                                            No proposals yet. Be the first to apply.
+                                        </p>
+                                    ) : (
+                                        proposals.map((pr) => (
+                                            <ProposalCard
+                                                key={pr._id}
+                                                proposal={pr}
+                                                isEmployer={isEmployer}
+                                            />
+                                        ))
+                                    )}
+                                </div>
+                            </>
+                        )
+                    }
                 </section>
-            </div>
+            </div >
 
             {/* Sidebar */}
-            <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
+            <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start" >
                 <div className="rounded-xl border border-border bg-surface p-6">
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
                         About the client

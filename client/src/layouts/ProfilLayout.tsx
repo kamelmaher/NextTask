@@ -1,8 +1,7 @@
 import { User, Image, FileText, Hammer, Megaphone, Star } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../store/store";
-import { useEffect, useState } from "react";
-import { getUserStatics } from "../features/statics/statics.reducer";
+import { useAppSelector } from "../store/store";
+import { useState } from "react";
 import UpdateProfileForm from "../components/UpdateProfileForm";
 
 
@@ -15,13 +14,8 @@ const items: { to: string; icon: typeof User; label: string; exact?: boolean }[]
 ];
 
 export default function ProfilePage() {
-    const dispatch = useAppDispatch()
-    const { user, isAuthenticated, authChecked } = useAppSelector(state => state.auth)
+    const { user } = useAppSelector(state => state.auth)
     const [showUpdateForm, setShowUpdateForm] = useState(false)
-    useEffect(() => {
-        if (!authChecked || !isAuthenticated) return
-        dispatch(getUserStatics())
-    }, [dispatch, isAuthenticated, authChecked])
     return (
         <div className="min-h-screen">
             {/* Profile header */}

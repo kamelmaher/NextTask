@@ -219,12 +219,8 @@ exports.requestRevision = async (req, res) => {
         const contract = await Contract.findById(contractId)
         if (!contract) return error(res, 404, "contract not found")
 
-        // check if contract submitted
-        if (contract.status !== contractStatus.SUBMITTED)
-            return error(res, 400, "contract has no submissions")
-
         // check if employer is in the contract
-        if (contract.employerId.toString() !== employer._id.toString())
+        if (contract.employer.toString() !== employer._id.toString())
             return error(res, 403, "cant accept submissions for this project")
 
         contract.status = contractStatus.INPROGRESS

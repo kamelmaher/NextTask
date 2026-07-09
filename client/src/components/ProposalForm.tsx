@@ -1,16 +1,14 @@
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../store/store";
-import { createProposal } from "../features/proposal/proposal.reducer";
 import Spinner from "./Spinner";
-import type { Project } from "../features/projects/projects.types";
+import type { Project } from "../hooks/useProjects";
 import { Field } from "./AuthLayout";
+import { useCreateProposal } from "../hooks/useProposal";
 
 type ProposalFormProps = {
     project: Project
 }
 const ProposalForm = ({ project }: ProposalFormProps) => {
-    const dispatch = useAppDispatch();
-    const { addProposalLoading, addProposalErr } = useAppSelector(state => state.proposal)
+    const { mutateAsync: createProposal, isPending, error } = useCreateProposal()
     const [formData, setFormData] = useState({
         content: "",
         price: 0,
@@ -31,7 +29,7 @@ const ProposalForm = ({ project }: ProposalFormProps) => {
             return
         }
         const newProposal = { ...formData, projectId: project._id }
-        await dispatch(createProposal(newProposal))
+        await createProposal(newProposal)
         setFormData({
             content: "",
             deliveryDuration: 0,
@@ -108,14 +106,14 @@ const ProposalForm = ({ project }: ProposalFormProps) => {
                 {errors.price && <p className="text-sm text-red-500">{errors.price}</p>}
                 {errors.deliveryDuration && <p className="text-sm text-red-500">{errors.deliveryDuration}</p>}
                 {errors.content && <p className="text-sm text-red-500">{errors.content}</p>}
-                {addProposalErr && <p className="text-sm text-red-50">{addProposalErr}</p>}
+                {error && <p className="text-sm text-red-50">{error.message}</p>}
                 <div className="mt-5 flex items-center justify-end gap-3">
                     <button
                         type="submit"
                         className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary-dark"
                     >
                         {
-                            addProposalLoading ? <Spinner size="md" /> :
+                            isPending ? <Spinner size="md" /> :
                                 "Send proposal"
                         }
                     </button>

@@ -1,27 +1,20 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Spinner from "../../components/Spinner";
-import { getAllContracts } from "../../features/contract/contract.reducer";
-import { useAppDispatch, useAppSelector } from "../../store/store";
 import { NavLink } from "react-router-dom";
 import { DashHeader, DataTable, StatGrid } from "../../components/DashboardUi";
+import { useLoadDashboardStatics } from "../../hooks/useStatics";
+import { useLoadAllContracts } from "../../hooks/useContracts";
 
 export default function DashboardContractsPage() {
-    const dispatch = useAppDispatch();
-    const { contracts, loading } = useAppSelector((state) => state.contract);
-    const { dashboardStatics, loading: staticsLoading } = useAppSelector(state => state.statics)
     const [status, setStatus] = useState("");
     const [approveStatus, setApproveStatus] = useState("");
     const [minPrice, setMinPrice] = useState("");
     const [maxPrice, setMaxPrice] = useState("");
 
-    useEffect(() => {
-        const filters: Record<string, string | number> = { status };
-        if (approveStatus) filters.approveStatus = approveStatus;
-        if (minPrice) filters.minPrice = Number(minPrice);
-        if (maxPrice) filters.maxPrice = Number(maxPrice);
-        dispatch(getAllContracts(filters));
-    }, [dispatch, status, approveStatus, minPrice, maxPrice]);
+    const { data, isPending: loading } = useLoadAllContracts({ status, approveStatus, minPrice, maxPrice })
+    const contracts = data?.contracts || []
 
+    const { data: dashboardStatics, isPending: staticsLoading } = useLoadDashboardStatics()
     return (
         <div>
             <DashHeader title="Contracts" subtitle="Active and completed contracts between clients and freelancers." />

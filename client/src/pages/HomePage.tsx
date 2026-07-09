@@ -1,26 +1,22 @@
 import { NavLink } from "react-router-dom";
 import { ProjectCard } from "../components/ProjectCard";
 import StatCard from "../components/StatCard";
-import { useAppDispatch, useAppSelector } from "../store/store";
-import { fetchProjects } from "../features/projects/projects.reducers";
-import { useEffect } from "react";
+import { useAppSelector } from "../store/store";
 import { ArrowRight, Users, Briefcase, Sparkles, Zap, Shield, Plus, Wallet, TrendingUp } from "lucide-react";
 import Spinner from "../components/Spinner";
-import { getUserStatics } from "../features/statics/statics.reducer";
+import { useLoadProjects } from "../hooks/useProjects";
+import { useLoadUserStatics } from "../hooks/useStatics";
 
 export const HomePage = () => {
     const { user, isAuthenticated, fetchUserLoading } = useAppSelector(state => state.auth);
-    const { projects, loading: projectsLoading } = useAppSelector(state => state.projects);
-    const { userStatics, loading} = useAppSelector(state => state.statics)
-    const dispatch = useAppDispatch();
+    const { data: userStatics, isPending: loading } = useLoadUserStatics()
 
-    useEffect(() => {
-        dispatch(fetchProjects({}));
-        dispatch(getUserStatics())
-    }, [dispatch, user]);
+    const { data, isPending } = useLoadProjects({})
+    const projects = data?.projects || []
+
+
     return (
         <div className="min-h-screen bg-[#F8FAFC]">
-            {/* Hero Section - Creative Gradient */}
             {
                 fetchUserLoading ? <Spinner size="lg" /> :
                     !isAuthenticated && (
@@ -226,7 +222,7 @@ export const HomePage = () => {
                         </NavLink>
                     </div>
 
-                    {projectsLoading ? (
+                    {isPending ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {[1, 2, 3].map(i => (
                                 <div key={i} className="rounded-2xl bg-white border border-[#E2E8F0] p-6 space-y-4">
@@ -237,21 +233,23 @@ export const HomePage = () => {
                                 </div>
                             ))}
                         </div>
-                    ) : projects.length === 0 ? (
-                        <div className="rounded-2xl bg-white border border-[#E2E8F0] p-12 text-center">
-                            <div className="mx-auto h-16 w-16 rounded-full bg-[#F8FAFC] flex items-center justify-center mb-4">
-                                <Briefcase className="h-8 w-8 text-[#94A3B8]" />
+                    ) :
+                        projects &&
+                            projects.length === 0 ? (
+                            <div className="rounded-2xl bg-white border border-[#E2E8F0] p-12 text-center">
+                                <div className="mx-auto h-16 w-16 rounded-full bg-[#F8FAFC] flex items-center justify-center mb-4">
+                                    <Briefcase className="h-8 w-8 text-[#94A3B8]" />
+                                </div>
+                                <p className="text-[#64748B] font-medium">No projects found</p>
+                                <p className="text-sm text-[#94A3B8] mt-1">Check back later for new opportunities</p>
                             </div>
-                            <p className="text-[#64748B] font-medium">No projects found</p>
-                            <p className="text-sm text-[#94A3B8] mt-1">Check back later for new opportunities</p>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {projects.map((project) => (
-                                <ProjectCard key={project._id} project={project} />
-                            ))}
-                        </div>
-                    )}
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {projects.map((project) => (
+                                    <ProjectCard key={project._id} project={project} />
+                                ))}
+                            </div>
+                        )}
                 </div>
 
                 {/* Feature Highlights - Creative Widgets */}

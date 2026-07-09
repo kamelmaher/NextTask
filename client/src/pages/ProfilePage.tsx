@@ -2,9 +2,10 @@ import { useAppSelector } from "../store/store";
 import Spinner from "../components/Spinner";
 import { StatGrid } from "../components/DashboardUi";
 import WalletTopUp from "../components/WalletTopUp";
+import { useLoadUserStatics } from "../hooks/useStatics";
 
 export default function ProfilePage() {
-    const { userStatics, loading } = useAppSelector(state => state.statics)
+    const { data: userStatics, isPending: loading } = useLoadUserStatics()
     const { user } = useAppSelector(state => state.auth)
     return (
         <div className="space-y-6">

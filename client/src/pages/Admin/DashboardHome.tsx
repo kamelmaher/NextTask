@@ -6,12 +6,12 @@ import {
     Clock3,
 } from "lucide-react";
 import { StatGrid } from "../../components/DashboardUi";
-import { useAppSelector } from "../../store/store";
 import Spinner from "../../components/Spinner";
 import { NavLink } from "react-router-dom";
+import { useLoadDashboardStatics } from "../../hooks/useStatics";
 
 export default function DashboardHome() {
-    const { dashboardStatics, loading } = useAppSelector(state => state.statics)
+    const { data: dashboardStatics, isPending } = useLoadDashboardStatics()
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -26,7 +26,7 @@ export default function DashboardHome() {
 
             {/* Stats */}
             {
-                loading ? <Spinner /> :
+                isPending ? <Spinner /> :
                     dashboardStatics &&
                     <>
                         <StatGrid stats={[

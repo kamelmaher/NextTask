@@ -1,15 +1,16 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../store/store";
-import { createPortfolioItem, getPortfolioItem, updatePortfolioItem } from "../features/portfolio/portfolio.reducer";
 import Spinner from "../components/Spinner";
+import { useCreatePortfolioItem, useLoadPortfolio, useUpdatePortfolioItem } from "../hooks/usePortfolio";
 
 export default function PortfolioNewPage() {
     const { id } = useParams();
     const isEdit = Boolean(id);
     const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    const { item, loading, createLoading, updateLoading, error, createError, updateError } = useAppSelector(state => state.portfolio);
+    const { data, isPending: loading } = useLoadPortfolio(id || "")
+    const item = data?.portfolioItem || null
+    const { mutateAsync: createPortfolioItem, isPending: createLoading } = useCreatePortfolioItem()
+    const { mutateAsync: updatePortfolioItem, isPending: updateLoading } = useUpdatePortfolioItem()
 
     const [title, setTitle] = useState("");
     const [desc, setDesc] = useState("");
@@ -18,12 +19,6 @@ export default function PortfolioNewPage() {
     const [imageFiles, setImageFiles] = useState<File[]>([]);
     const [imagesPreview, setImagesPreview] = useState<string[]>([]);
     const [skills, setSkills] = useState("");
-
-    useEffect(() => {
-        if (isEdit && id) {
-            dispatch(getPortfolioItem(id));
-        }
-    }, [dispatch, id, isEdit]);
 
     useEffect(() => {
         if (isEdit && item) {
@@ -39,7 +34,6 @@ export default function PortfolioNewPage() {
     }, [item, isEdit]);
 
     const saving = createLoading || updateLoading;
-    const message = createError || updateError || error;
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -57,13 +51,9 @@ export default function PortfolioNewPage() {
             formData.append("images", file);
         });
 
-        const action = isEdit && id
-            ? await dispatch(updatePortfolioItem({ id, data: formData }))
-            : await dispatch(createPortfolioItem(formData));
-
-        if (action.meta.requestStatus === "fulfilled") {
-            navigate("/profile/portfolio");
-        }
+        if (isEdit && id)
+            await updatePortfolioItem({ id, data: formData })
+        else await createPortfolioItem(formData)
     };
 
     return (
@@ -174,11 +164,6 @@ export default function PortfolioNewPage() {
                                     placeholder="React, TypeScript, Figma"
                                 />
                             </div>
-
-                            {message && (
-                                <p className="text-sm text-red-500">{message}</p>
-                            )}
-
                             <button
                                 type="submit"
                                 disabled={saving}

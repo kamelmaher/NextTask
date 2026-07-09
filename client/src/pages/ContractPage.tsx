@@ -1,35 +1,34 @@
-import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../store/store";
+import { useAppSelector } from "../store/store";
 import Spinner from "../components/Spinner";
-import { acceptWork, getContract } from "../features/contract/contract.reducer";
 import { contractStatus } from "../utils/status";
 import { ProjectCard } from "../components/ProjectCard";
 import ContractSubmissionForm from "../components/ContractSubmissionForm";
+import { useAcceptContract, useLoadContract, useRequestRevision } from "../hooks/useContracts";
 
 export default function ContractPage() {
     const { id } = useParams();
-    const dispatch = useAppDispatch();
     const { user } = useAppSelector(state => state.auth)
-    const { contract, loading, err, acceptWorkLoading, acceptWorkErr } = useAppSelector(
-        (state) => state.contract
-    );
 
+    const { data, isPending, isError, error } = useLoadContract(id || "")
+    const contract = data?.contract || null
+    const { mutateAsync: acceptWork, isPending: acceptLoading, isError: isAcceptErr, error: acceptErr } = useAcceptContract()
+
+    const { mutateAsync: requestRevision, isPending: requestRevisionPending } = useRequestRevision()
     const handleCompleteProject = async (id: string) => {
-        await dispatch(acceptWork(id))
+        await acceptWork(id)
     }
 
-    useEffect(() => {
-        if (id) dispatch(getContract(id));
-    }, [id, dispatch]);
-
-    if (loading || !contract)
+    if (isPending)
         return <Spinner size="lg" />;
+    if (!contract) return <p>contract not found</p>
+
     const { project, freelancer } = contract
-    if (!project || !freelancer) {
+    if (!project || !freelancer)
         return <p>Invalid contract data.</p>;
-    }
-    if (err) return <h1>{err}</h1>
+
+    if (isError) return <h1>{error.message}</h1>
+
     return (
         <div className="min-h-screen bg-background px-4 py-8 lg:px-10">
             <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-3">
@@ -210,15 +209,23 @@ export default function ContractPage() {
                                     Message Freelancer
                                 </button>
 
-                                <button className="w-full rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-muted">
-                                    Request Update
+                                <button
+                                    className="w-full rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-muted"
+                                    onClick={() => requestRevision(contract._id)}
+                                >
+                                    {
+                                        requestRevisionPending ? <Spinner /> :
+                                            "Request Update"
+                                    }
+
                                 </button>
-                                {acceptWorkErr && <p className="text-sm text-red-500">{acceptWorkErr}</p>}
+                                
+                                {isAcceptErr && <p className="text-sm text-red-500">{acceptErr.message}</p>}
                                 <button
                                     className="w-full rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700"
                                     onClick={() => handleCompleteProject(contract._id)}
                                 >
-                                    {acceptWorkLoading ? <Spinner size="sm" /> :
+                                    {acceptLoading ? <Spinner size="sm" /> :
                                         "Mark as Completed"}
                                 </button>
                             </div>

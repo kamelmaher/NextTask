@@ -1,8 +1,7 @@
-import { useState } from "react";
-import type { Proposal } from "../features/proposal/proposal.types";
-import { useAppSelector } from "../store/store";
+import type { Proposal } from "../hooks/useProposal";
 import { proposalStatus } from "../utils/status";
 import Spinner from "./Spinner";
+import { useAcceptProposal } from "../hooks/useProposal";
 
 const statusStyles: Record<Proposal["status"], string> = {
     pending: "bg-blue-50 text-blue-600",
@@ -12,24 +11,11 @@ const statusStyles: Record<Proposal["status"], string> = {
 
 type ProposalCardProps = {
     proposal: Proposal;
-    handleAccept: (proposalId: string) => Promise<void>;
     isEmployer: boolean;
 };
-export function ProposalCard({ proposal, handleAccept, isEmployer }: ProposalCardProps) {
-    const { acceptProposalErr } = useAppSelector(state => state.proposal)
-    const [loading, setLoading] = useState(false)
-    const [err, setErr] = useState<string | null>(null)
-    const acceptHandler = async () => {
-        setLoading(true)
-        setErr(null)
-        try {
-            await handleAccept(proposal._id)
-        } catch (err) {
-            setErr(acceptProposalErr)
-        } finally {
-            setLoading(false)
-        }
-    }
+export function ProposalCard({ proposal, isEmployer }: ProposalCardProps) {
+    const { mutateAsync: acceptProposal, isPending: acceptLoading, isError, error } = useAcceptProposal()
+
     return (
         <div className="rounded-2xl border border-border bg-surface p-5">
             <div className="flex items-start gap-4">
@@ -58,17 +44,17 @@ export function ProposalCard({ proposal, handleAccept, isEmployer }: ProposalCar
                     </div>
                 </div>
             </div>
-            {err && <p className="text-sm text-red-500">{err}</p>}
+            {isError && <p className="text-sm text-red-500">{error.message}</p>}
             {
                 isEmployer &&
                 proposal.status === proposalStatus.PENDING &&
                 <div className="mt-4 flex justify-end">
                     <button
-                        onClick={acceptHandler}
+                        onClick={() => acceptProposal(proposal._id)}
                         className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-green-700"
                     >
                         {
-                            loading ? <Spinner size="sm" /> :
+                            acceptLoading ? <Spinner size="sm" /> :
                                 "Accept Proposal"
                         }
                     </button>

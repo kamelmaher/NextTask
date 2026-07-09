@@ -5,16 +5,24 @@ const User = require("../models/user.model")
 const { error, serverError, success } = require("../utils/responses")
 const { projectApprovalStatus, projectStatus, proposalStatus } = require("../utils/status")
 
-exports.getProposals = async (req, res) => {
-    // if (!projectId) return error(res, 400, "project not found")
-    const { projectId, status, userId } = req.query
-    const filters = {}
-    if (projectId)
-        filters.project = projectId
-    if (userId)
-        filters.freelancer = userId
-    if (status)
-        filters.status = status
+exports.getProposalsByProject = async (req, res) => {
+    const projectId = req.params.projectId || null
+    if (!projectId) return error(res, 400, "project not found")
+    try {
+        const proposals = await Proposal.find({ project: projectId }).sort({ createdAt: -1 }).populate("freelancer", "firstName lastName title").populate("project")
+        success(res, 200, { proposals })
+    } catch (err) {
+        console.log(err)
+        return serverError(res)
+    }
+}
+
+exports.getProposalsByFreelancer = async (req, res) => {
+    const _id = req.user._id
+    if (!_id) return error(res, 404, "UnAuthorized")
+    const status = req.query.status
+    const filters = { freelancer: _id }
+    if (status) filters.status = status
     try {
         const proposals = await Proposal.find(filters).sort({ createdAt: -1 }).populate("freelancer", "firstName lastName title").populate("project")
         success(res, 200, { proposals })
@@ -76,9 +84,9 @@ exports.acceptProposal = async (req, res) => {
         // check employer is the owner of the project 
         if (project.employer.toString() !== employer._id.toString())
             return error(res, 401, "cant accept proposals for this project")
-        
+
         // check user balance 
-        if (user.balance < proposal.price) return error(res, 400, "no enough balance")
+        if (employer.balance < proposal.price) return error(res, 400, "no enough balance")
 
         // accept proposal
         const updatedProposal = await Proposal.findByIdAndUpdate(proposalId, {

@@ -1,8 +1,5 @@
 import { Briefcase, CreditCard, FileText, LayoutDashboard, Tag, Users } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
-import { useAppDispatch } from "../store/store";
-import { useEffect } from "react";
-import { getDashboardStatics } from "../features/statics/statics.reducer";
 
 const tabs = [
     { to: "/admin", icon: LayoutDashboard, label: "Admin" },
@@ -13,10 +10,7 @@ const tabs = [
     { to: "/admin/transactions", icon: CreditCard, label: "Payments" },
 ]
 export default function AdminLayout() {
-    const dispatch = useAppDispatch()
-    useEffect(() => {
-        dispatch(getDashboardStatics())
-    }, [dispatch])
+
     return (
         <div className="min-h-screen">
             {/* Mobile horizontal tabs (moved outside main flex to avoid layout issues) */}

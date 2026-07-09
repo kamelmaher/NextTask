@@ -1,4 +1,4 @@
-import type { Category } from "../category/category.types"
+import type { Category } from "../../types/Category"
 
 export type User = {
     _id: string,
