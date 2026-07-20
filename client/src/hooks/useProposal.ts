@@ -1,23 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/axios";
+import type { User } from "../features/auth/auth.types";
 
 const proposalKey = ["proposals"]
 const baseUrl = "/proposal"
 
-export type ProposalState = {
-    proposals: Proposal[],
-    loading: boolean,
-    err: string | null,
-    addProposalLoading: boolean,
-    addProposalErr: string | null,
-    acceptProposalLoading: boolean,
-    acceptProposalErr: string | null,
-}
-
 export type Proposal = {
     _id: string,
-    freelancer: any,
-    project: any,
+    freelancer: User,
+    project: User,
     price: number,
     deliveryDuration: number,
     content: string

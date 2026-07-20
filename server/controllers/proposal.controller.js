@@ -4,6 +4,7 @@ const Contract = require("../models/contract.model")
 const User = require("../models/user.model")
 const { error, serverError, success } = require("../utils/responses")
 const { projectApprovalStatus, projectStatus, proposalStatus } = require("../utils/status")
+const { generateProposal } = require("../services/proposal")
 
 exports.getProposalsByProject = async (req, res) => {
     const projectId = req.params.projectId || null
@@ -132,6 +133,22 @@ exports.acceptProposal = async (req, res) => {
     } catch (err) {
         console.log(err)
         serverError(res)
+    }
+}
+
+exports.aiProposal = async (req, res) => {
+    const user = req.user
+    if (!user) return error(res, 401, "UnAuthorized");
+    const { title, desc } = req.body;
+    if (!title || !desc) return error(res, 400, "title and description are required")
+    // if (title.trim().length > 500) return error(res, 400, "Title is too long")
+    // if (desc.trim().length > 1000) return error(res, 400 , "Description is too long.")
+    try {
+        const response = await generateProposal({ title, desc })
+        return success(res, 200, { proposal: response })
+    } catch (err) {
+        console.log(err)
+        return serverError(res)
     }
 }
 

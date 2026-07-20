@@ -30,7 +30,7 @@ export default function ProjectPage() {
 
     if (projectLoading) return <Spinner size="lg" />
     if (!project) return
-
+    
     return (
         <div className="mx-auto grid max-w-[1280px] gap-8 px-6 py-10 lg:grid-cols-[1fr_360px]">
             {/* Main column */}
