@@ -2,8 +2,8 @@ const router = require("express").Router()
 
 const { deposite } = require("../controllers/payment.controller")
 const verifyToken = require("../middlewares/verifyToken")
+const { paymentLimiter } = require("../middlewares/rateLimiter")
 
-router.post("/create-checkout-session", verifyToken, deposite)
-router.post("/dposite", verifyToken, deposite)
+router.post("/create-checkout-session", verifyToken, paymentLimiter, deposite)
 
 module.exports = router

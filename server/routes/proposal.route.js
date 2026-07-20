@@ -7,6 +7,7 @@ const { createProposal, acceptProposal, getProposalsByProject, getProposalsByFre
 // Middlewares
 const verifyToken = require("../middlewares/verifyToken")
 const allowedTo = require("../middlewares/allowedTo")
+const { aiLimiter } = require("../middlewares/rateLimiter")
 
 router.get("/project/:projectId", getProposalsByProject)
 
@@ -14,7 +15,7 @@ router.use(verifyToken)
 
 router.post("/", createProposal)
 router.get("/freelancer", getProposalsByFreelancer)
-router.post("/generate", aiProposal)
+router.post("/generate", aiLimiter, aiProposal)
 router.patch("/:id", acceptProposal)
 
 module.exports = router

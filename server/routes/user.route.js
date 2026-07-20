@@ -9,14 +9,15 @@ const { login, signUp, updateProfile, assignRole, removeRole, me, logout, getUse
 const verifyToken = require("../middlewares/verifyToken")
 const allowedTo = require("../middlewares/allowedTo")
 const validate = require("../middlewares/validate")
+const { authLimiter } = require("../middlewares/rateLimiter")
 
 // validators
 const { loginValidator, userDetailsValidator } = require("../validators/user")
 
 
 // Public
-router.post("/login", validate(loginValidator), login)
-router.post("/signup", validate(userDetailsValidator), signUp)
+router.post("/login", authLimiter, validate(loginValidator), login)
+router.post("/signup", authLimiter, validate(userDetailsValidator), signUp)
 router.post("/logout", logout)
 router.get("/", getUsers)
 

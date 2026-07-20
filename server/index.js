@@ -3,8 +3,12 @@ const mongoose = require("mongoose")
 require("dotenv").config()
 const cors = require("cors")
 const cookieParser = require("cookie-parser");
+const { apiLimiter } = require("./middlewares/rateLimiter")
 const { stripeWebhook } = require("./webhooks/stripeWebhook");
+
+
 const app = express()
+app.set("trust proxy", 1)
 
 const allowedOrigins = [
     "http://localhost:5173",
@@ -30,6 +34,8 @@ app.post("/webhook", express.raw({ type: "application/json" }), stripeWebhook);
 app.use(express.json())
 app.use(cookieParser());
 app.use("/uploads", express.static("uploads"));
+
+app.use(apiLimiter)
 
 // Routes
 const userRoute = require("./routes/user.route")
