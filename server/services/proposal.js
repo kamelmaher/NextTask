@@ -32,8 +32,10 @@ Keep it under 250 words.
 `;
 
     const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
-        contents: prompt,
+        model: "gemini-3.6-flash",
+        contents: [
+            { role: "user", text: prompt }
+        ],
     });
 
     return response.text;
